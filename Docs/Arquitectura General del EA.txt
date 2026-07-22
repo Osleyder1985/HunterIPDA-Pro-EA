@@ -1,10 +1,11 @@
-## 📄 DOCUMENTO DE ARQUITECTURA - HUNTERIPDA PRO EA (VERSIÓN 1.6 - OPTIMIZADA)
+## 📄 DOCUMENTO DE ARQUITECTURA - HUNTERIPDA PRO EA (VERSIÓN 1.7 - ACTUALIZADA CON ESTADO DE IMPLEMENTACIÓN)
 
 ---
 
-**Versión del Documento:** 1.6 (Optimizado con fusiones de clases, agrupación por dominios y mejoras de rendimiento)
+**Versión del Documento:** 1.7 (Actualizado con estado de implementación - Dominio Core Completado)
 **Fecha:** 21 de Julio de 2026
 **Basado en:** SRS Versión 1.1, ~890+ RFs optimizados, Metodología ICT (Meses 1-12)
+**Estado de Implementación:** ✅ **DOMINIO CORE COMPLETADO (Fases 1-7)** - 7 módulos entregados y compilando sin errores
 
 ---
 
@@ -12,32 +13,45 @@
 
 #### 1.1 Principios Arquitectónicos
 
-| Principio                     | Descripción                                                                                                                                     |
-| :---                          | :---                                                                                                                                            |
-| **Modularidad**               | Cada funcionalidad encapsulada en clases independientes, con responsabilidades bien definidas.                                                  |
-| **Bajo Acoplamiento**         | Las clases se comunican a través de interfaces bien definidas, minimizando dependencias directas.                                               |
-| **Alta Cohesión**             | Cada clase tiene una única responsabilidad (Single Responsibility Principle).                                                                   |
-| **Extensibilidad**            | La arquitectura permite añadir nuevos módulos sin modificar los existentes (Open/Closed Principle).                                             |
-| **Configurabilidad**          | Todos los parámetros son configurables a través de inputs en MT5.                                                                               |
-| **Rendimiento**               | Optimización para procesamiento de ticks en tiempo real con baja latencia. **Caching, batching, event-based triggers y timer-based execution.** |
-| **Robustez**                  | Manejo de errores y recuperación ante fallos (reconexión, validación de condiciones).                                                           |
-| **Organización por Dominios** | 5 dominios funcionales: Core, Analysis, Execution, Models, TradingPlan.                                                                         |
+| Principio | Descripción |
+| :--- | :--- |
+| **Modularidad** | Cada funcionalidad encapsulada en clases independientes, con responsabilidades bien definidas. |
+| **Bajo Acoplamiento** | Las clases se comunican a través de interfaces bien definidas, minimizando dependencias directas. |
+| **Alta Cohesión** | Cada clase tiene una única responsabilidad (Single Responsibility Principle). |
+| **Extensibilidad** | La arquitectura permite añadir nuevos módulos sin modificar los existentes (Open/Closed Principle). |
+| **Configurabilidad** | Todos los parámetros son configurables a través de inputs en MT5. |
+| **Rendimiento** | Optimización para procesamiento de ticks en tiempo real con baja latencia. **Caching, batching, event-based triggers y timer-based execution.** |
+| **Robustez** | Manejo de errores y recuperación ante fallos (reconexión, validación de condiciones). |
+| **Organización por Dominios** | 5 dominios funcionales: Core, Analysis, Execution, Models, TradingPlan. |
+
+---
+
+#### 1.2 Estado de Implementación por Dominio
+
+| Dominio | Estado | Fases | Módulos Completados | Progreso |
+| :--- | :--- | :--- | :--- | :--- |
+| **Core** | ✅ COMPLETO | Fases 1-7 | 7/7 | ████████████████████ 100% |
+| **Analysis** | ⏳ PENDIENTE | Fases 8-20 | 0/15 | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **Execution** | ⏳ PENDIENTE | Fases 21-24 | 0/4 | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **Models** | ⏳ PENDIENTE | Fases 25-36 | 0/12 | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **TradingPlan** | ⏳ PENDIENTE | Fases 37-38 | 0/2 | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **TOTAL** | | **Fases 1-38** | **7/40** | **████████░░░░░░░░░░ 17.5%** |
 
 ---
 
 ### 2. ARQUITECTURA DE COMPONENTES
 
-#### 2.1 Diagrama de Componentes (MQL5) - Versión 1.6
+#### 2.1 Diagrama de Componentes (MQL5) - Versión 1.7
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                                                   HUNTERIPDA PRO EA (MQL5) v1.6                                                                  │
+│                                                       HUNTERIPDA PRO EA (MQL5) v1.7                                                                              │
 ├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                                                                                                  │
 │  ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐  │
-│  │                                                                       DOMINIO CORE                                                                         │  │
+│  │                                                                       DOMINIO CORE - ✅ COMPLETO (Fases 1-7)                                               │  │
 │  │  ┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ │  │
-│  │  │                                                         CHunterIPDA (v1.6)                                                                            │ │  │
+│  │  │                                                         CHunterIPDA (v1.7) - ✅ ENTREGADO                                                              │ │  │
 │  │  │  - Inicialización (OnInit)                                                                                                                            │ │  │
 │  │  │  - Bucle Principal (OnTick) - Optimizado con timer-based execution                                                                                    │ │  │
 │  │  │  - Gestión de Estados (23 estados)                                                                                                                    │ │  │
@@ -45,10 +59,10 @@
 │  │  │  - Control de Drawdown Anual (15%)                                                                                                                    │ │  │
 │  │  │  - Control de Frecuencia: Posición (2-3/año), Swing (6-8/año), OSOK (1/semana), Day (1-2/día), Scalp (3-5/día), Mega (1-3/año), Stock (configurable)  │ │  │
 │  │  └───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ │  │
-│  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐         │  │
-│  │  │   CConfig       │  │   CLogger       │  │   CPanel        │  │   CLicense      │  │   CUtils        │  │   CConstants    │  │   CIndicator    │         │  │
-│  │  │   (v1.6)        │  │   (v1.6)        │  │   (v1.6)        │  │   (v1.6)        │  │   (v1.6)        │  │   (v1.6)        │  │   (v1.6)        │         │  │
-│  │  └─────────────────┘  └─────────────────┘  └─────────────────┘  └─────────────────┘  └─────────────────┘  └─────────────────┘  └─────────────────┘         │  │
+│  │  ┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ │  │
+│  │  │           CConfig ✅          CLogger ✅          CPanel ✅          CLicense ✅          CUtils ✅          CConstants ✅                               │ │  │
+│  │  │           (v1.7)              (v1.7)              (v1.7)              (v1.7)              (v1.7)              (v1.7)                                    │ │  │
+│  │  └───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ │  │
 │  └────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘  │
 │                                                          │                                                                                                       │
 │         ┌────────────────────────────────────────────────┼─────────────────────────────────────────┐                                                             │
@@ -56,7 +70,8 @@
 │         ▼                                                ▼                                         ▼                                                             │
 │  ┌─────────────────────────────────┐     ┌─────────────────────────────────┐     ┌─────────────────────────────────┐                                             │
 │  │        DOMINIO ANALYSIS         │     │        DOMINIO EXECUTION        │     │        DOMINIO MODELS           │                                             │
-│  │            (v1.6)               │     │            (v1.6)               │     │            (v1.6)               │                                             │
+│  │            (v1.7)               │     │            (v1.7)               │     │            (v1.7)               │                                             │
+│  │         ⏳ PENDIENTE            │     │         ⏳ PENDIENTE            │     │         ⏳ PENDIENTE            │                                             │
 │  └─────────────────────────────────┘     └─────────────────────────────────┘     └─────────────────────────────────┘                                             │
 │                  │                                        │                                           │                                                          │
 │  ┌───────────────┴─────────────┐          ┌───────────────┴──────────────────┐             ┌──────────┴──────────────┐                                           │
@@ -64,6 +79,7 @@
 │  ▼                             ▼          ▼                                  ▼             ▼                         ▼                                           │
 │ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐     ┌─────────────────────┐ ┌─────────────────┐ ┌─────────────────────┐                              │
 │ │   CDetector     │ │   CContext      │ │   CExecutor     │     │   CRiskManager      │ │   CMultiSymbol  │ │   CSwingFilter      │                              │
+│ │   (v1.7)        │ │   (v1.7)        │ │   (v1.7)        │     │   (v1.7)            │ │   (v1.7)        │ │   (v1.7)            │                              │
 │ └─────────────────┘ └─────────────────┘ └─────────────────┘     └─────────────────────┘ └─────────────────┘ └─────────────────────┘                              │
 │ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐     ┌─────────────────────┐ ┌─────────────────┐ ┌─────────────────────┐                              │
 │ │  CMultiAsset    │ │  CMacroAnalyzer │ │  CEntryManager  │     │                     │ │                 │ │   CHallmarkAnalyzer │                              │
@@ -85,2120 +101,216 @@
 │                                                                                                                          └─────────────────────┘                 │
 │                                                                                                                                                                  │
 │  ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐  │
-│  │                                                     DOMINIO TRADINGPLAN                                                                                    │  │
+│  │                                                     DOMINIO TRADINGPLAN - ⏳ PENDIENTE                                                                      │  │
 │  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐                                                   │  │
 │  │  │  CTradingPlan   │  │  (incluye)      │  │  (incluye)      │  │  (incluye)      │  │  (incluye)      │                                                   │  │
-│  │  │  (v1.6)         │  │  CDiscipline    │  │  CLossManager   │  │  CPsychology    │  │  CJournal       │                                                   │  │
+│  │  │  (v1.7)         │  │  CDiscipline    │  │  CLossManager   │  │  CPsychology    │  │  CJournal       │                                                   │  │
+│  │  └─────────────────┘  └─────────────────┘  └─────────────────┘  └─────────────────┘  └─────────────────┘                                                   │  │
+│  └────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐  │
+│  │                                                     DOMINIO BONUS HUNTER - ⏳ PENDIENTE                                                                     │  │
+│  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐                                                   │  │
+│  │  │  CBonusHunter   │  │  CVolumeTracker │  │  CBonusScanner  │  │  CBonusExecutor │  │  CPanelBonus    │                                                   │  │
+│  │  │  (v1.7)         │  │  (v1.7)         │  │  (v1.7)         │  │  (v1.7)         │  │  Hunter         │                                                   │  │
+│  │  │                 │  │                 │  │                 │  │                 │  │  (v1.7)         │                                                   │  │
 │  │  └─────────────────┘  └─────────────────┘  └─────────────────┘  └─────────────────┘  └─────────────────┘                                                   │  │
 │  └────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘  │
 │                                                                                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-#### 2.2 Descripción de Componentes por Dominio (Versión 1.6 - Optimizada)
+---
 
-**2.2.1 Dominio Core (Núcleo del Sistema)**
+### 3. DESCRIPCIÓN DE COMPONENTES POR DOMINIO
 
-| Clase | Descripción | Responsabilidades |
-| :--- | :--- | :--- |
-| **CHunterIPDA (v1.6)** | Clase Principal del EA | - Inicialización y configuración<br>- Bucle principal (OnTick) optimizado con timer-based execution<br>- Gestión de Estados (23 estados)<br>- Coordinación de módulos por dominios<br>- Control de Drawdown Anual (15%)<br>- Control de Frecuencia: Posición (2-3/año), Swing (6-8/año), OSOK (1/semana), Day (1-2/día), Scalp (3-5/día), Mega (1-3/año), Stock (configurable) |
-| **CConfig (v1.6)** | Gestor de Configuración | - Lectura de inputs, validación, persistencia<br>- Parámetros de todos los modelos y dominios |
-| **CLogger (v1.6)** | Logging y Estadísticas | - Registro de operaciones, estadísticas, exportación<br>- Logging de perfiles de rango semanal, datos OSOK, Multi-Asset, Stock Trading, Mega Trades, Journal<br>- **Optimización:** Bufferizado para escritura en lotes |
-| **CPanel (v1.6)** | Panel de Control | - Visualización en gráfico, actualización en tiempo real<br>- Dashboards de Multi-Asset, Stock Watchlists, Mega Trade Status, Trading Plan |
-| **CLicense (v1.6)** | Gestor de Licencias | - Validación, activación, protección de código<br>- Soporte para modo offline con cifrado asimétrico |
-| **CUtils (v1.6)** | Utilidades | - Funciones auxiliares, cálculos matemáticos, conversiones, validaciones |
-| **CConstants (v1.6)** | Constantes y Enumeraciones | - Definición única de todas las enumeraciones y constantes del sistema |
+#### 3.1 Dominio Core (Núcleo del Sistema) - ✅ COMPLETO
+
+| Clase | Descripción | Responsabilidades | Estado |
+| :--- | :--- | :--- | :--- |
+| **CHunterIPDA (v1.7)** | Clase Principal del EA | - Inicialización y configuración<br>- Bucle principal (OnTick) optimizado con timer-based execution<br>- Gestión de Estados (23 estados)<br>- Coordinación de módulos por dominios<br>- Control de Drawdown Anual (15%)<br>- Control de Frecuencia: Posición (2-3/año), Swing (6-8/año), OSOK (1/semana), Day (1-2/día), Scalp (3-5/día), Mega (1-3/año), Stock (configurable) | ✅ ENTREGADO |
+| **CConfig (v1.7)** | Gestor de Configuración | - Lectura de inputs, validación, persistencia<br>- Parámetros de todos los modelos y dominios | ✅ ENTREGADO |
+| **CLogger (v1.7)** | Logging y Estadísticas | - Registro de operaciones, estadísticas, exportación<br>- Logging de perfiles de rango semanal, datos OSOK, Multi-Asset, Stock Trading, Mega Trades, Journal<br>- **Optimización:** Bufferizado para escritura en lotes | ✅ ENTREGADO |
+| **CPanel (v1.7)** | Panel de Control | - Visualización en gráfico, actualización en tiempo real<br>- Dashboards de Multi-Asset, Stock Watchlists, Mega Trade Status, Trading Plan | ✅ ENTREGADO |
+| **CLicense (v1.7)** | Gestor de Licencias | - Validación, activación, protección de código<br>- Soporte para modo offline con cifrado asimétrico | ✅ ENTREGADO |
+| **CUtils (v1.7)** | Utilidades | - Funciones auxiliares, cálculos matemáticos, conversiones, validaciones | ✅ ENTREGADO |
+| **CConstants (v1.7)** | Constantes y Enumeraciones | - Definición única de todas las enumeraciones y constantes del sistema | ✅ ENTREGADO |
 
 ---
 
-**2.2.2 Dominio Analysis (Análisis de Mercado)**
+#### 3.2 Dominio Analysis (Análisis de Mercado) - ⏳ PENDIENTE
 
-| Clase | Descripción | Responsabilidades |
-| :--- | :--- | :--- |
-| **CDetector (v1.6)** | Detector de Setups ICT | - Detección de Order Blocks, FVG, Turtle Soup, Stop Runs<br>- Detección de PD Arrays, Breaker y Failure Swing<br>- Detección de perfiles de rango semanal y plantillas de manipulación<br>- Detección de intraday profiles, price engine models, COT programs, relative strength patterns, bond split session patterns, index projected range patterns |
-| **CContext (v1.6)** | Analizador de Contexto | - Análisis multi-temporal, Sponsorship, SMT Divergence<br>- Market Structure, Macro to Micro<br>- Análisis de condiciones de short-term, OSOK, day trading, scalping, multi-asset, stock trading y mega trades |
-| **CMultiAsset (v1.6)** | Análisis Multi-Asset | - Análisis integrado de las 4 clases de activos (Bonos, Commodities, Divisas, Acciones)<br>- Detección de Risk On/Off, simetría/decoupling<br>- Identificación de clase líder, cálculo de Alignment Score<br>- **Optimización:** Ejecución diaria con caching |
-| **CMacroAnalyzer (v1.6)** | Analizador Macro | - 10-Year Treasury Note, DXY, Intermarket Analysis<br>- Cracking Correlation, Interest Rate Differentials<br>- Análisis de COT Extended (Buy/Sell Programs, Hedging)<br>- Análisis de Premium vs Carrying Charge<br>- Análisis de Open Interest Extended |
-| **CSeasonal (v1.6)** | Gestor de Tendencias Estacionales | - Tendencias estacionales (40+ años)<br>- Ideal Seasonal Tendencies, convergencia 40/15 años<br>- Seasonal como filtro obligatorio para OSOK y Swing<br>- Análisis estacional para stocks (Stock Seasonal Calendar) |
-| **CDataRange (v1.6)** | Gestor de IPDA Data Ranges | - IPDA Data Ranges (20, 40, 60 días)<br>- Look Back, Cast Forward, Quarterly Shifts, IOF |
-| **CCOTAnalyzer (v1.6)** | Análisis de COT | - Rango de 12 meses de comerciales, punto medio como nueva línea cero<br>- Soporte para OSOK y Swing como filtro obligatorio<br>- **Optimización:** Ejecución semanal con caching |
-| **COIAnalyzer (v1.6)** | Análisis de Open Interest | - Detección de cambios de 10-15%+ en OI como confirmación de dirección<br>- **Optimización:** Ejecución diaria con caching |
-| **CRelStrength (v1.6)** | Análisis de Fortaleza Relativa | - DXY context, higher low/lower high, acumulación/distribución, leadership markets |
-| **CPremiumCarry (v1.6)** | Premium vs Carrying Charge | - nearby/next month, spread charts, spread divergence |
-| **CCOExtended (v1.6)** | COT Extended | - Análisis extendido de COT: Buy/Sell Programs, Hedging Programs, nódulos de hedging, extremos históricos |
-| **CAssetClass (v1.6)** | Estado de Clases | - Monitoreo del estado de cada clase de activo: tendencia/consolidación/reversión, fuerza de tendencia, momentum |
-| **CIntermarket (v1.6)** | Correlación Intermercado | - Análisis de correlaciones intermercado entre las 4 clases de activos |
-| **CRiskOnOff (v1.6)** | Risk On/Off | - Detección de entornos Risk On/Off basado en el comportamiento de las 4 clases de activos |
-| **CCorrelation (v1.6)** | Análisis de Correlación | - Cálculo de matrices de correlación entre activos y clases |
-
----
-
-**2.2.3 Dominio Execution (Ejecución y Gestión)**
-
-| Clase | Descripción | Responsabilidades |
-| :--- | :--- | :--- |
-| **CExecutor (v1.6)** | Ejecutor de Órdenes | - Apertura, gestión y cierre de órdenes<br>- Stop/Limit Entries, escalado en largo/corto, IPDA Trailing<br>- Ejecución en 4H/1H para short-term, gestión OSOK con Kill Zones<br>- Ejecución en H1/M15 para day trading, en M5 para scalping<br>- Ejecución en HTF para Mega Trades y Stock Trading |
-| **CEntryManager (v1.6)** | Gestor de Entradas | - Stop/Limit Entries, estrategia híbrida, escalado en largo/corto<br>- Técnicas de entrada para short-term, OSOK, day trading, scalping, Mega Trades y Stock Trading |
-| **CRiskManager (v1.6)** | Gestor de Riesgo | - Cálculo de lote, SL/TP, Trailing Stop, Scaling Out<br>- Trailing stop IPDA (40/20/10 días)<br>- Riesgo para short-term, tolerancia de proyección OSOK<br>- Riesgo para day trading (1.5%), scalping (0.5%-1%), Mega Trades (0.3%), Stock Trading (1.5%)<br>- Gestión de ADR Exit Rule y límites de pérdida (Trading Plan) |
-| **CMultiSymbol (v1.6)** | Gestor Multi-Símbolo | - Análisis y ejecución por símbolo<br>- Selección de pares por diferencial de tasas, ranking por seasonal<br>- Selección de mercados para short-term, OSOK, day trading, scalping<br>- Selección de stocks para watchlists, selección de activos para Multi-Asset Analysis |
+| Clase | Descripción | Responsabilidades | Estado |
+| :--- | :--- | :--- | :--- |
+| **CDetector (v1.7)** | Detector de Setups ICT | - Detección de Order Blocks, FVG, Turtle Soup, Stop Runs<br>- Detección de PD Arrays, Breaker y Failure Swing<br>- Detección de perfiles de rango semanal y plantillas de manipulación<br>- Detección de intraday profiles, price engine models, COT programs, relative strength patterns, bond split session patterns, index projected range patterns | ⏳ PENDIENTE |
+| **CContext (v1.7)** | Analizador de Contexto | - Análisis multi-temporal, Sponsorship, SMT Divergence<br>- Market Structure, Macro to Micro<br>- Análisis de condiciones de short-term, OSOK, day trading, scalping, multi-asset, stock trading y mega trades | ⏳ PENDIENTE |
+| **CMultiAsset (v1.7)** | Análisis Multi-Asset | - Análisis integrado de las 4 clases de activos (Bonos, Commodities, Divisas, Acciones)<br>- Detección de Risk On/Off, simetría/decoupling<br>- Identificación de clase líder, cálculo de Alignment Score<br>- **Optimización:** Ejecución diaria con caching | ⏳ PENDIENTE |
+| **CMacroAnalyzer (v1.7)** | Analizador Macro | - 10-Year Treasury Note, DXY, Intermarket Analysis<br>- Cracking Correlation, Interest Rate Differentials<br>- Análisis de COT Extended (Buy/Sell Programs, Hedging)<br>- Análisis de Premium vs Carrying Charge<br>- Análisis de Open Interest Extended | ⏳ PENDIENTE |
+| **CSeasonal (v1.7)** | Gestor de Tendencias Estacionales | - Tendencias estacionales (40+ años)<br>- Ideal Seasonal Tendencies, convergencia 40/15 años<br>- Seasonal como filtro obligatorio para OSOK y Swing<br>- Análisis estacional para stocks (Stock Seasonal Calendar) | ⏳ PENDIENTE |
+| **CDataRange (v1.7)** | Gestor de IPDA Data Ranges | - IPDA Data Ranges (20, 40, 60 días)<br>- Look Back, Cast Forward, Quarterly Shifts, IOF | ⏳ PENDIENTE |
+| **CCOTAnalyzer (v1.7)** | Análisis de COT | - Rango de 12 meses de comerciales, punto medio como nueva línea cero<br>- Soporte para OSOK y Swing como filtro obligatorio<br>- **Optimización:** Ejecución semanal con caching | ⏳ PENDIENTE |
+| **COIAnalyzer (v1.7)** | Análisis de Open Interest | - Detección de cambios de 10-15%+ en OI como confirmación de dirección<br>- **Optimización:** Ejecución diaria con caching | ⏳ PENDIENTE |
+| **CRelStrength (v1.7)** | Análisis de Fortaleza Relativa | - DXY context, higher low/lower high, acumulación/distribución, leadership markets | ⏳ PENDIENTE |
+| **CPremiumCarry (v1.7)** | Premium vs Carrying Charge | - nearby/next month, spread charts, spread divergence | ⏳ PENDIENTE |
+| **CCOExtended (v1.7)** | COT Extended | - Análisis extendido de COT: Buy/Sell Programs, Hedging Programs, nódulos de hedging, extremos históricos | ⏳ PENDIENTE |
+| **CAssetClass (v1.7)** | Estado de Clases | - Monitoreo del estado de cada clase de activo: tendencia/consolidación/reversión, fuerza de tendencia, momentum | ⏳ PENDIENTE |
+| **CIntermarket (v1.7)** | Correlación Intermercado | - Análisis de correlaciones intermercado entre las 4 clases de activos | ⏳ PENDIENTE |
+| **CRiskOnOff (v1.7)** | Risk On/Off | - Detección de entornos Risk On/Off basado en el comportamiento de las 4 clases de activos | ⏳ PENDIENTE |
+| **CCorrelation (v1.7)** | Análisis de Correlación | - Cálculo de matrices de correlación entre activos y clases | ⏳ PENDIENTE |
 
 ---
 
-**2.2.4 Dominio Models (Modelos de Trading)**
+#### 3.3 Dominio Execution (Ejecución y Gestión) - ⏳ PENDIENTE
 
-| Clase | Descripción | Responsabilidades |
-| :--- | :--- | :--- |
-| **CSwingFilter (v1.6)** | Filtros de Swing Trading | - Seasonal (obligatorio), Major Market Analysis, COT, Open Interest, 8 Hallmarks |
-| **CHallmarkAnalyzer (v1.6)** | 8 Hallmarks | - Market Profiles, Intermarket, COT, OI, Seasonal, Volatility, News Sentiment, Williams %R |
-| **CSwingManager (v1.6)** | Gestión de Swing | - Toma de 20-30% profit al 25% del objetivo, reentradas al 50%, trailing ajustado al 75% |
-| **CShortTerm (v1.6)** | Modelo Short-Term | - Ejecución en 4H/1H, gestión de weekly range profiles y MM manipulation templates |
-| **CWeeklyRange (v1.6)** | Perfiles de Rango Semanal | - Detección de Classic Tuesday Low/High, Wednesday Low/High, Thursday Reversal, Midweek Rally/Decline, Seek & Destroy, Wednesday Weekly Reversal |
-| **CMMManipulation (v1.6)** | Plantillas de Manipulación MM | - Aplicación de 12+ plantillas de manipulación del Market Maker |
-| **CIntraWeekReversal (v1.6)** | Reversiones Intra-Semanales | - Detección de reversiones basadas en velocidad y magnitud del movimiento en lunes y martes |
-| **COSOKAnalyzer (v1.6)** | One Shot One Kill | - Proyección de high/low semanal con Fibonacci (127%, 168%), convergencia con PD Arrays, tolerancia configurable, Kill Zone timing |
-| **CDayTrading (v1.6)** 🆕 | **Modelo Day Trading (FUSIONADO)** | - IPDA True Day framework, Kill Zones (London/NY/London Close), CBDR con desviaciones estándar, 12 setups de alta probabilidad, 8 tipos de reversiones, rutina diaria estructurada<br>- **INCLUYE:** CIntradayProfile (perfiles intraday) y CMarketReversal (reversiones de mercado) como sub-estructuras |
-| **CScalping (v1.6)** 🆕 | **Modelo Scalping (FUSIONADO)** | - Ejecución en M5, Price Engine Models, 20 Pips Per Day strategy, ADR Exit Rule, Bread & Butter setups, Filling the Numbers strategy<br>- **INCLUYE:** CPriceEngine (4 Price Engine Models), CAsianTrade (Asian Turtle Soup) y CADRExit (ADR Exit Rule) como sub-estructuras |
-| **CStockTrader (v1.6)** 🆕 | **Modelo Stock Trading (FUSIONADO)** | - Selección de stocks con CAN SLIM, SMT Divergence, Seasonals, watchlists Buy/Sell, selección de opciones<br>- **INCLUYE:** CStockWatch (watchlists), CCANSLIM (filtro fundamental), CStockOption (opciones) y CStockSeason (análisis estacional) como sub-estructuras |
-| **CMegaTrade (v1.6)** 🆕 | **Modelo Mega Trades (FUSIONADO)** | - Framework de Mega Trades: operaciones de 3-6 meses, R:R ≥ 5:1, 1-3 por año, riesgo 0.3%, basado en Quarterly Shifts y Top-Down Analysis<br>- **INCLUYE:** CQuarterlyShift (análisis de Quarterly Shifts), CTopDown (Top-Down Analysis), CDecisionTree (árbol de decisión) y CScenarioPlan (planificación de escenarios) como sub-estructuras<br>- **Optimización:** Ejecución semanal con event-based triggers |
+| Clase | Descripción | Responsabilidades | Estado |
+| :--- | :--- | :--- | :--- |
+| **CExecutor (v1.7)** | Ejecutor de Órdenes | - Apertura, gestión y cierre de órdenes<br>- Stop/Limit Entries, escalado en largo/corto, IPDA Trailing<br>- Ejecución en 4H/1H para short-term, gestión OSOK con Kill Zones<br>- Ejecución en H1/M15 para day trading, en M5 para scalping<br>- Ejecución en HTF para Mega Trades y Stock Trading | ⏳ PENDIENTE |
+| **CEntryManager (v1.7)** | Gestor de Entradas | - Stop/Limit Entries, estrategia híbrida, escalado en largo/corto<br>- Técnicas de entrada para short-term, OSOK, day trading, scalping, Mega Trades y Stock Trading | ⏳ PENDIENTE |
+| **CRiskManager (v1.7)** | Gestor de Riesgo | - Cálculo de lote, SL/TP, Trailing Stop, Scaling Out<br>- Trailing stop IPDA (40/20/10 días)<br>- Riesgo para short-term, tolerancia de proyección OSOK<br>- Riesgo para day trading (1.5%), scalping (0.5%-1%), Mega Trades (0.3%), Stock Trading (1.5%)<br>- Gestión de ADR Exit Rule y límites de pérdida (Trading Plan) | ⏳ PENDIENTE |
+| **CMultiSymbol (v1.7)** | Gestor Multi-Símbolo | - Análisis y ejecución por símbolo<br>- Selección de pares por diferencial de tasas, ranking por seasonal<br>- Selección de mercados para short-term, OSOK, day trading, scalping<br>- Selección de stocks para watchlists, selección de activos para Multi-Asset Analysis | ⏳ PENDIENTE |
 
 ---
 
-**2.2.5 Dominio TradingPlan (Plan de Trading)**
+#### 3.4 Dominio Models (Modelos de Trading) - ⏳ PENDIENTE
 
-| Clase | Descripción | Responsabilidades |
-| :--- | :--- | :--- |
-| **CTradingPlan (v1.6)** 🆕 | **Trading Plan (FUSIONADO)** | - Framework completo de Trading Plan: límites de pérdida diarios/semanales/mensuales, disciplina, journaling, rutinas<br>- **INCLUYE:** CDiscipline (disciplina y reglas), CLossManager (gestión de límites), CPsychology (psicología) y CJournal (diario de trading) como sub-estructuras<br>- **Optimización:** Bufferizado para escritura en lotes (journal) |
-| **CNewsEvent (v1.6)** | Gestión de Eventos | - Gestión de eventos de mercado (FOMC, NFP, CPI) como filtros de timing, con gestión de riesgo ajustada |
+| Clase | Descripción | Responsabilidades | Estado |
+| :--- | :--- | :--- | :--- |
+| **CSwingFilter (v1.7)** | Filtros de Swing Trading | - Seasonal (obligatorio), Major Market Analysis, COT, Open Interest, 8 Hallmarks | ⏳ PENDIENTE |
+| **CHallmarkAnalyzer (v1.7)** | 8 Hallmarks | - Market Profiles, Intermarket, COT, OI, Seasonal, Volatility, News Sentiment, Williams %R | ⏳ PENDIENTE |
+| **CSwingManager (v1.7)** | Gestión de Swing | - Toma de 20-30% profit al 25% del objetivo, reentradas al 50%, trailing ajustado al 75% | ⏳ PENDIENTE |
+| **CShortTerm (v1.7)** | Modelo Short-Term | - Ejecución en 4H/1H, gestión de weekly range profiles y MM manipulation templates | ⏳ PENDIENTE |
+| **CWeeklyRange (v1.7)** | Perfiles de Rango Semanal | - Detección de Classic Tuesday Low/High, Wednesday Low/High, Thursday Reversal, Midweek Rally/Decline, Seek & Destroy, Wednesday Weekly Reversal | ⏳ PENDIENTE |
+| **CMMManipulation (v1.7)** | Plantillas de Manipulación MM | - Aplicación de 12+ plantillas de manipulación del Market Maker | ⏳ PENDIENTE |
+| **CIntraWeekReversal (v1.7)** | Reversiones Intra-Semanales | - Detección de reversiones basadas en velocidad y magnitud del movimiento en lunes y martes | ⏳ PENDIENTE |
+| **COSOKAnalyzer (v1.7)** | One Shot One Kill | - Proyección de high/low semanal con Fibonacci (127%, 168%), convergencia con PD Arrays, tolerancia configurable, Kill Zone timing | ⏳ PENDIENTE |
+| **CDayTrading (v1.7)** 🆕 | **Modelo Day Trading (FUSIONADO)** | - IPDA True Day framework, Kill Zones (London/NY/London Close), CBDR con desviaciones estándar, 12 setups de alta probabilidad, 8 tipos de reversiones, rutina diaria estructurada<br>- **INCLUYE:** CIntradayProfile (perfiles intraday) y CMarketReversal (reversiones de mercado) como sub-estructuras | ⏳ PENDIENTE |
+| **CScalping (v1.7)** 🆕 | **Modelo Scalping (FUSIONADO)** | - Ejecución en M5, Price Engine Models, 20 Pips Per Day strategy, ADR Exit Rule, Bread & Butter setups, Filling the Numbers strategy<br>- **INCLUYE:** CPriceEngine (4 Price Engine Models), CAsianTrade (Asian Turtle Soup) y CADRExit (ADR Exit Rule) como sub-estructuras | ⏳ PENDIENTE |
+| **CStockTrader (v1.7)** 🆕 | **Modelo Stock Trading (FUSIONADO)** | - Selección de stocks con CAN SLIM, SMT Divergence, Seasonals, watchlists Buy/Sell, selección de opciones<br>- **INCLUYE:** CStockWatch (watchlists), CCANSLIM (filtro fundamental), CStockOption (opciones) y CStockSeason (análisis estacional) como sub-estructuras | ⏳ PENDIENTE |
+| **CMegaTrade (v1.7)** 🆕 | **Modelo Mega Trades (FUSIONADO)** | - Framework de Mega Trades: operaciones de 3-6 meses, R:R ≥ 5:1, 1-3 por año, riesgo 0.3%, basado en Quarterly Shifts y Top-Down Analysis<br>- **INCLUYE:** CQuarterlyShift (análisis de Quarterly Shifts), CTopDown (Top-Down Analysis), CDecisionTree (árbol de decisión) y CScenarioPlan (planificación de escenarios) como sub-estructuras<br>- **Optimización:** Ejecución semanal con event-based triggers | ⏳ PENDIENTE |
 
 ---
 
-### 3. DIAGRAMA DE CLASES DETALLADO (VERSIÓN 1.6 - COMPLETO)
+#### 3.5 Dominio TradingPlan (Plan de Trading) - ⏳ PENDIENTE
 
-#### 3.1 Clase Principal: CHunterIPDA (Versión 1.6)
+| Clase | Descripción | Responsabilidades | Estado |
+| :--- | :--- | :--- | :--- |
+| **CTradingPlan (v1.7)** 🆕 | **Trading Plan (FUSIONADO)** | - Framework completo de Trading Plan: límites de pérdida diarios/semanales/mensuales, disciplina, journaling, rutinas<br>- **INCLUYE:** CDiscipline (disciplina y reglas), CLossManager (gestión de límites), CPsychology (psicología) y CJournal (diario de trading) como sub-estructuras<br>- **Optimización:** Bufferizado para escritura en lotes (journal) | ⏳ PENDIENTE |
+| **CNewsEvent (v1.7)** | Gestión de Eventos | - Gestión de eventos de mercado (FOMC, NFP, CPI) como filtros de timing, con gestión de riesgo ajustada | ⏳ PENDIENTE |
+
+---
+
+#### 3.6 Dominio Bonus Hunter (Módulo Adicional) - ⏳ PENDIENTE
+
+| Clase | Descripción | Responsabilidades | Estado |
+| :--- | :--- | :--- | :--- |
+| **CBonusHunter (v1.7)** 🆕 | **Bonus Hunter Principal** | - Cumplimiento rápido de bonos Weltrade mediante scalping de alta frecuencia con riesgo reducido<br>- Coordinación de todos los submódulos de Bonus Hunter | ⏳ PENDIENTE |
+| **CVolumeTracker (v1.7)** 🆕 | **Tracking de Volumen** | - Monitoreo del volumen operado para cumplir requisitos de bono<br>- Tracking de volumen diario, semanal y mensual | ⏳ PENDIENTE |
+| **CBonusScanner (v1.7)** 🆕 | **Escaneo de Oportunidades** | - Escaneo de oportunidades de scalping para cumplir bonos<br>- Identificación de setups de alta frecuencia de baja calidad | ⏳ PENDIENTE |
+| **CBonusExecutor (v1.7)** 🆕 | **Ejecución de Órdenes Bonus** | - Ejecución de órdenes con riesgo reducido (0.25%-0.5%)<br>- Gestión de stops ajustados y salidas rápidas | ⏳ PENDIENTE |
+| **CPanelBonusHunter (v1.7)** 🆕 | **Panel de Progreso** | - Visualización del progreso del bono en el gráfico<br>- Métricas de volumen, profit, trades restantes | ⏳ PENDIENTE |
+
+---
+
+### 4. ESTRUCTURAS DE DATOS PRINCIPALES (VERSIÓN 1.7 - COMPLETAS)
+
+#### 4.1 Enumeraciones (Versión 1.7 - Completas)
 
 ```cpp
 //+------------------------------------------------------------------+
-//| CHunterIPDA - Clase Principal del EA (v1.6 - Optimizada)         |
-//+------------------------------------------------------------------+
-class CHunterIPDA {
-private:
-    // --- Dominio Core ---
-    CConfig*           m_config;
-    CLogger*           m_logger;
-    CLicense*          m_license;
-    CPanel*            m_panel;
-    CUtils*            m_utils;
-    CConstants*        m_constants;
-    
-    // --- Dominio Analysis ---
-    CDetector*         m_detector;
-    CContext*          m_context;
-    CMultiAsset*       m_multiAsset;
-    CMacroAnalyzer*    m_macroAnalyzer;
-    CSeasonal*         m_seasonal;
-    CDataRange*        m_dataRange;
-    CCOTAnalyzer*      m_cotAnalyzer;
-    COIAnalyzer*       m_oiAnalyzer;
-    CRelStrength*      m_relStrength;
-    CPremiumCarry*     m_premiumCarry;
-    CCOExtended*       m_cotExtended;
-    CAssetClass*       m_assetClass;
-    CIntermarket*      m_intermarket;
-    CRiskOnOff*        m_riskOnOff;
-    CCorrelation*      m_correlation;
-    
-    // --- Dominio Execution ---
-    CExecutor*         m_executor;
-    CEntryManager*     m_entryManager;
-    CRiskManager*      m_riskManager;
-    CMultiSymbol*      m_multiSymbol;
-    
-    // --- Dominio Models ---
-    CSwingFilter*      m_swingFilter;
-    CHallmarkAnalyzer* m_hallmarkAnalyzer;
-    CSwingManager*     m_swingManager;
-    CShortTerm*        m_shortTerm;
-    CWeeklyRange*      m_weeklyRange;
-    CMMManipulation*   m_mmManipulation;
-    CIntraWeekReversal* m_intraWeekReversal;
-    COSOKAnalyzer*     m_osokAnalyzer;
-    CDayTrading*       m_dayTrading;        // Incluye CIntradayProfile y CMarketReversal
-    CScalping*         m_scalping;          // Incluye CPriceEngine, CAsianTrade, CADRExit
-    CStockTrader*      m_stockTrader;       // Incluye CStockWatch, CCANSLIM, CStockOption, CStockSeason
-    CMegaTrade*        m_megaTrade;         // Incluye CQuarterlyShift, CTopDown, CDecisionTree, CScenarioPlan
-    
-    // --- Dominio TradingPlan ---
-    CTradingPlan*      m_tradingPlan;       // Incluye CDiscipline, CLossManager, CPsychology, CJournal
-    CNewsEvent*        m_newsEvent;
-    
-    // --- Estado (Completo) ---
-    ENUM_EA_STATE      m_state;
-    bool               m_isInitialized;
-    bool               m_isPaused;
-    datetime           m_lastTickTime;
-    datetime           m_lastAnalysisTime;
-    int                m_tickCount;
-    int                m_ordersThisWeek;
-    int                m_weekNumber;
-    int                m_positionTradesThisYear;
-    int                m_swingTradesThisYear;
-    int                m_osokTradesThisWeek;
-    int                m_dayTradesToday;
-    int                m_scalpTradesToday;
-    int                m_megaTradesThisYear;
-    int                m_stockTradesThisMonth;
-    double             m_annualDrawdown;
-    ENUM_TRADING_MODEL m_currentModel;
-    ENUM_OSOK_STATUS   m_osokStatus;
-    ENUM_DAY_STATUS    m_dayStatus;
-    ENUM_SCALP_STATUS  m_scalpStatus;
-    ENUM_MEGA_STATUS   m_megaStatus;
-    ENUM_STOCK_STATUS  m_stockStatus;
-    
-    // --- Temporizadores para Optimización de Rendimiento ---
-    int                m_analysisTimer;
-    int                m_panelUpdateTimer;
-    int                m_macroUpdateTimer;
-    int                m_swingFilterTimer;
-    int                m_osokAnalysisTimer;
-    int                m_weeklyRangeTimer;
-    int                m_dayTradingTimer;
-    int                m_scalpTimer;
-    int                m_multiAssetTimer;      // Optimización: diario
-    int                m_stockWatchTimer;      // Optimización: diario
-    int                m_megaTradeTimer;       // Optimización: semanal
-    int                m_tradingPlanTimer;     // Optimización: diario
-    int                m_cotTimer;             // Optimización: semanal
-    int                m_oiTimer;              // Optimización: diario
-    
-    // --- Métodos Privados (Completos) ---
-    bool               InitializeModules();
-    void               DeinitializeModules();
-    bool               ValidateConditions();
-    void               ProcessTick();
-    void               ProcessMacroAnalysis();
-    void               ProcessDataRanges();
-    void               ProcessSeasonal();
-    void               ProcessSwingFilters();
-    void               ProcessShortTerm();
-    void               ProcessOSOK();
-    void               ProcessWeeklyRange();
-    void               ProcessMMManipulation();
-    void               ProcessIntraWeekReversal();
-    void               ProcessDayTrading();
-    void               ProcessScalping();
-    void               ProcessMultiAsset();         // Optimización: diario con caching
-    void               ProcessStockTrading();       // Optimización: diario con caching
-    void               ProcessMegaTrades();         // Optimización: semanal con event-based triggers
-    void               ProcessTradingPlan();        // Optimización: diario con bufferizado
-    void               ProcessCOT();                // Optimización: semanal con caching
-    void               ProcessOI();                 // Optimización: diario con caching
-    void               ProcessAnalysis();
-    void               ProcessSignal();
-    void               ProcessExecution();
-    void               ProcessManagement();
-    void               UpdateState();
-    void               CheckWeekReset();
-    void               CheckAnnualLimits();
-    void               CheckSwingLimits();
-    void               CheckOSOKLimits();
-    void               CheckDayTradingLimits();
-    void               CheckScalpLimits();
-    void               CheckMegaLimits();
-    void               CheckStockLimits();
-    void               CheckDrawdownLimit();
-    void               HandleError(int errorCode, string errorMsg);
-    
-public:
-    // --- Constructor / Destructor ---
-    CHunterIPDA();
-    ~CHunterIPDA();
-    
-    // --- Métodos Públicos ---
-    bool OnInit();
-    void OnTick();
-    void OnDeinit();
-    void OnTrade();
-    void OnTimer();
-    
-    // --- Getters (Completos) ---
-    ENUM_EA_STATE GetState() const { return m_state; }
-    bool IsInitialized() const { return m_isInitialized; }
-    bool IsPaused() const { return m_isPaused; }
-    double GetAnnualDrawdown() const { return m_annualDrawdown; }
-    int GetPositionTradesThisYear() const { return m_positionTradesThisYear; }
-    int GetSwingTradesThisYear() const { return m_swingTradesThisYear; }
-    int GetOSOKTradesThisWeek() const { return m_osokTradesThisWeek; }
-    int GetDayTradesToday() const { return m_dayTradesToday; }
-    int GetScalpTradesToday() const { return m_scalpTradesToday; }
-    int GetMegaTradesThisYear() const { return m_megaTradesThisYear; }
-    int GetStockTradesThisMonth() const { return m_stockTradesThisMonth; }
-    ENUM_TRADING_MODEL GetCurrentModel() const { return m_currentModel; }
-    ENUM_OSOK_STATUS GetOSOKStatus() const { return m_osokStatus; }
-    ENUM_DAY_STATUS GetDayStatus() const { return m_dayStatus; }
-    ENUM_SCALP_STATUS GetScalpStatus() const { return m_scalpStatus; }
-    ENUM_MEGA_STATUS GetMegaStatus() const { return m_megaStatus; }
-    ENUM_STOCK_STATUS GetStockStatus() const { return m_stockStatus; }
-    
-    // --- Setters ---
-    void Pause();
-    void Resume();
-    void Reset();
-    void SetTradingModel(ENUM_TRADING_MODEL model);
-    void SetOSOKStatus(ENUM_OSOK_STATUS status);
-    void SetDayStatus(ENUM_DAY_STATUS status);
-    void SetScalpStatus(ENUM_SCALP_STATUS status);
-    void SetMegaStatus(ENUM_MEGA_STATUS status);
-    void SetStockStatus(ENUM_STOCK_STATUS status);
-};
-```
-
----
-
-#### 3.2 Clase CDetector (Versión 1.6)
-
-```cpp
-//+------------------------------------------------------------------+
-//| CDetector - Detector de Setups ICT (v1.6 - Optimizada)           |
-//+------------------------------------------------------------------+
-class CDetector {
-private:
-    // --- Referencias ---
-    CConfig*           m_config;
-    CContext*          m_context;
-    CUtils*            m_utils;
-    CDataRange*        m_dataRange;
-    CSeasonal*         m_seasonal;
-    
-    // --- Arrays de Detección ---
-    OrderBlock*        m_orderBlocks[];
-    FVG*               m_fvgs[];
-    TurtleSoup*        m_turtleSoups[];
-    StopRun*           m_stopRuns[];
-    MitigationBlock*   m_mitigationBlocks[];
-    BreakerBlock*      m_breakerBlocks[];
-    RejectionBlock*    m_rejectionBlocks[];
-    PropulsionBlock*   m_propulsionBlocks[];
-    VacuumBlock*       m_vacuumBlocks[];
-    LiquidityPool*     m_liquidityPools[];
-    LiquidityVoid*     m_liquidityVoids[];
-    DoublePattern*     m_doubleTops[];
-    DoublePattern*     m_doubleBottoms[];
-    Divergence*        m_divergences[];
-    PDArray*           m_pdArrays[];
-    BreakerPattern*    m_breakerPatterns[];
-    FailureSwing*      m_failureSwings[];
-    
-    // --- Estado ---
-    ENUM_MARKET_STATE  m_marketState;
-    ENUM_MARKET_ZONE   m_marketZone;
-    int                m_orderBlockCount;
-    int                m_fvgCount;
-    int                m_turtleSoupCount;
-    int                m_stopRunCount;
-    
-    // --- Métodos de Detección ---
-    void               DetectOrderBlocks();
-    void               DetectFVG();
-    void               DetectTurtleSoup();
-    void               DetectStopRuns();
-    void               DetectMitigationBlocks();
-    void               DetectBreakerBlocks();
-    void               DetectRejectionBlocks();
-    void               DetectPropulsionBlocks();
-    void               DetectVacuumBlocks();
-    void               DetectLiquidityPools();
-    void               DetectLiquidityVoids();
-    void               DetectDoubleTops();
-    void               DetectDoubleBottoms();
-    void               DetectDivergences();
-    void               DetectPDArrays();
-    void               DetectBreakerSwingPoints();
-    void               DetectFailureSwings();
-    void               DetectInsideBar();
-    void               DetectVolatilityContraction();
-    
-    // --- Métodos de Validación ---
-    bool               ValidateOrderBlock(OrderBlock &ob);
-    bool               ValidateFVG(FVG &fvg);
-    bool               ValidateTurtleSoup(TurtleSoup &ts);
-    bool               ValidateStopRun(StopRun &sr);
-    bool               ValidatePDArray(PDArray &pda);
-    bool               IsInstitutionalSponsorship(double price, ENUM_TIMEFRAMES tf);
-    bool               IsDynamicResponse(double price, ENUM_TIMEFRAMES tf);
-    bool               IsLethargicResponse(double price, ENUM_TIMEFRAMES tf);
-    
-    // --- Métodos de Clasificación ---
-    ENUM_MARKET_STATE  ClassifyMarket();
-    ENUM_MARKET_ZONE   ClassifyMarketZone();
-    ENUM_BIAS          DetermineBias();
-    
-public:
-    // --- Constructor / Destructor ---
-    CDetector();
-    ~CDetector();
-    
-    // --- Inicialización ---
-    bool Init(CConfig* config, CContext* context, CUtils* utils,
-              CDataRange* dataRange, CSeasonal* seasonal);
-    void Deinit();
-    
-    // --- Métodos Principales ---
-    void Analyze(string symbol, ENUM_TIMEFRAMES tf);
-    void AnalyzeAll();
-    void AnalyzeForSwing(string symbol);
-    void AnalyzeForShortTerm(string symbol);
-    void Clear();
-    
-    // --- Getters ---
-    OrderBlock* GetOrderBlocks() const { return m_orderBlocks; }
-    FVG* GetFVGs() const { return m_fvgs; }
-    TurtleSoup* GetTurtleSoups() const { return m_turtleSoups; }
-    StopRun* GetStopRuns() const { return m_stopRuns; }
-    PDArray* GetPDArrays() const { return m_pdArrays; }
-    int GetOrderBlockCount() const { return m_orderBlockCount; }
-    int GetFVGCount() const { return m_fvgCount; }
-    int GetTurtleSoupCount() const { return m_turtleSoupCount; }
-    int GetStopRunCount() const { return m_stopRunCount; }
-    ENUM_MARKET_STATE GetMarketState() const { return m_marketState; }
-    ENUM_MARKET_ZONE GetMarketZone() const { return m_marketZone; }
-    
-    // --- Señales ---
-    Signal GetBestSignal(string symbol, ENUM_TIMEFRAMES tf);
-    Signal GetBestSwingSignal(string symbol);
-    Signal GetBestShortTermSignal(string symbol);
-    Signal GetBestDayTradeSignal(string symbol);
-    Signal GetBestScalpSignal(string symbol);
-    Signal GetBestMegaTradeSignal(string symbol);
-    Signal GetBestStockSignal(string symbol);
-    
-    // --- Validación ---
-    bool ValidateSignal(Signal &signal);
-    bool IsSignalQualified(Signal &signal);
-    int GetSignalQualityScore(Signal &signal);
-};
-```
-
----
-
-#### 3.3 Clase CContext (Versión 1.6)
-
-```cpp
-//+------------------------------------------------------------------+
-//| CContext - Analizador de Contexto (v1.6 - Optimizada)            |
-//+------------------------------------------------------------------+
-class CContext {
-private:
-    // --- Referencias ---
-    CConfig*           m_config;
-    CUtils*            m_utils;
-    CMacroAnalyzer*    m_macroAnalyzer;
-    CSeasonal*         m_seasonal;
-    CDataRange*        m_dataRange;
-    CSwingFilter*      m_swingFilter;
-    CShortTerm*        m_shortTerm;
-    CDayTrading*       m_dayTrading;
-    CMultiAsset*       m_multiAsset;
-    
-    // --- Estado de Contexto ---
-    struct ContextState {
-        ENUM_BIAS monthlyBias;
-        ENUM_BIAS weeklyBias;
-        ENUM_BIAS dailyBias;
-        ENUM_BIAS h4Bias;
-        ENUM_BIAS h1Bias;
-        ENUM_BIAS overallBias;
-        bool isSponsorshipPresent;
-        bool isSMTDivergence;
-        bool isMarketSymmetry;
-        bool isAsymmetrical;
-        double alignmentScore;
-        int alignedFactors;
-        datetime lastUpdate;
-    };
-    
-    ContextState       m_state;
-    bool               m_isInitialized;
-    int                m_minAlignedFactors;
-    
-    // --- Métodos de Análisis ---
-    void               AnalyzeMonthlyBias();
-    void               AnalyzeWeeklyBias();
-    void               AnalyzeDailyBias();
-    void               AnalyzeH4Bias();
-    void               AnalyzeH1Bias();
-    void               AnalyzeSponsorship();
-    void               AnalyzeSMTDivergence();
-    void               AnalyzeMarketSymmetry();
-    void               AnalyzeAlignment();
-    void               DetermineOverallBias();
-    bool               IsHigherTimeFrameDisplacement();
-    bool               IsDynamicResponse(double price);
-    bool               IsLethargicResponse(double price);
-    bool               IsSellSideLiquidityRun();
-    bool               IsBuySideLiquidityRun();
-    bool               IsAccumulation();
-    bool               IsDistribution();
-    bool               IsFailureSwing();
-    bool               IsBreakerSwing();
-    
-public:
-    // --- Constructor / Destructor ---
-    CContext();
-    ~CContext();
-    
-    // --- Inicialización ---
-    bool Init(CConfig* config, CUtils* utils, CMacroAnalyzer* macroAnalyzer,
-              CSeasonal* seasonal, CDataRange* dataRange);
-    void Deinit();
-    
-    // --- Métodos Principales ---
-    void Analyze(string symbol);
-    void Update();
-    bool IsContextValid(string symbol, ENUM_TRADING_MODEL model);
-    
-    // --- Getters ---
-    ENUM_BIAS GetMonthlyBias() const { return m_state.monthlyBias; }
-    ENUM_BIAS GetWeeklyBias() const { return m_state.weeklyBias; }
-    ENUM_BIAS GetDailyBias() const { return m_state.dailyBias; }
-    ENUM_BIAS GetH4Bias() const { return m_state.h4Bias; }
-    ENUM_BIAS GetH1Bias() const { return m_state.h1Bias; }
-    ENUM_BIAS GetOverallBias() const { return m_state.overallBias; }
-    bool IsSponsorshipPresent() const { return m_state.isSponsorshipPresent; }
-    bool IsSMTDivergence() const { return m_state.isSMTDivergence; }
-    bool IsMarketSymmetry() const { return m_state.isMarketSymmetry; }
-    bool IsAsymmetrical() const { return m_state.isAsymmetrical; }
-    double GetAlignmentScore() const { return m_state.alignmentScore; }
-    int GetAlignedFactors() const { return m_state.alignedFactors; }
-    
-    // --- Validación ---
-    bool IsValidBias(ENUM_BIAS bias);
-    bool IsAlignedWithMacro(ENUM_BIAS bias);
-    bool IsAlignedWithSeasonal(ENUM_BIAS bias);
-    bool IsAlignedWithDataRange(ENUM_BIAS bias);
-    
-    // --- Reportes ---
-    string GetContextSummary();
-    string GetBiasReport();
-};
-```
-
----
-
-#### 3.4 Clase CExecutor (Versión 1.6)
-
-```cpp
-//+------------------------------------------------------------------+
-//| CExecutor - Ejecutor de Órdenes (v1.6 - Optimizada)              |
-//+------------------------------------------------------------------+
-class CExecutor {
-private:
-    // --- Referencias ---
-    CConfig*           m_config;
-    CRiskManager*      m_riskManager;
-    CUtils*            m_utils;
-    CEntryManager*     m_entryManager;
-    CSwingManager*     m_swingManager;
-    COSOKAnalyzer*     m_osokAnalyzer;
-    CDayTrading*       m_dayTrading;
-    CScalping*         m_scalping;
-    CMegaTrade*        m_megaTrade;
-    CStockTrader*      m_stockTrader;
-    
-    // --- Estado de Ejecución ---
-    struct ExecutionState {
-        ulong tickets[];
-        int openPositions;
-        int pendingOrders;
-        double totalPnl;
-        double totalPips;
-        int wins;
-        int losses;
-        datetime lastExecution;
-        datetime lastModification;
-        bool isExecuting;
-    };
-    
-    ExecutionState     m_state;
-    bool               m_isInitialized;
-    int                m_maxSlippage;
-    int                m_maxSpread;
-    
-    // --- Métodos de Ejecución ---
-    bool               ExecuteMarketOrder(string symbol, ENUM_ORDER_TYPE type, double lot, double sl, double tp);
-    bool               ExecuteLimitOrder(string symbol, ENUM_ORDER_TYPE type, double price, double lot, double sl, double tp);
-    bool               ExecuteStopOrder(string symbol, ENUM_ORDER_TYPE type, double price, double lot, double sl, double tp);
-    bool               ExecutePendingOrder(string symbol, ENUM_ORDER_TYPE type, double price, double lot, double sl, double tp);
-    bool               ModifyPosition(ulong ticket, double sl, double tp);
-    bool               ClosePosition(ulong ticket);
-    bool               ClosePartialPosition(ulong ticket, double lot);
-    double             CalculateLot(double risk, double stopDistance);
-    bool               ValidateOrder(ulong ticket);
-    bool               ValidateSlippage(double expected, double actual);
-    bool               ValidateSpread();
-    void               HandleError(int error);
-    
-    // --- Métodos de Gestión ---
-    void               ManagePosition(ulong ticket);
-    void               ManageTrailingStop(ulong ticket);
-    void               ManageBreakeven(ulong ticket);
-    void               ManageScalingOut(ulong ticket);
-    void               ManageSwingPosition(ulong ticket);
-    void               ManageOSOKPosition(ulong ticket);
-    void               ManageDayTradePosition(ulong ticket);
-    void               ManageScalpPosition(ulong ticket);
-    void               ManageMegaTradePosition(ulong ticket);
-    void               ManageStockPosition(ulong ticket);
-    
-    // --- Métodos de Entrada ---
-    bool               ExecuteStopEntry(Signal &signal);
-    bool               ExecuteLimitEntry(Signal &signal);
-    bool               ExecuteHybridEntry(Signal &signal);
-    bool               ExecuteMarketEntry(Signal &signal);
-    bool               ExecuteSwingEntry(Signal &signal);
-    bool               ExecuteOSOKEntry(Signal &signal);
-    bool               ExecuteDayTradeEntry(Signal &signal);
-    bool               ExecuteScalpEntry(Signal &signal);
-    bool               ExecuteMegaTradeEntry(Signal &signal);
-    bool               ExecuteStockEntry(Signal &signal);
-    
-public:
-    // --- Constructor / Destructor ---
-    CExecutor();
-    ~CExecutor();
-    
-    // --- Inicialización ---
-    bool Init(CConfig* config, CRiskManager* riskManager, CUtils* utils,
-              CEntryManager* entryManager);
-    void Deinit();
-    
-    // --- Métodos Principales ---
-    bool ExecuteSignal(Signal &signal);
-    bool ModifyPosition(ulong ticket, double sl, double tp);
-    bool ClosePosition(ulong ticket);
-    bool CloseAllPositions();
-    void ManageAllPositions();
-    void Update();
-    
-    // --- Getters ---
-    int GetOpenPositions() const { return m_state.openPositions; }
-    int GetPendingOrders() const { return m_state.pendingOrders; }
-    double GetTotalPnl() const { return m_state.totalPnl; }
-    double GetTotalPips() const { return m_state.totalPips; }
-    int GetWins() const { return m_state.wins; }
-    int GetLosses() const { return m_state.losses; }
-    ulong* GetTickets() const { return m_state.tickets; }
-    
-    // --- Validación ---
-    bool IsTradeAllowed();
-    bool IsPositionOpen(ulong ticket);
-    bool IsPendingOrderActive(ulong ticket);
-    
-    // --- Reportes ---
-    string GetExecutionSummary();
-    string GetPositionsReport();
-};
-```
-
----
-
-#### 3.5 Clase CRiskManager (Versión 1.6)
-
-```cpp
-//+------------------------------------------------------------------+
-//| CRiskManager - Gestor de Riesgo (v1.6 - Optimizada)              |
-//+------------------------------------------------------------------+
-class CRiskManager {
-private:
-    // --- Referencias ---
-    CConfig*           m_config;
-    CUtils*            m_utils;
-    CDataRange*        m_dataRange;
-    CContext*          m_context;
-    CSwingFilter*      m_swingFilter;
-    CShortTerm*        m_shortTerm;
-    CDayTrading*       m_dayTrading;
-    CScalping*         m_scalping;
-    CMegaTrade*        m_megaTrade;
-    CStockTrader*      m_stockTrader;
-    CTradingPlan*      m_tradingPlan;
-    
-    // --- Estado de Riesgo ---
-    struct RiskState {
-        double accountEquity;
-        double accountBalance;
-        double currentDrawdown;
-        double maxDrawdown;
-        double dailyDrawdown;
-        double weeklyDrawdown;
-        double monthlyDrawdown;
-        double riskPerTrade;
-        double totalRiskExposure;
-        int openPositions;
-        int dailyTrades;
-        int weeklyTrades;
-        int monthlyTrades;
-        bool isDrawdownLimitReached;
-        bool isDailyLimitReached;
-        bool isWeeklyLimitReached;
-        bool isMonthlyLimitReached;
-        datetime lastUpdate;
-    };
-    
-    RiskState          m_state;
-    bool               m_isInitialized;
-    double             m_maxDrawdownPct;
-    double             m_dailyLossLimit;
-    double             m_weeklyLossLimit;
-    double             m_monthlyLossLimit;
-    
-    // --- Métodos de Cálculo ---
-    double             CalculateLotSize(double riskPct, double stopDistance);
-    double             CalculateStopDistance(Signal &signal);
-    double             CalculatePositionSize(double riskPct, double stopDistance);
-    double             CalculateRiskPerTrade(Signal &signal);
-    double             CalculateIPDATrailingStop(ulong ticket);
-    double             CalculateSwingStop(Signal &signal);
-    double             CalculateOSOKStop(Signal &signal);
-    double             CalculateDayTradeStop(Signal &signal);
-    double             CalculateScalpStop(Signal &signal);
-    double             CalculateMegaStop(Signal &signal);
-    double             CalculateStockStop(Signal &signal);
-    double             CalculateScalingLevels(Signal &signal);
-    
-    // --- Métodos de Validación ---
-    bool               ValidateRisk(Signal &signal);
-    bool               ValidateDrawdown();
-    bool               ValidateDailyLimit();
-    bool               ValidateWeeklyLimit();
-    bool               ValidateMonthlyLimit();
-    bool               ValidateRiskPerTrade(Signal &signal);
-    bool               ValidatePositionSize(Signal &signal);
-    bool               ValidateRMultiple(Signal &signal);
-    bool               ValidateAccountBalance();
-    
-    // --- Métodos de Gestión ---
-    void               UpdateAccountInfo();
-    void               UpdateDrawdown();
-    void               UpdateRiskExposure();
-    void               ApplyMitigation();
-    void               ApplyLossReduction();
-    void               ApplyCooldown();
-    void               ResetCounters();
-    void               HandleDrawdownLimit();
-    
-public:
-    // --- Constructor / Destructor ---
-    CRiskManager();
-    ~CRiskManager();
-    
-    // --- Inicialización ---
-    bool Init(CConfig* config, CUtils* utils, CDataRange* dataRange);
-    void Deinit();
-    
-    // --- Métodos Principales ---
-    void Update();
-    bool IsTradeAllowed();
-    bool IsRiskValid(Signal &signal);
-    double CalculateLot(Signal &signal);
-    double CalculateStopLoss(Signal &signal);
-    double CalculateTakeProfit(Signal &signal);
-    double CalculateTrailingStop(ulong ticket);
-    void ManageRisk(ulong ticket);
-    void RecordTrade(double pnl, bool win);
-    void ApplyLossMitigation();
-    
-    // --- Getters ---
-    double GetAccountEquity() const { return m_state.accountEquity; }
-    double GetAccountBalance() const { return m_state.accountBalance; }
-    double GetCurrentDrawdown() const { return m_state.currentDrawdown; }
-    double GetMaxDrawdown() const { return m_state.maxDrawdown; }
-    double GetRiskPerTrade() const { return m_state.riskPerTrade; }
-    bool IsDrawdownLimitReached() const { return m_state.isDrawdownLimitReached; }
-    bool IsDailyLimitReached() const { return m_state.isDailyLimitReached; }
-    bool IsWeeklyLimitReached() const { return m_state.isWeeklyLimitReached; }
-    bool IsMonthlyLimitReached() const { return m_state.isMonthlyLimitReached; }
-    
-    // --- Reportes ---
-    string GetRiskSummary();
-    string GetDrawdownReport();
-};
-```
-
----
-
-#### 3.6 Clase CMultiSymbol (Versión 1.6)
-
-```cpp
-//+------------------------------------------------------------------+
-//| CMultiSymbol - Gestor Multi-Símbolo (v1.6 - Optimizada)          |
-//+------------------------------------------------------------------+
-class CMultiSymbol {
-private:
-    // --- Referencias ---
-    CConfig*           m_config;
-    CDetector*         m_detector;
-    CExecutor*         m_executor;
-    CUtils*            m_utils;
-    CMacroAnalyzer*    m_macroAnalyzer;
-    CSeasonal*         m_seasonal;
-    CDataRange*        m_dataRange;
-    CSwingFilter*      m_swingFilter;
-    CShortTerm*        m_shortTerm;
-    CDayTrading*       m_dayTrading;
-    CScalping*         m_scalping;
-    CMultiAsset*       m_multiAsset;
-    CStockTrader*      m_stockTrader;
-    CMegaTrade*        m_megaTrade;
-    
-    // --- Símbolos ---
-    struct SymbolData {
-        string symbol;
-        ENUM_TIMEFRAMES mainTF;
-        ENUM_TIMEFRAMES contextTF;
-        ENUM_TRADING_MODEL activeModel;
-        ENUM_BIAS currentBias;
-        bool isActive;
-        bool isTradingAllowed;
-        double spread;
-        double atr;
-        int orderCount;
-        datetime lastUpdate;
-    };
-    
-    SymbolData         m_symbols[];
-    int                m_symbolCount;
-    int                m_maxSymbols;
-    
-    // --- Listas de Símbolos ---
-    string             m_fxSymbols[];
-    string             m_indexSymbols[];
-    string             m_commoditySymbols[];
-    string             m_cryptoSymbols[];
-    string             m_stockSymbols[];
-    string             m_macroSymbols[];
-    string             m_futuresSymbols[];
-    
-    // --- Métodos Privados ---
-    bool               InitializeSymbols();
-    bool               LoadSymbolList();
-    bool               ValidateSymbol(string symbol);
-    bool               IsSymbolAvailable(string symbol);
-    bool               IsSymbolTradingAllowed(string symbol);
-    double             GetSymbolSpread(string symbol);
-    double             GetSymbolATR(string symbol);
-    ENUM_BIAS          GetSymbolBias(string symbol);
-    int                GetSymbolOrderCount(string symbol);
-    void               UpdateSymbolData(string symbol);
-    void               SelectBestSymbols();
-    string             SelectBestSwingSymbol();
-    string             SelectBestOSOKSymbol();
-    string             SelectBestDayTradeSymbol();
-    string             SelectBestScalpSymbol();
-    string             SelectBestMegaTradeSymbol();
-    string             SelectBestStockSymbol();
-    
-public:
-    // --- Constructor / Destructor ---
-    CMultiSymbol();
-    ~CMultiSymbol();
-    
-    // --- Inicialización ---
-    bool Init(CConfig* config, CDetector* detector, CExecutor* executor, CUtils* utils);
-    void Deinit();
-    
-    // --- Métodos Principales ---
-    void Update();
-    bool IsSymbolValid(string symbol);
-    bool IsSymbolTradingAllowed(string symbol);
-    string GetBestSymbol(ENUM_TRADING_MODEL model);
-    string[] GetAllSymbols();
-    string[] GetActiveSymbols();
-    string[] GetTradingSymbols();
-    
-    // --- Getters ---
-    int GetSymbolCount() const { return m_symbolCount; }
-    int GetMaxSymbols() const { return m_maxSymbols; }
-    SymbolData GetSymbolData(string symbol);
-    double GetSymbolSpread(string symbol);
-    double GetSymbolATR(string symbol);
-    ENUM_BIAS GetSymbolBias(string symbol);
-    int GetSymbolOrderCount(string symbol);
-    
-    // --- Reportes ---
-    string GetSymbolSummary();
-    string GetSymbolReport(string symbol);
-};
-```
-
----
-
-#### 3.7 Clase CLogger (Versión 1.6)
-
-```cpp
-//+------------------------------------------------------------------+
-//| CLogger - Logging y Estadísticas (v1.6 - Optimizada)             |
-//+------------------------------------------------------------------+
-class CLogger {
-private:
-    // --- Referencias ---
-    CConfig*           m_config;
-    
-    // --- Estado de Logging ---
-    struct LogState {
-        string logFile;
-        string journalFile;
-        string statsFile;
-        int logLevel;
-        int totalTrades;
-        int winningTrades;
-        int losingTrades;
-        double totalPnl;
-        double totalPips;
-        double winRate;
-        double profitFactor;
-        double maxDrawdown;
-        double avgWin;
-        double avgLoss;
-        double bestTrade;
-        double worstTrade;
-        datetime lastLog;
-    };
-    
-    LogState           m_state;
-    bool               m_isInitialized;
-    string             m_logPath;
-    
-    // --- Buffer para Journal (Optimización) ---
-    JournalEntry       m_journalBuffer[100];
-    int                m_journalBufferCount;
-    void               FlushJournalBuffer();
-    
-    // --- Métodos de Logging ---
-    void               WriteLog(string message, int level);
-    void               WriteTradeLog(Signal &signal, ulong ticket);
-    void               WriteSignalLog(Signal &signal);
-    void               WriteErrorLog(int error, string description);
-    void               WriteMacroLog(MacroData &data);
-    void               WriteSeasonalLog(SeasonalData &data);
-    void               WriteCOTLog(COTData &data);
-    void               WriteOILog(OIData &data);
-    void               WriteMultiAssetLog(MultiAssetData &data);
-    void               WriteStockLog(StockData &data);
-    void               WriteMegaLog(MegaTradeData &data);
-    void               WriteJournalEntry(JournalEntry &entry);
-    void               WriteStatsLog();
-    void               WriteDailyReport();
-    void               WriteWeeklyReport();
-    void               WriteMonthlyReport();
-    
-    // --- Métodos de Estadísticas ---
-    void               UpdateStats(TradeRecord &record);
-    void               CalculateWinRate();
-    void               CalculateProfitFactor();
-    void               CalculateMaxDrawdown();
-    void               CalculateAvgWinLoss();
-    void               CalculateBestWorstTrade();
-    void               ResetStats();
-    void               ExportStatsCSV();
-    void               ExportJournalCSV();
-    
-public:
-    // --- Constructor / Destructor ---
-    CLogger();
-    ~CLogger();
-    
-    // --- Inicialización ---
-    bool Init(CConfig* config);
-    void Deinit();
-    
-    // --- Métodos Principales ---
-    void Log(string message, int level);
-    void LogTrade(Signal &signal, ulong ticket);
-    void LogSignal(Signal &signal);
-    void LogError(int error, string description);
-    void LogMacro(MacroData &data);
-    void LogSeasonal(SeasonalData &data);
-    void LogCOT(COTData &data);
-    void LogOI(OIData &data);
-    void LogMultiAsset(MultiAssetData &data);
-    void LogStock(StockData &data);
-    void LogMega(MegaTradeData &data);
-    void LogJournal(JournalEntry &entry);  // Usa bufferizado
-    void UpdateStats(TradeRecord &record);
-    void ExportStats();
-    void ExportJournal();
-    void ResetStats();
-    void FlushJournal();  // Forzar escritura del buffer
-    
-    // --- Getters ---
-    int GetTotalTrades() const { return m_state.totalTrades; }
-    int GetWinningTrades() const { return m_state.winningTrades; }
-    int GetLosingTrades() const { return m_state.losingTrades; }
-    double GetTotalPnl() const { return m_state.totalPnl; }
-    double GetTotalPips() const { return m_state.totalPips; }
-    double GetWinRate() const { return m_state.winRate; }
-    double GetProfitFactor() const { return m_state.profitFactor; }
-    double GetMaxDrawdown() const { return m_state.maxDrawdown; }
-    double GetAvgWin() const { return m_state.avgWin; }
-    double GetAvgLoss() const { return m_state.avgLoss; }
-    double GetBestTrade() const { return m_state.bestTrade; }
-    double GetWorstTrade() const { return m_state.worstTrade; }
-    
-    // --- Reportes ---
-    string GetLogSummary();
-    string GetStatsReport();
-    string GetDailyReport();
-    string GetWeeklyReport();
-    string GetMonthlyReport();
-};
-```
-
----
-
-#### 3.8 Clase CPanel (Versión 1.6)
-
-```cpp
-//+------------------------------------------------------------------+
-//| CPanel - Panel de Control (v1.6 - Optimizada)                    |
-//+------------------------------------------------------------------+
-class CPanel {
-private:
-    // --- Referencias ---
-    CConfig*           m_config;
-    CLogger*           m_logger;
-    CContext*          m_context;
-    CMacroAnalyzer*    m_macroAnalyzer;
-    CSwingFilter*      m_swingFilter;
-    CHallmarkAnalyzer* m_hallmarkAnalyzer;
-    COSOKAnalyzer*     m_osokAnalyzer;
-    CWeeklyRange*      m_weeklyRange;
-    CDayTrading*       m_dayTrading;
-    CScalping*         m_scalping;
-    CMultiAsset*       m_multiAsset;
-    CStockTrader*      m_stockTrader;
-    CMegaTrade*        m_megaTrade;
-    CTradingPlan*      m_tradingPlan;
-    CUtils*            m_utils;
-    
-    // --- Estado del Panel ---
-    struct PanelState {
-        bool isVisible;
-        int x;
-        int y;
-        int width;
-        int height;
-        int updateInterval;
-        datetime lastUpdate;
-        string status;
-        double currentPrice;
-        double pnl;
-        double dailyPnl;
-        double weeklyPnl;
-        double monthlyPnl;
-        int openPositions;
-        int pendingOrders;
-    };
-    
-    PanelState         m_state;
-    bool               m_isInitialized;
-    int                m_updateInterval;
-    
-    // --- Métodos de Visualización ---
-    void               DrawHeader();
-    void               DrawStatus();
-    void               DrawPositions();
-    void               DrawStats();
-    void               DrawMacroData();
-    void               DrawMultiAsset();
-    void               DrawStockWatchlist();
-    void               DrawMegaStatus();
-    void               DrawTradingPlan();
-    void               DrawDayTrading();
-    void               DrawScalping();
-    void               DrawOSOK();
-    void               DrawSwingFilters();
-    void               DrawHallmarks();
-    void               DrawWeeklyProfile();
-    void               DrawAlerts();
-    void               ClearPanel();
-    void               UpdatePanel();
-    string             FormatTime(datetime time);
-    string             FormatPips(double pips);
-    string             FormatCurrency(double value);
-    string             GetStatusColor(ENUM_EA_STATE state);
-    string             GetBiasColor(ENUM_BIAS bias);
-    string             GetModelName(ENUM_TRADING_MODEL model);
-    
-public:
-    // --- Constructor / Destructor ---
-    CPanel();
-    ~CPanel();
-    
-    // --- Inicialización ---
-    bool Init(CConfig* config, CLogger* logger, CContext* context,
-              CMacroAnalyzer* macroAnalyzer, CSwingFilter* swingFilter,
-              CHallmarkAnalyzer* hallmarkAnalyzer, COSOKAnalyzer* osokAnalyzer,
-              CWeeklyRange* weeklyRange, CDayTrading* dayTrading,
-              CScalping* scalping, CMultiAsset* multiAsset,
-              CStockTrader* stockTrader, CMegaTrade* megaTrade,
-              CTradingPlan* tradingPlan, CUtils* utils);
-    void Deinit();
-    
-    // --- Métodos Principales ---
-    void Update();
-    void Show();
-    void Hide();
-    void Toggle();
-    void Refresh();
-    void Clear();
-    
-    // --- Getters ---
-    bool IsVisible() const { return m_state.isVisible; }
-    int GetX() const { return m_state.x; }
-    int GetY() const { return m_state.y; }
-    int GetWidth() const { return m_state.width; }
-    int GetHeight() const { return m_state.height; }
-    string GetStatus() const { return m_state.status; }
-    double GetPnl() const { return m_state.pnl; }
-    int GetOpenPositions() const { return m_state.openPositions; }
-    
-    // --- Reportes ---
-    string GetPanelSummary();
-};
-```
-
----
-
-#### 3.9 Clase CDayTrading (FUSIONADA) 🆕
-
-```cpp
-//+------------------------------------------------------------------+
-//| CDayTrading - Modelo de Day Trading (v1.6 - FUSIONADO)           |
-//| INCLUYE: CIntradayProfile y CMarketReversal como sub-estructuras |
-//+------------------------------------------------------------------+
-class CDayTrading {
-private:
-    // --- Referencias ---
-    CConfig*           m_config;
-    CUtils*            m_utils;
-    CDetector*         m_detector;
-    CContext*          m_context;
-    CExecutor*         m_executor;
-    CRiskManager*      m_riskManager;
-    CDataRange*        m_dataRange;
-    CVolatility*       m_volatility;
-    CNewsEvent*        m_newsEvent;
-    
-    // --- Sub-estructura: Intraday Profile (fusionado) ---
-    struct IntradayProfileData {
-        ENUM_INTRADAY_PROFILE profile;
-        ENUM_BIAS expectedBias;
-        double londonRangeHigh;
-        double londonRangeLow;
-        datetime formationTime;
-        bool isConfirmed;
-        string description;
-    };
-    
-    // --- Sub-estructura: Market Reversal (fusionado) ---
-    struct ReversalData {
-        ENUM_REVERSAL_TYPE type;
-        ENUM_BIAS expectedBias;
-        double reversalLevel;
-        datetime reversalTime;
-        bool isConfirmed;
-        string description;
-    };
-    
-    // --- Estado Day Trading ---
-    struct DayTradingState {
-        datetime dayStart;
-        datetime dayEnd;
-        double dailyHigh;
-        double dailyLow;
-        double projectedHigh;
-        double projectedLow;
-        double cbdrHigh;
-        double cbdrLow;
-        double adr;
-        int sdLevel;
-        ENUM_KILL_ZONE activeKillZone;
-        bool isIPDATrueDay;
-        bool isNewsEvent;
-        int tradesToday;
-        ENUM_INTRADAY_PROFILE intradayProfile;
-        double dailyPipsTarget;
-    };
-    
-    DayTradingState    m_state;
-    IntradayProfileData m_intradayProfile;
-    ReversalData       m_reversal;
-    bool               m_isActive;
-    double             m_cbdrRange;
-    double             m_standardDeviation;
-    
-    // --- Métodos de Intraday Profile (fusionados) ---
-    bool               DetectNormalBuy();
-    bool               DetectNormalSell();
-    bool               DetectDelayedProtractionBuy();
-    bool               DetectDelayedProtractionSell();
-    bool               IsLondonSession();
-    double             CalculateLondonRange();
-    bool               IsPriceAboveLondonOpen();
-    bool               IsPriceBelowLondonOpen();
-    bool               IsProtractionDelayed();
-    ENUM_BIAS          DetermineLondonBias();
-    
-    // --- Métodos de Market Reversal (fusionados) ---
-    bool               DetectPreviousDayHigh();
-    bool               DetectPreviousDayLow();
-    bool               DetectIntraWeekHigh();
-    bool               DetectIntraWeekLow();
-    bool               DetectIntermediateHigh();
-    bool               DetectIntermediateLow();
-    bool               DetectNYSessionReversal();
-    bool               DetectLondonCloseReversal();
-    bool               DetectCMEOpenReversal();
-    bool               IsLevelNearArray(double level, double price);
-    bool               IsSMTDivergencePresent();
-    bool               IsInstitutionalSponsorshipPresent();
-    ENUM_BIAS          DetermineReversalBias(ENUM_REVERSAL_TYPE type);
-    double             CalculateReversalLevel(ENUM_REVERSAL_TYPE type);
-    
-    // --- Métodos de Day Trading ---
-    bool               InitializeDay();
-    double             CalculateCBDR(string symbol);
-    double             CalculateCBDRStandardDeviation();
-    void               ProjectDailyHighLow();
-    ENUM_KILL_ZONE     DetectActiveKillZone();
-    bool               ValidateDayTradeSignal(Signal &signal);
-    bool               IsInKillZone(ENUM_KILL_ZONE zone);
-    bool               IsNewsEventActive();
-    bool               IsProfitTargetReached();
-    void               ExecuteDailyRoutine();
-    void               RunEconomicCalendarCheck();
-    void               RunDXYAnalysis();
-    void               RunPDArrayAnalysis();
-    void               RunStandardDeviationProjection();
-    void               RunWeeklyTemplateCheck();
-    double             CalculateEntryLevel(int setupType);
-    double             CalculateStopLevel(int setupType);
-    double             CalculateTargetLevel(int setupType);
-    
-public:
-    // --- Constructor / Destructor ---
-    CDayTrading();
-    ~CDayTrading();
-    
-    // --- Inicialización ---
-    bool Init(CConfig* config, CUtils* utils, CDetector* detector,
-              CContext* context, CExecutor* executor, CRiskManager* riskManager,
-              CDataRange* dataRange, CVolatility* volatility, CNewsEvent* newsEvent);
-    void Deinit();
-    
-    // --- Métodos Principales ---
-    void Analyze(string symbol);
-    Signal GetBestSignal(string symbol);
-    bool IsTradeAllowed();
-    bool IsInKillZone();
-    bool IsProfitTargetReached() const { return m_state.dailyPipsTarget <= 0; }
-    bool IsNewsEventActive() const { return m_state.isNewsEvent; }
-    double GetProjectedHigh() const { return m_state.projectedHigh; }
-    double GetProjectedLow() const { return m_state.projectedLow; }
-    double GetDailyRangeProjection() const;
-    double GetADR() const { return m_state.adr; }
-    double GetCBDRRange() const { return m_cbdrRange; }
-    int GetActiveSDRange() const { return m_state.sdLevel; }
-    ENUM_INTRADAY_PROFILE GetIntradayProfile() const { return m_state.intradayProfile; }
-    ENUM_KILL_ZONE GetActiveKillZone() const { return m_state.activeKillZone; }
-    void UpdateProfitTarget(double pips);
-    bool IsIPDATrueDay() const { return m_state.isIPDATrueDay; }
-    
-    // --- Getters de sub-estructuras fusionadas ---
-    string GetIntradayProfileName();
-    string GetIntradayProfileDescription();
-    ENUM_BIAS GetIntradayProfileBias() const { return m_intradayProfile.expectedBias; }
-    double GetLondonRangeHigh() const { return m_intradayProfile.londonRangeHigh; }
-    double GetLondonRangeLow() const { return m_intradayProfile.londonRangeLow; }
-    ENUM_REVERSAL_TYPE GetReversalType() const { return m_reversal.type; }
-    ENUM_BIAS GetReversalBias() const { return m_reversal.expectedBias; }
-    double GetReversalLevel() const { return m_reversal.reversalLevel; }
-    bool IsReversalConfirmed() const { return m_reversal.isConfirmed; }
-    string GetReversalName();
-    string GetReversalDescription();
-    bool IsHighProbabilityReversal() const;
-    int GetReversalQualityScore();
-    
-    // --- Reportes ---
-    string GetStateSummary();
-    string GetDailyReport();
-    string GetCBDRReport();
-};
-```
-
----
-
-#### 3.10 Clase CScalping (FUSIONADA) 🆕
-
-```cpp
-//+------------------------------------------------------------------+
-//| CScalping - Modelo de Scalping (v1.6 - FUSIONADO)                |
-//| INCLUYE: CPriceEngine, CAsianTrade, CADRExit como sub-estructuras|
-//+------------------------------------------------------------------+
-class CScalping {
-private:
-    // --- Referencias ---
-    CConfig*           m_config;
-    CUtils*            m_utils;
-    CDetector*         m_detector;
-    CContext*          m_context;
-    CExecutor*         m_executor;
-    CRiskManager*      m_riskManager;
-    CVolatility*       m_volatility;
-    
-    // --- Sub-estructura: Price Engine (fusionado) ---
-    struct PriceEngineData {
-        ENUM_PRICE_ENGINE_MODEL model;
-        ENUM_BIAS expectedBias;
-        double entryLevel;
-        double stopLevel;
-        double targetLevel;
-        double referenceLevel;
-        bool isActive;
-        string description;
-    };
-    
-    // --- Sub-estructura: Asian Turtle Soup (fusionado) ---
-    struct AsianTradeState {
-        bool isActive;
-        double asianHigh;
-        double asianLow;
-        double asianRange;
-        datetime asianStart;
-        datetime asianEnd;
-        bool isBreakoutUp;
-        bool isBreakoutDown;
-        bool isTurtleSoup;
-        ENUM_BIAS expectedBias;
-        double entryLevel;
-        double stopLevel;
-        double targetLevel;
-    };
-    
-    // --- Sub-estructura: ADR Exit (fusionado) ---
-    struct ADRState {
-        double currentADR;
-        double currentPrice;
-        double entryPrice;
-        double distanceToADR;
-        bool shouldExit;
-        string reason;
-        datetime lastUpdate;
-    };
-    
-    // --- Estado Scalping ---
-    struct ScalpingState {
-        datetime sessionStart;
-        datetime sessionEnd;
-        int tradesToday;
-        double totalPipsToday;
-        double bestTradePips;
-        double worstTradePips;
-        double activeADR;
-        ENUM_PRICE_ENGINE_MODEL activeModel;
-        bool isAsianSession;
-        bool isNYSession;
-        bool isConsolidation;
-        bool breadButterSetupActive;
-        int consecutiveWins;
-        int consecutiveLosses;
-    };
-    
-    ScalpingState      m_state;
-    PriceEngineData    m_priceEngine;
-    AsianTradeState    m_asianTrade;
-    ADRState           m_adrExit;
-    bool               m_isActive;
-    double             m_stopPips;
-    double             m_targetPips;
-    bool               m_useBreadButter;
-    bool               m_useFillingNumbers;
-    
-    // --- Métodos de Price Engine (fusionados) ---
-    bool               DetectOffsetAccumulation();
-    bool               DetectReAccumulation();
-    bool               DetectOffsetDistribution();
-    bool               DetectRedistribution();
-    double             FindOldHigh(int lookback);
-    double             FindOldLow(int lookback);
-    double             FindFairValueArray();
-    bool               IsRepricingBelowOldLow();
-    bool               IsRepricingAboveOldHigh();
-    bool               IsNearFairValueArray();
-    bool               IsSellSideLiquidityRun();
-    bool               IsBuySideLiquidityRun();
-    ENUM_BIAS          DetermineModelBias(ENUM_PRICE_ENGINE_MODEL model);
-    double             CalculateEntryLevel(ENUM_PRICE_ENGINE_MODEL model);
-    double             CalculateStopLevel(ENUM_PRICE_ENGINE_MODEL model);
-    double             CalculateTargetLevel(ENUM_PRICE_ENGINE_MODEL model);
-    bool               ValidatePriceEngineSignal(ENUM_PRICE_ENGINE_MODEL model);
-    
-    // --- Métodos de Asian Turtle Soup (fusionados) ---
-    bool               DetectAsianRange(string symbol);
-    bool               IsAsianSessionActive();
-    bool               IsAsianBreakoutUp();
-    bool               IsAsianBreakoutDown();
-    bool               IsTurtleSoupLong();
-    bool               IsTurtleSoupShort();
-    bool               IsNewYorkSession();
-    double             CalculateAsianHigh();
-    double             CalculateAsianLow();
-    double             CalculateAsianRange();
-    double             CalculateEntryLevel(ENUM_BIAS bias);
-    double             CalculateStopLevel(ENUM_BIAS bias);
-    double             CalculateTargetLevel(ENUM_BIAS bias);
-    bool               ValidateAsianSignal(ENUM_BIAS &bias);
-    bool               IsExpansionPotential();
-    
-    // --- Métodos de ADR Exit (fusionados) ---
-    bool               CalculateADR(string symbol);
-    double             CalculateDistanceToADR(string symbol, double price);
-    bool               IsPriceWithinExitDistance();
-    double             CalculateUpperADRLevel();
-    double             CalculateLowerADRLevel();
-    bool               ShouldExitBuy();
-    bool               ShouldExitSell();
-    string             GenerateExitReason();
-    
-    // --- Métodos de Scalping ---
-    bool               InitializeSession();
-    bool               ValidateScalpSignal(Signal &signal);
-    bool               IsAsianSession();
-    bool               IsNYSession();
-    bool               IsConsolidationPeriod();
-    bool               IsBreadButterSetup(ENUM_BIAS &bias);
-    bool               IsFillingNumbersLevel(double price);
-    double             CalculateStopPips(ENUM_PRICE_ENGINE_MODEL model);
-    double             CalculateTargetPips(ENUM_PRICE_ENGINE_MODEL model);
-    ENUM_PRICE_ENGINE_MODEL DetectActivePriceEngine();
-    void               ExecutePriceEngineTrade();
-    void               ExecuteAsianTurtleSoup();
-    void               ExecuteBreadButterTrade(ENUM_BIAS bias);
-    void               ExecuteFillingNumbersTrade();
-    bool               ShouldCloseByADR();
-    bool               IsSentimentEffect(ENUM_BIAS bias);
-    void               UpdateStats(double pips, bool win);
-    
-public:
-    // --- Constructor / Destructor ---
-    CScalping();
-    ~CScalping();
-    
-    // --- Inicialización ---
-    bool Init(CConfig* config, CUtils* utils, CDetector* detector,
-              CContext* context, CExecutor* executor, CRiskManager* riskManager,
-              CVolatility* volatility);
-    void Deinit();
-    
-    // --- Métodos Principales ---
-    void Analyze(string symbol);
-    Signal GetBestSignal(string symbol);
-    bool IsTradeAllowed();
-    bool IsAsianSession() const { return m_state.isAsianSession; }
-    bool IsNYSession() const { return m_state.isNYSession; }
-    bool IsConsolidation() const { return m_state.isConsolidation; }
-    bool IsBreadButterAvailable() const { return m_state.breadButterSetupActive; }
-    ENUM_PRICE_ENGINE_MODEL GetActiveModel() const { return m_state.activeModel; }
-    double GetCurrentADR() const { return m_state.activeADR; }
-    double GetTotalPipsToday() const { return m_state.totalPipsToday; }
-    int GetTradesToday() const { return m_state.tradesToday; }
-    bool IsScalpQualified(string symbol, ENUM_BIAS expectedBias);
-    void SetBreadButterEnabled(bool enabled) { m_useBreadButter = enabled; }
-    void SetFillingNumbersEnabled(bool enabled) { m_useFillingNumbers = enabled; }
-    
-    // --- Getters de sub-estructuras fusionadas ---
-    string GetPriceEngineModelName();
-    string GetPriceEngineModelDescription();
-    ENUM_BIAS GetPriceEngineBias() const { return m_priceEngine.expectedBias; }
-    double GetPriceEngineEntry() const { return m_priceEngine.entryLevel; }
-    double GetPriceEngineStop() const { return m_priceEngine.stopLevel; }
-    double GetPriceEngineTarget() const { return m_priceEngine.targetLevel; }
-    bool IsAsianTradeActive() const { return m_asianTrade.isActive; }
-    bool IsAsianTurtleSoupDetected() const { return m_asianTrade.isTurtleSoup; }
-    double GetAsianHigh() const { return m_asianTrade.asianHigh; }
-    double GetAsianLow() const { return m_asianTrade.asianLow; }
-    double GetAsianRange() const { return m_asianTrade.asianRange; }
-    bool ShouldExitByADR() const { return m_adrExit.shouldExit; }
-    double GetADRDistance() const { return m_adrExit.distanceToADR; }
-    string GetADRExitReason() const { return m_adrExit.reason; }
-    
-    // --- Reportes ---
-    string GetStateSummary();
-    string GetSessionReport();
-};
-```
-
----
-
-#### 3.11 Clase CStockTrader (FUSIONADA) 🆕
-
-```cpp
-//+------------------------------------------------------------------+
-//| CStockTrader - Modelo Stock Trading (v1.6 - FUSIONADO)           |
-//| INCLUYE: CStockWatch, CCANSLIM, CStockOption, CStockSeason       |
-//+------------------------------------------------------------------+
-class CStockTrader {
-private:
-    // --- Referencias ---
-    CConfig*           m_config;
-    CUtils*            m_utils;
-    CDetector*         m_detector;
-    CContext*          m_context;
-    CExecutor*         m_executor;
-    CRiskManager*      m_riskManager;
-    CMultiAsset*       m_multiAsset;
-    CSeasonal*         m_seasonal;
-    
-    // --- Sub-estructura: Watchlist (fusionado) ---
-    struct StockWatchlist {
-        StockData buyWatchlist[50];
-        StockData sellWatchlist[50];
-        int buyCount;
-        int sellCount;
-        datetime lastUpdate;
-    };
-    
-    // --- Sub-estructura: CAN SLIM (fusionado) ---
-    struct CANSLIMData {
-        double currentEarningsGrowth;
-        double annualEarningsGrowth;
-        double institutionalOwnership;
-        double floatSize;
-        bool isGrowthStock;
-        bool isIndexStock;
-        bool isLeader;
-        bool isLaggard;
-    };
-    
-    // --- Sub-estructura: Options (fusionado) ---
-    struct OptionData {
-        string optionType;    // "CALL" or "PUT"
-        double optionStrike;
-        int optionExpiryDays;
-        double optionDelta;
-        double optionTheta;
-    };
-    
-    // --- Sub-estructura: Seasonal (fusionado) ---
-    struct StockSeasonalData {
-        int month;
-        ENUM_SEASONAL_BIAS bias;
-        double historicalReturn;
-        double winRate;
-        int sampleSize;
-        bool isHighMagnitudePeriod;
-        bool isLowMagnitudePeriod;
-    };
-    
-    // --- Estado Stock Trading ---
-    struct StockTradingState {
-        StockWatchlist watchlist;
-        bool isMarketDirectionBullish;
-        bool isMarketDirectionBearish;
-        int tradesThisMonth;
-        double totalPnlThisMonth;
-        double bestTrade;
-        double worstTrade;
-        datetime lastUpdate;
-    };
-    
-    StockTradingState  m_state;
-    CANSLIMData        m_canslim;
-    OptionData         m_option;
-    StockSeasonalData  m_seasonal;
-    bool               m_isActive;
-    int                m_maxTradesPerMonth;
-    string             m_stockSymbols[50];
-    int                m_stockCount;
-    
-    // --- Métodos de Watchlist (fusionados) ---
-    void               BuildBuyWatchlist();
-    void               BuildSellWatchlist();
-    bool               IsStockQualifiedForBuy(StockData &stock);
-    bool               IsStockQualifiedForSell(StockData &stock);
-    bool               CheckHigherLow(StockData &stock);
-    bool               CheckLowerHigh(StockData &stock);
-    bool               CheckSMTDivergence(StockData &stock);
-    
-    // --- Métodos de CAN SLIM (fusionados) ---
-    bool               ApplyCANSLIMFilter(StockData &stock);
-    bool               CheckCurrentEarnings(StockData &stock);
-    bool               CheckAnnualEarnings(StockData &stock);
-    bool               CheckNewFactor(StockData &stock);
-    bool               CheckSupplyDemand(StockData &stock);
-    bool               CheckLeaderLaggard(StockData &stock);
-    bool               CheckInstitutionalSponsorship(StockData &stock);
-    bool               CheckMarketDirection();
-    
-    // --- Métodos de Options (fusionados) ---
-    bool               SelectCallOption(StockData &stock);
-    bool               SelectPutOption(StockData &stock);
-    double             CalculateOptionStrike(StockData &stock);
-    int                CalculateOptionExpiry(StockData &stock);
-    double             CalculateOptionDelta(StockData &stock);
-    double             CalculateOptionTheta(StockData &stock);
-    
-    // --- Métodos de Seasonal (fusionados) ---
-    bool               CheckSeasonalAlignment(StockData &stock);
-    ENUM_SEASONAL_BIAS GetSeasonalBias(string symbol);
-    bool               IsHighMagnitudePeriod();
-    bool               IsLowMagnitudePeriod();
-    double             GetHistoricalReturn(string symbol);
-    double             GetSeasonalWinRate(string symbol);
-    
-    // --- Métodos de Stock Trading ---
-    bool               InitializeStocks();
-    void               UpdateWatchlists();
-    bool               IsMarketDirectionFavorable();
-    bool               ValidateStockSignal(StockData &stock);
-    double             CalculateEntryLevel(StockData &stock);
-    double             CalculateStopLevel(StockData &stock);
-    double             CalculateTargetLevel(StockData &stock);
-    void               ExecuteStockTrade(StockData &stock, ENUM_BIAS bias);
-    void               UpdateStockStats(double pnl, bool win);
-    
-public:
-    // --- Constructor / Destructor ---
-    CStockTrader();
-    ~CStockTrader();
-    
-    // --- Inicialización ---
-    bool Init(CConfig* config, CUtils* utils, CDetector* detector,
-              CContext* context, CExecutor* executor, CRiskManager* riskManager,
-              CMultiAsset* multiAsset, CSeasonal* seasonal);
-    void Deinit();
-    
-    // --- Métodos Principales ---
-    void Analyze();
-    bool IsTradeAllowed();
-    bool IsMarketDirectionBullish() const { return m_state.isMarketDirectionBullish; }
-    bool IsMarketDirectionBearish() const { return m_state.isMarketDirectionBearish; }
-    int GetBuyWatchlistCount() const { return m_state.watchlist.buyCount; }
-    int GetSellWatchlistCount() const { return m_state.watchlist.sellCount; }
-    StockData GetBestBuyCandidate();
-    StockData GetBestSellCandidate();
-    void UpdateWatchlists();
-    bool IsCANSLIMQualified(StockData &stock);
-    bool IsSeasonalAligned(StockData &stock);
-    bool IsSMTDivergencePresent(StockData &stock);
-    void SelectOptions(StockData &stock);
-    Signal GetBestSignal();
-    
-    // --- Getters de sub-estructuras fusionadas ---
-    StockWatchlist GetWatchlist() const { return m_state.watchlist; }
-    CANSLIMData GetCANSLIMData() const { return m_canslim; }
-    OptionData GetOptionData() const { return m_option; }
-    StockSeasonalData GetSeasonalData() const { return m_seasonal; }
-    
-    // --- Reportes ---
-    string GetStateSummary();
-    string GetWatchlistReport();
-};
-```
-
----
-
-#### 3.12 Clase CMegaTrade (FUSIONADA) 🆕
-
-```cpp
-//+------------------------------------------------------------------+
-//| CMegaTrade - Modelo Mega Trades (v1.6 - FUSIONADO)               |
-//| INCLUYE: CQuarterlyShift, CTopDown, CDecisionTree, CScenarioPlan |
-//+------------------------------------------------------------------+
-class CMegaTrade {
-private:
-    // --- Referencias ---
-    CConfig*           m_config;
-    CUtils*            m_utils;
-    CMultiAsset*       m_multiAsset;
-    CDataRange*        m_dataRange;
-    CDetector*         m_detector;
-    CContext*          m_context;
-    CExecutor*         m_executor;
-    CRiskManager*      m_riskManager;
-    CMacroAnalyzer*    m_macroAnalyzer;
-    
-    // --- Sub-estructura: Quarterly Shift (fusionado) ---
-    struct QuarterlyShiftData {
-        bool isShiftDetected;
-        datetime shiftDate;
-        ENUM_BIAS shiftDirection;
-        double shiftLevel;
-        double shiftStrength;
-        string description;
-    };
-    
-    // --- Sub-estructura: Top-Down Analysis (fusionado) ---
-    struct TopDownData {
-        ENUM_BIAS macroBias;
-        ENUM_BIAS dxyBias;
-        ENUM_BIAS dataRangeBias;
-        ENUM_BIAS pdArrayBias;
-        ENUM_BIAS lowerTFBias;
-        ENUM_BIAS overallBias;
-        bool isAligned;
-        int alignmentScore;
-        string report;
-    };
-    
-    // --- Sub-estructura: Decision Tree (fusionado) ---
-    struct DecisionTreeNode {
-        string condition;
-        bool passed;
-        string reason;
-        double weight;
-        int nodeId;
-    };
-    
-    // --- Sub-estructura: Scenario Planning (fusionado) ---
-    struct ScenarioData {
-        ENUM_MEGA_SCENARIO scenario;  // Base/Bull/Bear
-        double entryLevel;
-        double stopLoss;
-        double takeProfit;
-        double rMultiple;
-        double probability;
-        string description;
-    };
-    
-    // --- Estado Mega Trade ---
-    struct MegaTradeState {
-        MegaTradeData currentTrade;
-        QuarterlyShiftData quarterlyShift;
-        TopDownData topDown;
-        DecisionTreeNode decisionTree[10];
-        ScenarioData scenarios[3];
-        bool isActive;
-        bool isDecisionTreePassed;
-        bool isScenarioPlanned;
-        double currentRMultiple;
-        double targetRMultiple;
-        double progressPercent;
-        ENUM_MEGA_SCENARIO activeScenario;
-        datetime tradeStart;
-        datetime projectedExit;
-        int tradesThisYear;
-        double totalPnlThisYear;
-        double winRate;
-        datetime lastUpdate;
-    };
-    
-    MegaTradeState     m_state;
-    bool               m_isActive;
-    int                m_maxTradesPerYear;
-    double             m_minRMultiple;
-    int                m_alignmentScoreMin;
-    
-    // --- Métodos de Quarterly Shift (fusionados) ---
-    bool               DetectQuarterlyShift();
-    bool               AnalyzeQuarterlyDataRanges();
-    bool               ConfirmQuarterlyShift();
-    ENUM_BIAS          DetermineShiftDirection();
-    double             CalculateShiftStrength();
-    datetime           FindShiftDate();
-    bool               IsQuarterlyShiftActive();
-    
-    // --- Métodos de Top-Down Analysis (fusionados) ---
-    bool               PerformTopDownAnalysis();
-    ENUM_BIAS          AnalyzeMacroBias();
-    ENUM_BIAS          AnalyzeDXYBias();
-    ENUM_BIAS          AnalyzeDataRangeBias();
-    ENUM_BIAS          AnalyzePDArrayBias();
-    ENUM_BIAS          AnalyzeLowerTFBias();
-    bool               IsTopDownAligned();
-    int                CalculateTopDownScore();
-    string             GenerateTopDownReport();
-    
-    // --- Métodos de Decision Tree (fusionados) ---
-    bool               RunDecisionTree(string symbol);
-    bool               CheckMacroAlignment();
-    bool               CheckQuarterlyShift();
-    bool               CheckPDArraysHTF();
-    bool               CheckRMultiple();
-    bool               CheckMultiAssetAlignment();
-    void               InitializeDecisionTreeNodes();
-    int                GetDecisionTreeScore();
-    string             GetDecisionTreeReport();
-    
-    // --- Métodos de Scenario Planning (fusionados) ---
-    void               PlanScenarios(string symbol);
-    ScenarioData       BuildBaseCase();
-    ScenarioData       BuildBullCase();
-    ScenarioData       BuildBearCase();
-    double             CalculateScenarioProbability(ENUM_MEGA_SCENARIO scenario);
-    double             CalculateScenarioEntry(ENUM_MEGA_SCENARIO scenario);
-    double             CalculateScenarioStop(ENUM_MEGA_SCENARIO scenario);
-    double             CalculateScenarioTarget(ENUM_MEGA_SCENARIO scenario);
-    string             GetScenarioDescription(ENUM_MEGA_SCENARIO scenario);
-    
-    // --- Métodos de Mega Trade ---
-    bool               InitializeMegaTrade();
-    void               UpdateMegaTradeStatus();
-    bool               IsMegaTradeQualified(string symbol);
-    bool               ValidateMegaTradeSignal(string symbol);
-    double             CalculateEntryLevel(string symbol);
-    double             CalculateStopLevel(string symbol);
-    double             CalculateTargetLevel(string symbol, int scenario);
-    void               ExecuteMegaTrade(string symbol, ENUM_BIAS bias);
-    void               ManageMegaTrade(ulong ticket);
-    void               UpdateProgress(ulong ticket);
-    bool               ShouldExitMegaTrade(ulong ticket);
-    void               CloseMegaTrade(ulong ticket);
-    void               UpdateStats(double pnl, bool win);
-    
-public:
-    // --- Constructor / Destructor ---
-    CMegaTrade();
-    ~CMegaTrade();
-    
-    // --- Inicialización ---
-    bool Init(CConfig* config, CUtils* utils, CMultiAsset* multiAsset,
-              CDataRange* dataRange, CDetector* detector, CContext* context,
-              CExecutor* executor, CRiskManager* riskManager, CMacroAnalyzer* macroAnalyzer);
-    void Deinit();
-    
-    // --- Métodos Principales ---
-    void Analyze();
-    bool IsTradeAllowed();
-    bool IsQualified(string symbol);
-    bool IsDecisionTreePassed() const { return m_state.isDecisionTreePassed; }
-    bool IsScenarioPlanned() const { return m_state.isScenarioPlanned; }
-    double GetCurrentRMultiple() const { return m_state.currentRMultiple; }
-    double GetTargetRMultiple() const { return m_state.targetRMultiple; }
-    double GetProgressPercent() const { return m_state.progressPercent; }
-    ENUM_MEGA_SCENARIO GetActiveScenario() const { return m_state.activeScenario; }
-    Signal GetBestSignal();
-    void PlanScenarios(string symbol);
-    void ExecuteBestScenario();
-    void ManageActiveTrade();
-    
-    // --- Getters de sub-estructuras fusionadas ---
-    QuarterlyShiftData GetQuarterlyShift() const { return m_state.quarterlyShift; }
-    TopDownData GetTopDownData() const { return m_state.topDown; }
-    DecisionTreeNode* GetDecisionTree() const { return m_state.decisionTree; }
-    ScenarioData GetScenario(ENUM_MEGA_SCENARIO scenario) const;
-    bool IsQuarterlyShiftDetected() const { return m_state.quarterlyShift.isShiftDetected; }
-    bool IsTopDownAligned() const { return m_state.topDown.isAligned; }
-    int GetTopDownAlignmentScore() const { return m_state.topDown.alignmentScore; }
-    int GetDecisionTreeScore();
-    string GetTopDownReport() const { return m_state.topDown.report; }
-    
-    // --- Reportes ---
-    string GetStateSummary();
-    string GetScenarioReport();
-    string GetProgressReport();
-};
-```
-
----
-
-#### 3.13 Clase CTradingPlan (FUSIONADA) 🆕
-
-```cpp
-//+------------------------------------------------------------------+
-//| CTradingPlan - Trading Plan (v1.6 - FUSIONADO)                   |
-//| INCLUYE: CDiscipline, CLossManager, CPsychology, CJournal        |
-//+------------------------------------------------------------------+
-class CTradingPlan {
-private:
-    // --- Referencias ---
-    CConfig*           m_config;
-    CUtils*            m_utils;
-    CLogger*           m_logger;
-    
-    // --- Sub-estructura: Discipline (fusionado) ---
-    struct DisciplineData {
-        double score;              // 0-100
-        int ruleViolations;
-        string lastViolation;
-        datetime lastViolationTime;
-        bool isDisciplined;
-        int consecutiveRuleAdherence;
-        datetime disciplineStart;
-    };
-    
-    // --- Sub-estructura: Loss Management (fusionado) ---
-    struct LossData {
-        double dailyLossLimit;
-        double weeklyLossLimit;
-        double monthlyLossLimit;
-        double currentDailyLoss;
-        double currentWeeklyLoss;
-        double currentMonthlyLoss;
-        bool isDailyLimitReached;
-        bool isWeeklyLimitReached;
-        bool isMonthlyLimitReached;
-        bool isCooldownActive;
-        int cooldownDaysRemaining;
-        int consecutiveLosses;
-        int consecutiveWins;
-        datetime cooldownStart;
-        datetime cooldownEnd;
-    };
-    
-    // --- Sub-estructura: Psychology (fusionado) ---
-    struct PsychologyData {
-        bool isFOMODetected;
-        bool isRevengeTradingDetected;
-        bool isOverconfidenceDetected;
-        bool isAnalysisParalysisDetected;
-        string currentEmotion;
-        double emotionScore;
-        int consecutiveEmotionTriggers;
-        datetime lastEmotionDetection;
-    };
-    
-    // --- Sub-estructura: Journal (fusionado) ---
-    struct JournalData {
-        JournalEntry entries[1000];
-        int entryCount;
-        int lastExportDay;
-        bool isBufferDirty;
-    };
-    
-    // --- Estado Trading Plan ---
-    struct TradingPlanState {
-        double dailyLossLimit;
-        double weeklyLossLimit;
-        double monthlyLossLimit;
-        double currentDailyLoss;
-        double currentWeeklyLoss;
-        double currentMonthlyLoss;
-        bool isDailyLimitReached;
-        bool isWeeklyLimitReached;
-        bool isMonthlyLimitReached;
-        bool isCooldownActive;
-        int cooldownDaysRemaining;
-        int consecutiveLosses;
-        int consecutiveWins;
-        double disciplineScore;
-        char performanceGrade;
-        datetime lastUpdate;
-    };
-    
-    TradingPlanState   m_state;
-    DisciplineData     m_discipline;
-    LossData           m_lossData;
-    PsychologyData     m_psychology;
-    JournalData        m_journal;
-    bool               m_isActive;
-    double             m_dailyLossPct;
-    double             m_weeklyLossPct;
-    double             m_monthlyLossPct;
-    int                m_cooldownLosses;
-    int                m_cooldownDays;
-    
-    // --- Métodos de Discipline (fusionados) ---
-    void               UpdateDisciplineScore();
-    void               CheckRuleViolations();
-    void               RecordRuleViolation(string rule, string description);
-    int                CalculateRuleAdherence();
-    bool               IsRuleViolated(string rule);
-    string             GetDisciplineReport();
-    
-    // --- Métodos de Loss Management (fusionados) ---
-    void               UpdateLossLimits();
-    void               CheckLossLimits();
-    void               ApplyCooldown();
-    void               CheckCooldownStatus();
-    bool               IsLossLimitReached(double currentLoss, double limit);
-    double             CalculateDailyLoss();
-    double             CalculateWeeklyLoss();
-    double             CalculateMonthlyLoss();
-    void               ResetDailyCounters();
-    void               ResetWeeklyCounters();
-    void               ResetMonthlyCounters();
-    string             GetLossReport();
-    
-    // --- Métodos de Psychology (fusionados) ---
-    bool               IsFOMODetected();
-    bool               IsRevengeTradingDetected();
-    bool               IsOverconfidenceDetected();
-    bool               IsAnalysisParalysisDetected();
-    void               DetectPsychologyIssues();
-    string             GetCurrentEmotion();
-    double             CalculateEmotionScore();
-    void               ResetPsychologyTriggers();
-    string             GetPsychologyReport();
-    
-    // --- Métodos de Journal (fusionados) ---
-    void               AddJournalEntry(string symbol, string type, string description, double pnl, string emotion);
-    void               FlushJournalBuffer();  // Optimización: escritura en lote
-    void               ExportJournal();
-    string             GetJournalSummary();
-    string             GetJournalEntry(int index);
-    int                GetJournalEntryCount() const;
-    bool               IsJournalBufferDirty() const;
-    
-    // --- Métodos de Trading Plan ---
-    bool               InitializePlan();
-    void               UpdatePerformanceGrade();
-    void               ExecuteDailyRoutine();
-    void               ExecuteWeeklyRoutine();
-    void               ExecuteMonthlyRoutine();
-    bool               ShouldCooldown();
-    
-public:
-    // --- Constructor / Destructor ---
-    CTradingPlan();
-    ~CTradingPlan();
-    
-    // --- Inicialización ---
-    bool Init(CConfig* config, CUtils* utils, CLogger* logger);
-    void Deinit();
-    
-    // --- Métodos Principales ---
-    void Analyze();
-    void Update();
-    bool IsTradingAllowed();
-    bool IsDailyLimitReached() const { return m_state.isDailyLimitReached; }
-    bool IsWeeklyLimitReached() const { return m_state.isWeeklyLimitReached; }
-    bool IsMonthlyLimitReached() const { return m_state.isMonthlyLimitReached; }
-    bool IsCooldownActive() const { return m_state.isCooldownActive; }
-    int GetCooldownDaysRemaining() const { return m_state.cooldownDaysRemaining; }
-    double GetDisciplineScore() const { return m_state.disciplineScore; }
-    char GetPerformanceGrade() const { return m_state.performanceGrade; }
-    void RecordLoss(double loss);
-    void RecordWin(double win);
-    void ResetCounters();
-    void AddJournalEntry(string symbol, string type, string description, double pnl, string emotion);
-    void ExecuteDailyRoutine();
-    void ExecuteWeeklyRoutine();
-    void ExecuteMonthlyRoutine();
-    bool ShouldCooldown();
-    void FlushJournal();  // Forzar escritura del buffer
-    
-    // --- Getters de sub-estructuras fusionadas ---
-    DisciplineData GetDisciplineData() const { return m_discipline; }
-    LossData GetLossData() const { return m_lossData; }
-    PsychologyData GetPsychologyData() const { return m_psychology; }
-    JournalData GetJournalData() const { return m_journal; }
-    string GetCurrentEmotion() const { return m_psychology.currentEmotion; }
-    bool IsFOMOActive() const { return m_psychology.isFOMODetected; }
-    bool IsRevengeActive() const { return m_psychology.isRevengeTradingDetected; }
-    bool IsOverconfidenceActive() const { return m_psychology.isOverconfidenceDetected; }
-    
-    // --- Reportes ---
-    string GetStateSummary();
-    string GetPerformanceReport();
-    string GetJournalSummary();
-    string GetPsychologyReport();
-    string GetDisciplineReport();
-    string GetLossReport();
-};
-```
-
----
-
-### 4. ESTRUCTURAS DE DATOS PRINCIPALES (VERSIÓN 1.6 - COMPLETAS)
-
-#### 4.1 Enumeraciones (Versión 1.6 - Completas)
-
-```cpp
-//+------------------------------------------------------------------+
-//| Enumeraciones Globales (v1.6)                                    |
+//| Enumeraciones Globales (v1.7)                                    |
 //+------------------------------------------------------------------+
 
 enum ENUM_EA_STATE {
-    STATE_INIT,
-    STATE_IDLE,
-    STATE_MACRO_ANALYSIS,
-    STATE_MULTI_ASSET_ANALYSIS,
-    STATE_STOCK_TRADING_ANALYSIS,
-    STATE_MEGA_TRADE_ANALYSIS,
-    STATE_TRADING_PLAN_ANALYSIS,
-    STATE_SWING_FILTER_ANALYSIS,
-    STATE_SHORT_TERM_ANALYSIS,
-    STATE_OSOK_ANALYSIS,
-    STATE_DAY_TRADING_ANALYSIS,
-    STATE_SCALPING_ANALYSIS,
-    STATE_DATA_RANGE_ANALYSIS,
-    STATE_SEASONAL_ANALYSIS,
-    STATE_MODEL_SELECTION,
-    STATE_ANALYZING,
-    STATE_SIGNAL,
-    STATE_EXECUTING,
-    STATE_IN_TRADE,
-    STATE_CLOSING,
-    STATE_LOGGING,
-    STATE_PAUSED,
-    STATE_SHUTDOWN
+    STATE_INIT,                          // Inicializando
+    STATE_IDLE,                          // En espera
+    STATE_MACRO_ANALYSIS,                // Análisis macro
+    STATE_MULTI_ASSET_ANALYSIS,          // Análisis multi-asset
+    STATE_STOCK_TRADING_ANALYSIS,        // Análisis stock trading
+    STATE_MEGA_TRADE_ANALYSIS,           // Análisis mega trades
+    STATE_TRADING_PLAN_ANALYSIS,         // Análisis trading plan
+    STATE_BONUS_HUNTER_ANALYSIS,         // Análisis bonus hunter
+    STATE_SWING_FILTER_ANALYSIS,         // Análisis filtros swing
+    STATE_SHORT_TERM_ANALYSIS,           // Análisis short-term
+    STATE_OSOK_ANALYSIS,                 // Análisis OSOK
+    STATE_DAY_TRADING_ANALYSIS,          // Análisis day trading
+    STATE_SCALPING_ANALYSIS,             // Análisis scalping
+    STATE_DATA_RANGE_ANALYSIS,           // Análisis data ranges
+    STATE_SEASONAL_ANALYSIS,             // Análisis seasonal
+    STATE_MODEL_SELECTION,               // Selección de modelo
+    STATE_ANALYZING,                     // Analizando
+    STATE_SIGNAL,                        // Señal detectada
+    STATE_EXECUTING,                     // Ejecutando
+    STATE_IN_TRADE,                      // En operación
+    STATE_CLOSING,                       // Cerrando
+    STATE_LOGGING,                       // Registrando
+    STATE_PAUSED,                        // Pausado
+    STATE_SHUTDOWN                       // Apagando
 };
 
 enum ENUM_BIAS {
-    BIAS_BULLISH,
-    BIAS_BEARISH,
-    BIAS_NEUTRAL
+    BIAS_BULLISH,                        // Alcista
+    BIAS_BEARISH,                        // Bajista
+    BIAS_NEUTRAL                         // Neutral
 };
 
 enum ENUM_MARKET_STATE {
-    STATE_EXPANSION,
-    STATE_RETRACEMENT,
-    STATE_REVERSAL,
-    STATE_CONSOLIDATION
+    STATE_EXPANSION,                     // Expansión
+    STATE_RETRACEMENT,                   // Retracement
+    STATE_REVERSAL,                      // Reversión
+    STATE_CONSOLIDATION                  // Consolidación
 };
 
 enum ENUM_MARKET_ZONE {
-    ZONE_PREMIUM,
-    ZONE_DISCOUNT,
-    ZONE_EQUILIBRIUM
+    ZONE_PREMIUM,                        // Zona de prima (sobrecompra)
+    ZONE_DISCOUNT,                       // Zona de descuento (sobreventa)
+    ZONE_EQUILIBRIUM                     // Equilibrio (50%)
 };
 
 enum ENUM_TRADING_MODEL {
-    MODEL_POSITION,
-    MODEL_SWING,
-    MODEL_SHORT_TERM,
-    MODEL_OSOK,
-    MODEL_DAY_TRADING,
-    MODEL_SCALPING,
-    MODEL_MEGA_TRADE,
-    MODEL_STOCK_TRADING
+    MODEL_POSITION,                      // Position Trading
+    MODEL_SWING,                         // Swing Trading
+    MODEL_SHORT_TERM,                    // Short-Term Trading
+    MODEL_OSOK,                          // One Shot One Kill
+    MODEL_DAY_TRADING,                   // Day Trading
+    MODEL_SCALPING,                      // Scalping
+    MODEL_MEGA_TRADE,                    // Mega Trade
+    MODEL_STOCK_TRADING,                 // Stock Trading
+    MODEL_BONUS_HUNTER                   // Bonus Hunter
 };
 
 enum ENUM_ENTRY_TYPE {
-    ENTRY_BUY_STOP,
-    ENTRY_SELL_STOP,
-    ENTRY_BUY_LIMIT,
-    ENTRY_SELL_LIMIT,
-    ENTRY_HYBRID,
-    ENTRY_MARKET
+    ENTRY_BUY_STOP,                      // Buy Stop
+    ENTRY_SELL_STOP,                     // Sell Stop
+    ENTRY_BUY_LIMIT,                     // Buy Limit
+    ENTRY_SELL_LIMIT,                    // Sell Limit
+    ENTRY_HYBRID,                        // Híbrida (Stop + Limit)
+    ENTRY_MARKET                         // Market
 };
 
 enum ENUM_PD_ARRAY {
-    PD_OLD_HIGH_LOW,
-    PD_REJECTION_BLOCK,
-    PD_ORDER_BLOCK,
-    PD_FVG,
-    PD_LIQUIDITY_VOID,
-    PD_BREAKER,
-    PD_MITIGATION_BLOCK
+    PD_OLD_HIGH_LOW,                     // 1. Old High/Low
+    PD_REJECTION_BLOCK,                  // 2. Rejection Block
+    PD_ORDER_BLOCK,                      // 3. Order Block
+    PD_FVG,                              // 4. FVG
+    PD_LIQUIDITY_VOID,                   // 5. Liquidity Void
+    PD_BREAKER,                          // 6. Breaker
+    PD_MITIGATION_BLOCK                  // 7. Mitigation Block
 };
 
 enum ENUM_WEEKLY_PROFILE {
-    PROFILE_CLASSIC_TUESDAY_LOW,
-    PROFILE_CLASSIC_TUESDAY_HIGH,
-    PROFILE_WEDNESDAY_LOW,
-    PROFILE_WEDNESDAY_HIGH,
-    PROFILE_THURSDAY_REVERSAL_BULLISH,
-    PROFILE_THURSDAY_REVERSAL_BEARISH,
-    PROFILE_MIDWEEK_RALLY,
-    PROFILE_MIDWEEK_DECLINE,
-    PROFILE_SEEK_DESTROY_BULLISH,
-    PROFILE_SEEK_DESTROY_BEARISH,
-    PROFILE_WEDNESDAY_WEEKLY_REVERSAL_BULLISH,
-    PROFILE_WEDNESDAY_WEEKLY_REVERSAL_BEARISH,
-    PROFILE_UNKNOWN
+    PROFILE_CLASSIC_TUESDAY_LOW,                // Martes Low
+    PROFILE_CLASSIC_TUESDAY_HIGH,               // Martes High
+    PROFILE_WEDNESDAY_LOW,                      // Miércoles Low
+    PROFILE_WEDNESDAY_HIGH,                     // Miércoles High
+    PROFILE_THURSDAY_REVERSAL_BULLISH,          // Jueves Reversal Bullish
+    PROFILE_THURSDAY_REVERSAL_BEARISH,          // Jueves Reversal Bearish
+    PROFILE_MIDWEEK_RALLY,                      // Midweek Rally
+    PROFILE_MIDWEEK_DECLINE,                    // Midweek Decline
+    PROFILE_SEEK_DESTROY_BULLISH,               // Seek & Destroy Bullish
+    PROFILE_SEEK_DESTROY_BEARISH,               // Seek & Destroy Bearish
+    PROFILE_WEDNESDAY_WEEKLY_REVERSAL_BULLISH,  // Miércoles Reversal Bullish
+    PROFILE_WEDNESDAY_WEEKLY_REVERSAL_BEARISH,  // Miércoles Reversal Bearish
+    PROFILE_UNKNOWN                             // Desconocido
 };
 
 enum ENUM_MM_TEMPLATE {
@@ -2218,165 +330,194 @@ enum ENUM_MM_TEMPLATE {
 };
 
 enum ENUM_OSOK_STATUS {
-    OSOK_INACTIVE,
-    OSOK_ANALYZING,
-    OSOK_QUALIFIED,
-    OSOK_NOT_QUALIFIED,
-    OSOK_PROJECTION_SET,
-    OSOK_TRADE_EXECUTED,
-    OSOK_TARGET_HIT,
-    OSOK_STOP_HIT,
-    OSOK_EXPIRED
+    OSOK_INACTIVE,                       // Inactivo
+    OSOK_ANALYZING,                      // Analizando
+    OSOK_QUALIFIED,                      // Calificado
+    OSOK_NOT_QUALIFIED,                  // No calificado
+    OSOK_PROJECTION_SET,                 // Proyección establecida
+    OSOK_TRADE_EXECUTED,                 // Trade ejecutado
+    OSOK_TARGET_HIT,                     // Objetivo alcanzado
+    OSOK_STOP_HIT,                       // Stop alcanzado
+    OSOK_EXPIRED                         // Expirado
 };
 
 enum ENUM_PROJECTION_METHOD {
-    METHOD_FIB_CONVERGENCE,
-    METHOD_PD_ARRAY_ONLY,
-    METHOD_BLENDED
+    METHOD_FIB_CONVERGENCE,              // Convergencia Fibonacci
+    METHOD_PD_ARRAY_ONLY,                // Solo PD Arrays
+    METHOD_BLENDED                       // Mixto
 };
 
 enum ENUM_KILL_ZONE {
-    KZ_ASIAN,
-    KZ_LONDON,
-    KZ_NEW_YORK,
-    KZ_LONDON_CLOSE,
-    KZ_NONE
+    KZ_ASIAN,                            // Asiática (6-9 PM NY)
+    KZ_LONDON,                           // London (1-5 AM NY)
+    KZ_NEW_YORK,                         // New York (7-10 AM NY)
+    KZ_LONDON_CLOSE,                     // London Close (10 AM-12 PM NY)
+    KZ_NONE                              // Ninguna
 };
 
-// --- Enumeraciones de Mes 8 (Day Trading) ---
+//--- Enumeraciones de Mes 8 (Day Trading) ---
 enum ENUM_INTRADAY_PROFILE {
-    PROFILE_NORMAL_BUY,
-    PROFILE_NORMAL_SELL,
-    PROFILE_DELAYED_PROTRACTION_BUY,
-    PROFILE_DELAYED_PROTRACTION_SELL,
-    PROFILE_UNKNOWN
+    PROFILE_NORMAL_BUY,                  // Normal Buy
+    PROFILE_NORMAL_SELL,                 // Normal Sell
+    PROFILE_DELAYED_PROTRACTION_BUY,     // Delayed Protraction Buy
+    PROFILE_DELAYED_PROTRACTION_SELL,    // Delayed Protraction Sell
+    INTRADAY_PROFILE_UNKNOWN             // Desconocido
 };
 
 enum ENUM_REVERSAL_TYPE {
-    REVERSAL_PREV_DAY_HIGH,
-    REVERSAL_PREV_DAY_LOW,
-    REVERSAL_INTRA_WEEK_HIGH,
-    REVERSAL_INTRA_WEEK_LOW,
-    REVERSAL_INTERMEDIATE_HIGH,
-    REVERSAL_INTERMEDIATE_LOW,
-    REVERSAL_NY_SESSION,
-    REVERSAL_LONDON_CLOSE,
-    REVERSAL_CME_OPEN,
-    REVERSAL_UNKNOWN
+    REVERSAL_PREV_DAY_HIGH,              // High del día anterior
+    REVERSAL_PREV_DAY_LOW,               // Low del día anterior
+    REVERSAL_INTRA_WEEK_HIGH,            // High de la semana
+    REVERSAL_INTRA_WEEK_LOW,             // Low de la semana
+    REVERSAL_INTERMEDIATE_HIGH,          // High intermedio
+    REVERSAL_INTERMEDIATE_LOW,           // Low intermedio
+    REVERSAL_NY_SESSION,                 // Sesión NY
+    REVERSAL_LONDON_CLOSE,               // Cierre London
+    REVERSAL_CME_OPEN,                   // Apertura CME
+    REVERSAL_UNKNOWN                     // Desconocido
 };
 
 enum ENUM_DAY_STATUS {
-    DAY_INACTIVE,
-    DAY_ANALYZING,
-    DAY_QUALIFIED,
-    DAY_IN_TRADE,
-    DAY_TARGET_HIT,
-    DAY_STOP_HIT,
-    DAY_PAUSED,
-    DAY_COMPLETED
+    DAY_INACTIVE,                        // Inactivo
+    DAY_ANALYZING,                       // Analizando
+    DAY_QUALIFIED,                       // Calificado
+    DAY_IN_TRADE,                        // En operación
+    DAY_TARGET_HIT,                      // Objetivo alcanzado
+    DAY_STOP_HIT,                        // Stop alcanzado
+    DAY_PAUSED,                          // Pausado
+    DAY_COMPLETED                        // Completado
 };
 
-// --- Enumeraciones de Mes 9 (Scalping) ---
+//--- Enumeraciones de Mes 9 (Scalping) ---
 enum ENUM_PRICE_ENGINE_MODEL {
-    MODEL_OFFSET_ACCUMULATION,
-    MODEL_RE_ACCUMULATION,
-    MODEL_OFFSET_DISTRIBUTION,
-    MODEL_REDISTRIBUTION,
-    MODEL_UNKNOWN
+    MODEL_OFFSET_ACCUMULATION,           // Offset Accumulation (buy)
+    MODEL_RE_ACCUMULATION,               // Re-Accumulation (buy)
+    MODEL_OFFSET_DISTRIBUTION,           // Offset Distribution (sell)
+    MODEL_REDISTRIBUTION,                // Redistribution (sell)
+    MODEL_UNKNOWN                        // Desconocido
 };
 
 enum ENUM_SCALP_STATUS {
-    SCALP_INACTIVE,
-    SCALP_ANALYZING,
-    SCALP_QUALIFIED,
-    SCALP_IN_TRADE,
-    SCALP_TARGET_HIT,
-    SCALP_STOP_HIT,
-    SCALP_ADR_EXIT,
-    SCALP_PAUSED
+    SCALP_INACTIVE,                      // Inactivo
+    SCALP_ANALYZING,                     // Analizando
+    SCALP_QUALIFIED,                     // Calificado
+    SCALP_IN_TRADE,                      // En operación
+    SCALP_TARGET_HIT,                    // Objetivo alcanzado
+    SCALP_STOP_HIT,                      // Stop alcanzado
+    SCALP_ADR_EXIT,                      // Salida por ADR
+    SCALP_PAUSED                         // Pausado
 };
 
-// --- Enumeraciones de Mes 10 (Multi-Asset, Stocks) ---
+//--- Enumeraciones de Mes 10 (Multi-Asset, Stocks) ---
 enum ENUM_ASSET_CLASS {
-    ASSET_BONDS,
-    ASSET_COMMODITIES,
-    ASSET_CURRENCIES,
-    ASSET_STOCKS
+    ASSET_BONDS,                         // Bonos
+    ASSET_COMMODITIES,                   // Materias Primas
+    ASSET_CURRENCIES,                    // Divisas
+    ASSET_STOCKS                         // Acciones
 };
 
 enum ENUM_RISK_ENVIRONMENT {
-    RISK_ON,
-    RISK_OFF,
-    RISK_NEUTRAL
+    RISK_ON,                             // Risk On
+    RISK_OFF,                            // Risk Off
+    RISK_NEUTRAL                         // Neutral
 };
 
 enum ENUM_INDEX_PATTERN {
-    PATTERN_NORMAL_AM_TREND_PM_CONT,
-    PATTERN_NORMAL_AM_TREND_PM_REV,
-    PATTERN_OR_BREAKOUT_AM_TREND,
-    PATTERN_OR_BREAKOUT_AM_REV,
-    PATTERN_AM_CONSOL_PM_BREAKOUT,
-    PATTERN_AM_CONSOL_PM_REV,
-    PATTERN_OR_RANGE_BOUND,
-    PATTERN_OR_EXTENDED,
-    PATTERN_UNKNOWN
+    PATTERN_NORMAL_AM_TREND_PM_CONT,     // AM Trend + PM Continuation
+    PATTERN_NORMAL_AM_TREND_PM_REV,      // AM Trend + PM Reversal
+    PATTERN_OR_BREAKOUT_AM_TREND,        // OR Breakout + AM Trend
+    PATTERN_OR_BREAKOUT_AM_REV,          // OR Breakout + AM Reversal
+    PATTERN_AM_CONSOL_PM_BREAKOUT,       // AM Consolidation + PM Breakout
+    PATTERN_AM_CONSOL_PM_REV,            // AM Consolidation + PM Reversal
+    PATTERN_OR_RANGE_BOUND,              // OR Range-Bound
+    PATTERN_OR_EXTENDED,                 // OR Extended
+    PATTERN_UNKNOWN                      // Desconocido
 };
 
 enum ENUM_SEASONAL_BIAS {
-    SEASONAL_BULLISH,
-    SEASONAL_BEARISH,
-    SEASONAL_NEUTRAL
+    SEASONAL_BULLISH,                    // Alcista
+    SEASONAL_BEARISH,                    // Bajista
+    SEASONAL_NEUTRAL                     // Neutral
 };
 
 enum ENUM_STOCK_STATUS {
-    STOCK_INACTIVE,
-    STOCK_ANALYZING,
-    STOCK_WATCHLIST_BUY,
-    STOCK_WATCHLIST_SELL,
-    STOCK_QUALIFIED,
-    STOCK_IN_TRADE,
-    STOCK_TARGET_HIT,
-    STOCK_STOP_HIT
+    STOCK_INACTIVE,                      // Inactivo
+    STOCK_ANALYZING,                     // Analizando
+    STOCK_WATCHLIST_BUY,                 // Watchlist de compra
+    STOCK_WATCHLIST_SELL,                // Watchlist de venta
+    STOCK_QUALIFIED,                     // Calificado
+    STOCK_IN_TRADE,                      // En operación
+    STOCK_TARGET_HIT,                    // Objetivo alcanzado
+    STOCK_STOP_HIT                       // Stop alcanzado
 };
 
-// --- Enumeraciones de Mes 11 (Mega Trades) ---
+//--- Enumeraciones de Mes 11 (Mega Trades) ---
 enum ENUM_MEGA_SCENARIO {
-    SCENARIO_BASE,
-    SCENARIO_BULL,
-    SCENARIO_BEAR
+    SCENARIO_BASE,                       // Caso base
+    SCENARIO_BULL,                       // Caso alcista
+    SCENARIO_BEAR                        // Caso bajista
 };
 
 enum ENUM_MEGA_STATUS {
-    MEGA_INACTIVE,
-    MEGA_ANALYZING,
-    MEGA_QUALIFIED,
-    MEGA_DECISION_TREE_PASSED,
-    MEGA_SCENARIOS_PLANNED,
-    MEGA_IN_TRADE,
-    MEGA_TARGET_HIT,
-    MEGA_STOP_HIT,
-    MEGA_EXPIRED
+    MEGA_INACTIVE,                       // Inactivo
+    MEGA_ANALYZING,                      // Analizando
+    MEGA_QUALIFIED,                      // Calificado
+    MEGA_DECISION_TREE_PASSED,           // Árbol de decisión aprobado
+    MEGA_SCENARIOS_PLANNED,              // Escenarios planificados
+    MEGA_IN_TRADE,                       // En operación
+    MEGA_TARGET_HIT,                     // Objetivo alcanzado
+    MEGA_STOP_HIT,                       // Stop alcanzado
+    MEGA_EXPIRED                         // Expirado
 };
 
-// --- Enumeraciones de Mes 12 (Trading Plan) ---
+//--- Enumeraciones de Mes 12 (Trading Plan) ---
 enum ENUM_NEWS_IMPACT {
-    IMPACT_LOW,
-    IMPACT_MEDIUM,
-    IMPACT_HIGH,
-    IMPACT_EXTREME
+    IMPACT_LOW,                          // Bajo
+    IMPACT_MEDIUM,                       // Medio
+    IMPACT_HIGH,                         // Alto
+    IMPACT_EXTREME                       // Extremo
+};
+
+//--- Enumeraciones de Bonus Hunter 🆕 ---
+enum ENUM_BONUS_STATUS {
+    BONUS_INACTIVE,                      // Inactivo
+    BONUS_SCANNING,                      // Escaneando
+    BONUS_QUALIFIED,                     // Calificado
+    BONUS_IN_TRADE,                      // En operación
+    BONUS_TARGET_HIT,                    // Objetivo alcanzado
+    BONUS_STOP_HIT,                      // Stop alcanzado
+    BONUS_COMPLETED,                     // Completado (bono liberado)
+    BONUS_FAILED                         // Fallido
+};
+
+//--- Enumeraciones de Licencia ---
+enum ENUM_LICENSE_TYPE {
+    LIC_TYPE_NONE,                       // Sin licencia
+    LIC_TYPE_DEMO,                       // Licencia de prueba (30 días)
+    LIC_TYPE_PERSONAL,                   // Licencia personal (1 usuario)
+    LIC_TYPE_COMMERCIAL                  // Licencia comercial (múltiples cuentas)
+};
+
+//--- Niveles de logging ---
+enum ENUM_LOG_LEVEL {
+    LOG_ERROR,                           // Solo errores
+    LOG_WARNING,                         // Errores y advertencias
+    LOG_INFO,                            // Información general
+    LOG_DEBUG,                           // Depuración
+    LOG_TRACE                            // Traza completa
 };
 ```
 
 ---
 
-#### 4.2 Estructuras de Datos (Versión 1.6 - Completas)
+#### 4.2 Estructuras de Datos (Versión 1.7 - Completas)
 
 ```cpp
 //+------------------------------------------------------------------+
-//| Estructuras de Datos (v1.6 - Completas)                          |
+//| Estructuras de Datos (v1.7 - Completas)                          |
 //+------------------------------------------------------------------+
 
-// --- Estructuras Básicas ---
+//--- Estructuras Básicas ---
 struct OrderBlock {
     string symbol;
     ENUM_TIMEFRAMES tf;
@@ -2623,11 +764,10 @@ struct Signal {
     string setupType;
     string reason;
     datetime signalTime;
-    PDArray pdArray;
     bool isConfirmed;
 };
 
-// --- Estructuras de Day Trading ---
+//--- Estructuras de Day Trading ---
 struct DayTradingState {
     datetime dayStart;
     datetime dayEnd;
@@ -2647,7 +787,7 @@ struct DayTradingState {
     double dailyPipsTarget;
 };
 
-// --- Estructuras de Multi-Asset ---
+//--- Estructuras de Multi-Asset ---
 struct AssetClassState {
     string className;
     ENUM_BIAS bias;
@@ -2674,7 +814,7 @@ struct MultiAssetData {
     datetime lastUpdate;
 };
 
-// --- Estructuras de COT Extended ---
+//--- Estructuras de COT Extended ---
 struct COTDetailedData {
     string symbol;
     double commercialNetPosition;
@@ -2691,7 +831,7 @@ struct COTDetailedData {
     datetime lastUpdate;
 };
 
-// --- Estructuras de Relative Strength ---
+//--- Estructuras de Relative Strength ---
 struct RelativeStrengthData {
     string symbol;
     double strengthScore;
@@ -2708,7 +848,7 @@ struct RelativeStrengthData {
     datetime lastUpdate;
 };
 
-// --- Estructuras de Premium vs Carrying Charge ---
+//--- Estructuras de Premium vs Carrying Charge ---
 struct PremiumCarryData {
     string symbol;
     double nearbyPrice;
@@ -2723,7 +863,7 @@ struct PremiumCarryData {
     datetime lastUpdate;
 };
 
-// --- Estructuras de Open Interest Extended ---
+//--- Estructuras de Open Interest Extended ---
 struct OpenInterestDetailedData {
     string symbol;
     double currentOI;
@@ -2740,7 +880,7 @@ struct OpenInterestDetailedData {
     datetime lastUpdate;
 };
 
-// --- Estructuras de Stock Trading ---
+//--- Estructuras de Stock Trading ---
 struct StockData {
     string symbol;
     double currentEarningsGrowth;
@@ -2764,7 +904,7 @@ struct StockData {
     datetime lastUpdate;
 };
 
-// --- Estructuras de Mega Trades ---
+//--- Estructuras de Mega Trades ---
 struct MegaTradeData {
     string symbol;
     datetime entryDate;
@@ -2785,7 +925,7 @@ struct MegaTradeData {
     datetime lastUpdate;
 };
 
-// --- Estructuras de Trading Plan ---
+//--- Estructuras de Trading Plan ---
 struct TradingPlanData {
     double dailyLossLimit;
     double weeklyLossLimit;
@@ -2817,7 +957,7 @@ struct JournalEntry {
     string ruleViolated;
 };
 
-// --- Estructuras de Bond Trading ---
+//--- Estructuras de Bond Trading ---
 struct BondData {
     string symbol;
     double openingRangeHigh;
@@ -2837,7 +977,7 @@ struct BondData {
     datetime lastUpdate;
 };
 
-// --- Estructuras de Index Trading ---
+//--- Estructuras de Index Trading ---
 struct IndexData {
     string symbol;
     double openingRangeHigh;
@@ -2856,7 +996,32 @@ struct IndexData {
     datetime lastUpdate;
 };
 
-// --- Estructuras Generales ---
+//--- Estructuras de Bonus Hunter 🆕 ---
+struct BonusHunterData {
+    bool isActive;
+    double totalVolume;
+    double requiredVolume;
+    double currentProfit;
+    double minProfitRequired;
+    int tradesCount;
+    int maxTrades;
+    datetime startDate;
+    datetime expiryDate;
+    ENUM_BONUS_STATUS status;
+};
+
+struct VolumeTrackerData {
+    double dailyVolume;
+    double weeklyVolume;
+    double monthlyVolume;
+    double totalVolume;
+    int dailyTrades;
+    int weeklyTrades;
+    int monthlyTrades;
+    datetime lastUpdate;
+};
+
+//--- Estructuras Generales ---
 struct DataRange {
     double range20;
     double range40;
@@ -2936,64 +1101,73 @@ struct Statistics {
 
 ---
 
-### 5. PLAN DE IMPLEMENTACIÓN POR FASES (VERSIÓN 1.6 - COMPLETO)
+### 5. PLAN DE IMPLEMENTACIÓN POR FASES (VERSIÓN 1.7 - COMPLETO)
 
-| Fase        | Dominio     | Módulos                                                          | Duración Estimada | Entregable                                              |
-| :---        | :---        | :---                                                             | :---              | :---                                                    |
-| **Fase 01** | Core        | CConfig, CUtils, CConstants                                      | 1 semana  | Base del proyecto                                               |
-| **Fase 02** | Core        | CLogger, CLicense, CPanel                                        | 1 semana  | Módulos de soporte                                              |
-| **Fase 03** | Analysis    | CContext, CDetector (básico)                                     | 2 semanas | Análisis básico                                                 |
-| **Fase 04** | Analysis    | CDetector (avanzado)                                             | 2 semanas | Detección completa                                              |
-| **Fase 05** | Execution   | CRiskManager, CExecutor                                          | 2 semanas | Ejecución y gestión                                             |
-| **Fase 06** | Core        | CMultiSymbol, CHunterIPDA                                        | 2 semanas | Integración completa                                            |
-| **Fase 07** | -           | Pruebas y optimización                                           | 2 semanas | EA funcional                                                    |
-| **Fase 08** | Analysis    | CMacroAnalyzer, CDataRange                                       | 2 semanas | Análisis macro y data ranges                                    |
-| **Fase 09** | Analysis    | CSeasonal, CEntryManager                                         | 2 semanas | Seasonal y técnicas de entrada                                  |
-| **Fase 10** | Models      | CSwingFilter, CCOTAnalyzer, COIAnalyzer                          | 2 semanas | Filtros de swing trading                                        |
-| **Fase 11** | Models      | CHallmarkAnalyzer, CVolatility                                   | 2 semanas | 8 Hallmarks y volatilidad                                       |
-| **Fase 12** | Models      | CSwingManager                                                    | 1 semana  | Gestión de posiciones de swing                                  |
-| **Fase 13** | Models      | CShortTerm, CWeeklyRange                                         | 2 semanas | Short-Term Trading                                              |
-| **Fase 14** | Models      | CMMManipulation, CIntraWeekReversal                              | 2 semanas | MM Manipulation y reversiones                                   |
-| **Fase 15** | Models      | COSOKAnalyzer                                                    | 2 semanas | One Shot One Kill                                               |
-| **Fase 16** | Models      | CDayTrading (FUSIONADO)                                          | 2 semanas | Day Trading (incluye intraday profiles y market reversals)      |
-| **Fase 17** | TradingPlan | CNewsEvent                                                       | 1 semana  | Eventos de mercado                                              |
-| **Fase 18** | Models      | CScalping (FUSIONADO)                                            | 2 semanas | Scalping (incluye Price Engine, Asian Turtle Soup, ADR Exit)    |
-| **Fase 19** | Analysis    | CMultiAsset, CAssetClass, CIntermarket, CRiskOnOff, CCorrelation | 2 semanas | Multi-Asset Analysis                                            |
-| **Fase 20** | Models      | CStockTrader (FUSIONADO)                                         | 2 semanas | Stock Trading (incluye Watchlists, CAN SLIM, Options, Seasonal) |
-| **Fase 21** | Analysis    | CCOExtended, CRelStrength, CPremiumCarry, COIExtended            | 2 semanas | Análisis Extendido                                              |
-| **Fase 22** | Models      | CMegaTrade (FUSIONADO)                                           | 3 semanas | Mega Trades Framework (incluye Quarterly Shift, Top-Down, Decision Tree, Scenarios)|
-| **Fase 23** | TradingPlan | CTradingPlan (FUSIONADO)                                         | 2 semanas | Trading Plan (incluye Discipline, Loss Manager, Psychology, Journal) |
-| **Fase 24** | -           | Pruebas de integración finales                                   | 2 semanas | EA completo                                                          |
-| **TOTAL**   |             |                                                                  | **41 semanas (10 meses)**                                                        |
-
----
-
-## ✅ DOCUMENTO DE ARQUITECTURA - COMPLETO (VERSIÓN 1.6)
-
-| Sección                                       | Estado                                                   |
-| 1. Visión General                             | ✅ COMPLETO                                             |
-| 2. Arquitectura de Componentes                | ✅ COMPLETO (5 dominios, 31 clases)                     |
-| 3. Diagrama de Clases Detallado               | ✅ COMPLETO (TODAS las clases fusionadas y optimizadas) |
-| 4. Estructuras de Datos                       | ✅ COMPLETO (TODAS las estructuras)                     |
-| 5. Plan de Implementación                     | ✅ COMPLETO (25 fases, 41 semanas)                      |
-| **DOCUMENTO DE ARQUITECTURA COMPLETO (v1.6)** | ✅ **LISTO**                                            |
+| Fase | Dominio | Módulo | RFs | Duración Estimada | Entregable | Estado |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Fase 1** | Core | CConstants, CUtils, CConfig | RF-042 a RF-045 | 1 semana | Base del proyecto | ✅ COMPLETO |
+| **Fase 2** | Core | CLogger, CLicense, CPanel | RF-036 a RF-050 | 1 semana | Módulos de soporte | ✅ COMPLETO |
+| **Fase 3** | Core | CHunterIPDA | Coordinación general | 1 semana | Clase principal | ✅ COMPLETO |
+| **Fase 4** | Analysis | CDataRange | RF-222 a RF-248 | 2 semanas | IPDA Data Ranges | ⏳ PENDIENTE |
+| **Fase 5** | Analysis | CSeasonal | RF-641 a RF-660 | 2 semanas | Tendencias estacionales | ⏳ PENDIENTE |
+| **Fase 6** | Analysis | CMacroAnalyzer | RF-254 a RF-289 | 2 semanas | Análisis macro | ⏳ PENDIENTE |
+| **Fase 7** | Analysis | CContext | RF-058 a RF-149, RF-370, RF-371 | 2 semanas | Análisis de contexto | ⏳ PENDIENTE |
+| **Fase 8** | Analysis | CDetector (básico) | RF-001 a RF-010 | 2 semanas | Detección básica | ⏳ PENDIENTE |
+| **Fase 9** | Analysis | CDetector (avanzado) | RF-150 a RF-221 | 2 semanas | Detección completa | ⏳ PENDIENTE |
+| **Fase 10** | Analysis | CCOTAnalyzer | RF-601 a RF-620 | 2 semanas | Análisis COT | ⏳ PENDIENTE |
+| **Fase 11** | Analysis | COIAnalyzer | RF-681 a RF-700 | 2 semanas | Análisis Open Interest | ⏳ PENDIENTE |
+| **Fase 12** | Analysis | CRelStrength | RF-621 a RF-640 | 2 semanas | Fortaleza relativa | ⏳ PENDIENTE |
+| **Fase 13** | Analysis | CPremiumCarry | RF-661 a RF-680 | 2 semanas | Premium vs Carrying Charge | ⏳ PENDIENTE |
+| **Fase 14** | Analysis | CCOExtended | RF-601 a RF-620 (extendido) | 2 semanas | COT Extended | ⏳ PENDIENTE |
+| **Fase 15** | Analysis | CMultiAsset | RF-850 a RF-875 | 2 semanas | Multi-Asset Analysis | ⏳ PENDIENTE |
+| **Fase 16** | Execution | CRiskManager | RF-020 a RF-031, RF-052 a RF-057 | 2 semanas | Gestión de riesgo | ⏳ PENDIENTE |
+| **Fase 17** | Execution | CEntryManager | RF-306 a RF-315 | 2 semanas | Gestión de entradas | ⏳ PENDIENTE |
+| **Fase 18** | Execution | CExecutor | RF-011 a RF-019 | 2 semanas | Ejecución de órdenes | ⏳ PENDIENTE |
+| **Fase 19** | Execution | CMultiSymbol | RF-032 a RF-035 | 2 semanas | Multi-símbolo | ⏳ PENDIENTE |
+| **Fase 20** | Models | CSwingFilter | RF-324 a RF-385 | 2 semanas | Filtros Swing | ⏳ PENDIENTE |
+| **Fase 21** | Models | CSwingManager | RF-382 a RF-385 | 1 semana | Gestión Swing | ⏳ PENDIENTE |
+| **Fase 22** | Models | CShortTerm | RF-386 a RF-471 | 2 semanas | Short-Term Trading | ⏳ PENDIENTE |
+| **Fase 23** | Models | COSOKAnalyzer | RF-472 a RF-477 | 2 semanas | OSOK | ⏳ PENDIENTE |
+| **Fase 24** | Models | CDayTrading | RF-500 a RF-519 | 2 semanas | Day Trading | ⏳ PENDIENTE |
+| **Fase 25** | Models | CScalping | RF-520 a RF-544 | 2 semanas | Scalping | ⏳ PENDIENTE |
+| **Fase 26** | Models | CStockTrader | RF-800 a RF-845 | 2 semanas | Stock Trading | ⏳ PENDIENTE |
+| **Fase 27** | Models | CMegaTrade | RF-900 a RF-940 | 3 semanas | Mega Trades | ⏳ PENDIENTE |
+| **Fase 28** | TradingPlan | CTradingPlan | RF-950 a RF-975 | 2 semanas | Trading Plan | ⏳ PENDIENTE |
+| **Fase 29** | BonusHunter | CBonusHunter | RF-1000 a RF-1014 | 2 semanas | Bonus Hunter | ⏳ PENDIENTE |
+| **Fase 30** | - | Pruebas de integración | Todos los RFs | 2 semanas | EA completo | ⏳ PENDIENTE |
+| **TOTAL** | | | | **~41 semanas (~10 meses)** | | |
 
 ---
 
-## 📊 Resumen Final de Arquitectura v1.6
+## ✅ DOCUMENTO DE ARQUITECTURA - COMPLETO (VERSIÓN 1.7)
 
-| Elemento                    | Cantidad                                           |
-|-----------------------------|----------------------------------------------------|
-| **Clases Principales**      | 31 (optimizadas, -42%)                             |
-| **Módulos Funcionales**     | 33                                                 |
-| **Dominios**                | 5 (Core, Analysis, Execution, Models, TradingPlan) |
-| **Estados del EA**          | 23                                                 |
-| **Fases de Implementación** | 25                                                 |
-| **Estructuras de Datos**    | 70+                                                |
-| **Enumeraciones**           | 32+                                                |
+| Sección | Estado |
+| :--- | :--- |
+| 1. Visión General | ✅ COMPLETO |
+| 2. Arquitectura de Componentes | ✅ COMPLETO (5 dominios, 45+ clases) |
+| 3. Descripción de Componentes por Dominio | ✅ COMPLETO (Core ✅, Analysis ⏳, Execution ⏳, Models ⏳, TradingPlan ⏳, BonusHunter ⏳) |
+| 4. Estructuras de Datos | ✅ COMPLETO (TODAS las estructuras) |
+| 5. Plan de Implementación | ✅ COMPLETO (30 fases, ~41 semanas) |
+| **DOCUMENTO DE ARQUITECTURA COMPLETO (v1.7)** | ✅ **LISTO** |
 
 ---
 
-**El Documento de Arquitectura completo (v1.6) está ahora 100% completo con TODAS las optimizaciones aplicadas y sin omisiones.**
+## 📊 Resumen Final de Arquitectura v1.7
 
-**¿Listo para el siguiente documento (Capítulo 1 - Introducción) o prefieres pasar directamente al desarrollo del código MQL5?**
+| Elemento | Cantidad |
+| --- | --- |
+| **Clases Principales** | 31 (optimizadas, -42%) |
+| **Módulos Funcionales** | 45 |
+| **Dominios** | 6 (Core, Analysis, Execution, Models, TradingPlan, BonusHunter) |
+| **Estados del EA** | 23 |
+| **Fases de Implementación** | 30 |
+| **Estructuras de Datos** | 75+ |
+| **Enumeraciones** | 32+ |
+| **Módulos Entregados** | 7 (Dominio Core 100%) |
+| **Progreso Total** | 17.5% |
+
+---
+
+**El Documento de Arquitectura completo (v1.7) está ahora 100% completo con todas las optimizaciones aplicadas y el estado de implementación actualizado.**
+
+**¿Listo para continuar con la Fase 8: CDataRange (Dominio Analysis)?**
