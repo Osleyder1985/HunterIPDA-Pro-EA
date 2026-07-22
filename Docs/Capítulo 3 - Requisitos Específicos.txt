@@ -1,0 +1,1239 @@
+## 📄 CAPÍTULO 3 - REQUISITOS ESPECÍFICOS
+
+---
+
+### 3. REQUISITOS ESPECÍFICOS
+
+#### 3.1 Requisitos de Interfaces Externas
+
+**3.1.1 Interfaz con MetaTrader 5 (MT5)**
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **MT5-01** | Ejecución en MT5 | El EA debe ejecutarse dentro de la plataforma MetaTrader 5, adjuntándose a un gráfico de un símbolo específico. | Alta |
+| **MT5-02** | Datos de Mercado | El EA debe obtener precios en tiempo real (tick, OHLCV) y datos históricos a través de las funciones MQL5 (`SymbolInfo`, `CopyRates`, `iClose`, etc.). | Alta |
+| **MT5-03** | Datos Macro y Futuros | El EA debe obtener datos de instrumentos macro (DXY, 10-Year Note, 30-Year Treasury, CRB Index) y futuros de divisas para análisis de Open Interest y COT. | Alta |
+| **MT5-04** | Envío de Órdenes | El EA debe enviar órdenes de mercado, limit y stop a través de las funciones MQL5 (`OrderSend`, `PositionOpen`, `TradeRequest`, etc.). Soporte para Stop Entries, Limit Entries, órdenes híbridas, Day Trading entries, Scalping entries, **Mega Trade entries** y **Stock entries**. | Alta |
+| **MT5-05** | Gestión de Posiciones | El EA debe modificar y cerrar posiciones mediante funciones MQL5 (`PositionModify`, `PositionClose`, `TradeAction`, etc.). Soporte para trailing stop dinámico, gestión de swing trading, gestión OSOK, gestión Day Trading, gestión Scalping, **gestión Mega Trades** y **gestión Stock Trading**. | Alta |
+| **MT5-06** | Inputs Configurables | Todos los parámetros del EA deben ser configurables a través de inputs de MT5, con descripciones claras y valores por defecto. | Alta |
+| **MT5-07** | Logs y Mensajes | El EA debe enviar mensajes de estado, alertas y errores al "Expert Log" de MT5 y opcionalmente al "Journal". | Alta |
+| **MT5-08** | Panel en Gráfico | El EA debe mostrar información de estado en el gráfico (posiciones abiertas, PnL, estadísticas, alertas, datos macro, filtros de swing, estado OSOK, estado Day Trading, estado Scalping, **Multi-Asset Dashboard**, **Stock Watchlists**, **Mega Trade Status**, **Trading Plan Dashboard**) mediante objetos gráficos de MT5. | Media |
+| **MT5-09** | Indicadores Personalizados | El EA debe poder utilizar indicadores personalizados (ICT Tools) desarrollados en MQL5 para el análisis. | Alta |
+| **MT5-10** | Multi-Símbolo | El EA debe poder operar en múltiples símbolos desde un único gráfico (usando `SymbolSelect` y `CopyRates`). | Media |
+| **MT5-11** | Optimización | El EA debe ser compatible con el "Strategy Tester" de MT5 para backtesting y optimización de parámetros. | Alta |
+| **MT5-12** | Licencia y Activación | El EA debe incluir un sistema de licencia que valide la activación del producto, permitiendo diferenciar entre uso personal y comercial. | Alta |
+
+---
+
+**3.1.2 Interfaz de Usuario (Inputs y Panel)**
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **UI-01** | Inputs de Configuración | El EA debe exponer como inputs todos los parámetros configurables (ver sección 3.2 para detalle). | Alta |
+| **UI-02** | Descripción de Inputs | Cada input debe tener una descripción clara en el campo "Description" de MT5, explicando su función y valores recomendados. | Alta |
+| **UI-03** | Panel en Gráfico | El EA debe mostrar un panel en el gráfico con: estado del EA, símbolos operados, posiciones abiertas, PnL diario/semanal/mensual, estadísticas de rendimiento, datos macro relevantes, estado de los filtros de swing trading, estado OSOK, estado Day Trading, estado Scalping, **Multi-Asset Dashboard (4 clases de activos, Risk On/Off, Alignment Score, clase líder)**, **Stock Watchlists (Buy/Sell)**, **Mega Trade Status (progreso, R:R, duración estimada)**, y **Trading Plan Dashboard (límites de pérdida, disciplina score, journal entries)**. | Media |
+| **UI-04** | Alertas Visuales | El EA debe mostrar alertas visuales en el gráfico cuando se detectan condiciones relevantes (señal de entrada, stop loss activado, Quarterly Shift detectado, filtros de swing aprobados, perfil de rango semanal detectado, señal de reversión intra-semanal, señal de Day Trading, señal de Scalping, **señal de Mega Trade**, **señal de Stock Trading**, **violación de límite de pérdida**). | Media |
+| **UI-05** | Formato de Datos | Los datos mostrados en el panel deben tener un formato claro y legible (colores, tablas, etc.). | Baja |
+
+---
+
+**3.1.3 Interfaz con el Broker**
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **BR-01** | Ejecución de Órdenes | El EA debe enviar órdenes al broker a través de MT5, utilizando el tipo de ejecución configurado (Market, Instant, etc.). | Alta |
+| **BR-02** | Gestión de Slippage | El EA debe configurar un slippage máximo permitido para la ejecución de órdenes. **Para scalping: ≤ 1 pip; para Mega Trades y Stock Trading: ≤ 2 pips.** | Alta |
+| **BR-03** | Gestión de Spread | El EA debe filtrar entradas cuando el spread supere un valor máximo configurable. **Para day trading: < 1 pip; para scalping: < 0.5 pips; para Mega Trades: < 2 pips.** | Alta |
+| **BR-04** | Símbolos Disponibles | El EA debe verificar la disponibilidad de los símbolos configurados antes de iniciar el trading. | Alta |
+
+---
+
+#### 3.2 Requisitos Funcionales (Optimizados - ~890+ RFs)
+
+> **Nota sobre la Optimización:** Se han eliminado RFs duplicados y unificado funcionalidades. Los cambios principales son:
+> - **RF-026** ya no menciona Mega Trades (ahora específico en RF-920)
+> - **RF-052** ya no menciona Mega Trades (ahora específico en RF-906)
+> - **RF-510** ahora referencia a **RF-510.1** (cálculo genérico de ADR)
+> - **RF-463** modificado para referenciar CCOTAnalyzer
+> - **RF-372** modificado para referenciar COIAnalyzer
+> - **RF-811** modificado para referenciar CSeasonal
+> - **RF-292** modificado para referenciar RF-027
+> - **RF-970** renombrado a **RF-041.1** en Módulo 5
+> - **RF-970** mantenido como el requisito principal de Journaling en Módulo 32
+
+---
+
+##### Dominio Analysis: Módulo 1 - Detección de Setups ICT
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-001** | Detección de Order Blocks | El EA debe identificar automáticamente Order Blocks alcistas y bajistas. **Debe priorizar institutional order flow sobre patrones clásicos. La identificación debe incluir:** | Alta |
+| | | - **Monthly Order Blocks:** Velas bajistas violadas al alza (OB alcista) y velas alcistas violadas a la baja (OB bajista). | |
+| | | - **Sponsorship Validation:** Solo OB con Institutional Sponsorship (displacement + retorno a fair value). | |
+| | | - **Open-to-Close Range:** Medir el rango open-to-close, no high-low total. | |
+| | | - **Consecutive Candles:** Agrupar velas consecutivas en la misma dirección (3+ down = un solo bullish OB). | |
+| **RF-002** | Detección de FVG | El EA debe identificar Fair Value Gaps (huecos de valor razonable) en todas las temporalidades configuradas. **La detección debe basarse en la estructura de 3 velas: vela izquierda (rango), vela central (direccional), vela derecha (confirmación).** | Alta |
+| **RF-003** | Cálculo de Equilibrium | El EA debe calcular el punto de equilibrio (50%) de cualquier rango de precio identificado. **Incluir Fibonacci Grading para proyectar niveles clave dentro del rango total.** | Alta |
+| **RF-004** | Zonas de Descuento y Prima | El EA debe clasificar el precio actual en relación al equilibrium: por debajo del 50% = zona de descuento (compra), por encima del 50% = zona de prima (venta). | Alta |
+| **RF-005** | Optimal Trade Entry (OTE) | El EA debe calcular la zona OTE (62%-79% de retroceso) de cualquier rango de precio identificado y utilizarla como área de entrada preferente. | Alta |
+| **RF-006** | Clasificación de Mercado | El EA debe clasificar automáticamente el estado del mercado en tiempo real: Expansión, Retracement, Reversal o Consolidación. | Alta |
+| **RF-007** | Detección de Turtle Soup | El EA debe identificar patrones de falsa ruptura: Turtle Soup Long y Turtle Soup Short. | Alta |
+| **RF-008** | Detección de Stop Runs / Liquidity Hunts | El EA debe identificar cuando el precio activa stops (buy stops o sell stops) y marcarlo como un evento de liquidez. | Alta |
+| **RF-009** | Market Protraction / Judas Swing | El EA debe identificar movimientos de protracción (Judas Swings) basados en la hora del día. | Media |
+| **RF-010** | Análisis Multi-Temporal | El EA debe analizar múltiples temporalidades simultáneamente. **Top-Down completo: Monthly → Weekly → Daily → H4 → H1 → M15 → M5 → M1. Modelos de trading configurables. Time of Day como filtro.** | Alta |
+
+---
+
+##### Dominio Execution: Módulo 2 - Ejecución de Órdenes
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-011** | Apertura de Órdenes de Mercado | El EA debe abrir órdenes de mercado (Buy/Sell) cuando se cumplan todas las condiciones de entrada configuradas. | Alta |
+| **RF-012** | Apertura de Órdenes Limit/Stop | El EA debe poder abrir órdenes pendientes (Buy Limit, Sell Limit, Buy Stop, Sell Stop) cuando se cumplan las condiciones de entrada. | Media |
+| **RF-013** | Gestión de Slippage | El EA debe permitir configurar un slippage máximo en pips para la apertura de órdenes. | Alta |
+| **RF-014** | Gestión de Spread | El EA debe filtrar la apertura de órdenes cuando el spread actual supere un valor máximo configurable en pips. | Alta |
+| **RF-015** | Cierre de Órdenes | El EA debe cerrar órdenes automáticamente cuando se alcance el stop loss, take profit, trailing stop o cuando se detecte una señal de salida. | Alta |
+| **RF-016** | Cierre Parcial | El EA debe permitir el cierre parcial de posiciones (ej. 50% en un nivel de take profit y el resto con trailing stop). | Baja |
+| **RF-017** | Breakeven | El EA debe poder mover el stop loss al punto de entrada (breakeven) cuando la posición alcance un número configurable de pips de beneficio. | Media |
+| **RF-018** | Trailing Stop | El EA debe implementar trailing stop dinámico que siga el precio en la dirección favorable. El trailing stop debe ser configurable (fijo o porcentual). **Soporte para trailing stop basado en IPDA Data Ranges (40/20/10 días), gestión dinámica para swing trading, gestión OSOK, gestión Day Trading, gestión Scalping, gestión Mega Trades y gestión Stock Trading.** | Alta |
+| **RF-019** | Filtro de Ordenes Opuestas | El EA debe evitar abrir órdenes en dirección opuesta a la tendencia configurada en la temporalidad superior. | Media |
+
+---
+
+##### Dominio Execution: Módulo 3 - Gestión de Riesgo (Optimizado)
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-020** | Stop Loss Dinámico | El EA debe calcular el stop loss basado en la estructura de mercado. **Debe permitir stops ultra ajustados (5-10 pips) basados en estructura de precio en M5 y detectar Lethargic Response como señal de salida.** | Alta |
+| **RF-021** | Stop Loss Fijo | El EA debe permitir configurar un stop loss fijo en pips como alternativa al stop loss dinámico. | Alta |
+| **RF-022** | Take Profit Dinámico | El EA debe calcular el take profit basado en la estructura de mercado (ej. en zonas de liquidez o niveles de Fibonacci extendidos). | Alta |
+| **RF-023** | Take Profit Fijo | El EA debe permitir configurar un take profit fijo en pips como alternativa al take profit dinámico. | Alta |
+| **RF-024** | Tamaño de Posición (Lote) | El EA debe calcular el tamaño de posición en lotes basado en el capital de la cuenta, el riesgo por operación y la distancia al stop loss. **El cálculo debe adaptarse a stops más pequeños en temporalidades bajas (scalping).** | Alta |
+| **RF-025** | Lote Fijo | El EA debe permitir configurar un tamaño de posición fijo como alternativa al cálculo dinámico. | Alta |
+| **RF-026** | **Riesgo por Operación (Optimizado)** | El EA debe permitir configurar el porcentaje del capital a arriesgar por operación. **Opciones: 0.5%-1% (Scalping), 1.5% (Swing/Day), 2% (Position).** *[Nota: Mega Trades movido a RF-920]* | Alta |
+| **RF-027** | Drawdown Máximo | El EA debe detener la operativa si el drawdown supera un porcentaje configurable. **Niveles: Alerta (-5%), Reducción (-10%), Parada (-20%).** | Alta |
+| **RF-028** | Stop Loss de Emergencia | El EA debe incluir un stop loss de emergencia a nivel de cuenta si el drawdown alcanza un límite crítico (ej. 30%). | Alta |
+| **RF-029** | Filtro de Horario | El EA debe permitir filtrar la operativa por sesiones horarias (ej. solo operar en London/NY, evitar horas de baja liquidez). **Para day trading: usar Kill Zones (London 1-5 AM NY, New York 7-10 AM NY, London Close 10 AM-12 PM NY).** | Media |
+| **RF-030** | Filtro de Días | El EA debe permitir configurar los días de la semana en los que está permitido operar (ej. evitar lunes y viernes). | Media |
+| **RF-031** | Filtro de Volatilidad | El EA debe filtrar entradas cuando la volatilidad (rango ATR) supere un valor máximo configurable. | Media |
+| **RF-052** | **Filtro de Ratio Recompensa/Riesgo (Optimizado)** | El EA debe filtrar setups que no cumplan con un ratio R:R mínimo configurable. **Valores: 3:1 (mínimo), 5:1 (óptimo). Para scalping: R:R 1:1.** *[Nota: Mega Trades movido a RF-906]* | Alta |
+| **RF-053** | Objetivo de Crecimiento Mensual | El EA debe permitir configurar un objetivo de crecimiento mensual. **Opciones: 6%, 10% o personalizado.** | Media |
+| **RF-054** | Salida Gradual (Scaling Out) | El EA debe implementar salida gradual en múltiples niveles de take profit: **TP1 (50% en 3:1), TP2 (25% en 5:1), TP3 (25% en 9:1+).** | Alta |
+| **RF-055** | Límite de Operaciones por Semana | El EA debe permitir configurar un máximo de operaciones por semana (por defecto 3-5). **Priorizar calidad sobre cantidad (One Shot One Kill). Para day trading: 1-2 operaciones/día; para scalping: 3-5 operaciones/día.** | Media |
+| **RF-056** | Priorización de Setups de Alta Probabilidad | El EA debe priorizar setups basados en niveles institucionales (Daily, H4). | Alta |
+| **RF-057** | Objetivo Semanal de Pips | El EA debe permitir configurar un objetivo semanal de pips (por defecto 20 pips). | Media |
+| **RF-119** | Evaluación de Dynamic Response | El EA debe evaluar la velocidad de respuesta del precio al llegar a un nivel de sponsorship como confirmación de entrada. **Incluir identificación de propulsion blocks (respuesta inmediata).** | Alta |
+| **RF-154** | Gestión de Gap Risk | El EA debe considerar gap risk (reprice agresivo para cerrar FVG) en la gestión de stop loss y take profit. | Alta |
+| **RF-156** | Utilización de Mean Threshold | El EA debe utilizar el mean threshold (50% del rango open-to-close) como nivel clave para entradas y stop loss. **Debe ser utilizado como stop loss ajustado en propulsion blocks.** | Alta |
+| **RF-320** | Límite de Riesgo: 1% del 30% del Equity | El EA debe usar el 1% del 30% del equity total (0.3% del equity total) como riesgo máximo por operación de posición trading. | Alta |
+| **RF-362** | Riesgo del 1.5% por Swing Trade | El EA debe usar el 1.5% del equity como riesgo máximo por operación de swing trading. | Alta |
+| **RF-366** | Cálculo de R-Múltiples por Trade | El EA debe calcular y registrar el R-múltiple (R:R) de cada swing trade. | Media |
+| **RF-367** | Simulación de Rendimiento Anual | El EA debe calcular el rendimiento esperado anual basado en win rate y avg RR de swing trades. | Media |
+| **RF-510.1** | **Cálculo Genérico de ADR (NUEVO)** | El EA debe calcular el Average Daily Range de los últimos 5 días hábiles para todos los modelos. **Este cálculo será consumido por RF-510 (Day Trading) y RF-532 (Scalping).** | Alta |
+| **RF-920** | **Riesgo Mega Trade (0.3%)** | El EA debe usar el 0.3% del equity como riesgo máximo por operación de Mega Trade. | Alta |
+| **RF-921** | **Riesgo Stock Trading (1.5%)** | El EA debe usar el 1.5% del equity como riesgo máximo por operación de Stock Trading. | Alta |
+
+---
+
+##### Dominio Execution: Módulo 4 - Multi-Símbolo
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-032** | Lista de Símbolos | El EA debe permitir configurar una lista de símbolos a operar (por defecto: EUR/USD, GBP/USD, USD/JPY, AUD/USD, USD/CAD, NZD/USD, EUR/GBP, EUR/JPY, GBP/JPY). **Incluir símbolos de stocks para Stock Trading.** | Alta |
+| **RF-033** | Análisis por Símbolo | El EA debe realizar análisis independiente para cada símbolo de la lista, manteniendo un estado de trading separado por símbolo. | Alta |
+| **RF-034** | Ejecución por Símbolo | El EA debe abrir y gestionar posiciones por símbolo, respetando el riesgo y gestión configurada para cada uno. | Alta |
+| **RF-035** | Sincronización Horaria | El EA debe poder sincronizar la operativa de todos los símbolos con la misma configuración horaria, o permitir configuraciones independientes por símbolo. | Media |
+
+---
+
+##### Dominio Core: Módulo 5 - Logging y Estadísticas (Optimizado)
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-036** | Log de Operaciones | El EA debe registrar todas las operaciones en el "Expert Log" de MT5, incluyendo: fecha/hora, símbolo, tipo, precio de entrada, tamaño, stop loss, take profit, precio de salida, resultado (en pips y moneda). | Alta |
+| **RF-037** | Log de Señales | El EA debe registrar todas las señales detectadas (incluso las que no resultaron en operación), incluyendo: fecha/hora, símbolo, tipo de señal, condiciones y motivo de no ejecución (si aplica). | Alta |
+| **RF-038** | Log de Errores | El EA debe registrar cualquier error de ejecución (orden rechazada, error de conexión, etc.) con el código de error y descripción. | Alta |
+| **RF-039** | Estadísticas de Rendimiento | El EA debe calcular y mostrar estadísticas en el panel de control: total de operaciones, operaciones ganadas/perdidas, ratio de aciertos, factor de beneficio, drawdown máximo, ganancia/pérdida neta, retorno sobre inversión (ROI), y curva de equidad. **Estadísticas separadas por modelo de trading (Position, Swing, Short-Term, Day Trading, Scalping, Mega Trade, Stock Trading).** | Alta |
+| **RF-040** | Exportación de Datos | El EA debe poder exportar logs y estadísticas a un archivo de texto o CSV para análisis externo. | Baja |
+| **RF-041** | Reseteo de Estadísticas | El EA debe permitir resetear las estadísticas para iniciar un nuevo período de seguimiento. | Baja |
+| **RF-323** | Log de Datos Macro | El EA debe registrar datos macro (10-Year, DXY, CRB, yields) en el log para análisis posterior. | Media |
+| **RF-041.1** | **Journal Logging Reference (NUEVO)** | El EA debe registrar entradas del journal de trading referenciando el sistema principal de journaling (RF-970). **Este requisito reemplaza al anterior RF-970 en el Módulo 5.** | Media |
+
+---
+
+##### Dominio Core: Módulo 6 - Panel de Control y Configuración
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-042** | Inputs de Configuración | El EA debe exponer todos los parámetros configurables como inputs en MT5. | Alta |
+| **RF-043** | Panel en Gráfico | El EA debe mostrar un panel en el gráfico con información relevante: estado del EA, símbolo, posición actual, PnL, número de operaciones abiertas, condiciones de mercado actuales, estado de filtros de swing trading, estado OSOK, perfil de rango semanal detectado, estado Day Trading, estado Scalping, **Multi-Asset Dashboard**, **Stock Watchlists**, **Mega Trade Status**, **Trading Plan Dashboard**. | Media |
+| **RF-044** | Botón de Activación | El EA debe incluir un botón (input) para activar/desactivar la operativa sin necesidad de quitar el EA del gráfico. | Media |
+| **RF-045** | Confirmación de Configuración | El EA debe validar que los parámetros configurados son consistentes (ej. stop loss > spread, riesgo por operación <= 5%, etc.) y mostrar advertencias si no lo son. | Media |
+
+---
+
+##### Dominio Core: Módulo 7 - Licenciamiento y Seguridad
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-046** | Protección de Licencia | El EA debe incluir un sistema de licencia que valide la activación del producto, previniendo su uso sin autorización. | Alta |
+| **RF-047** | Licencia Personal vs. Comercial | El sistema de licencia debe permitir diferenciar entre uso personal (un solo usuario) y uso comercial (gestores de fondos, múltiples cuentas). | Alta |
+| **RF-048** | Activación Offline | El sistema debe permitir activación offline (sin conexión a internet) para entornos sin acceso a la red. | Media |
+| **RF-049** | Prevención de Ingeniería Inversa | El código debe estar ofuscado y protegido contra ingeniería inversa (compilación con protección en MQL5). | Alta |
+| **RF-050** | Licencia de Prueba | El EA debe incluir una licencia de prueba (demo) con funcionalidad completa durante un período configurable (ej. 30 días). | Alta |
+
+---
+
+##### Dominio Execution: Módulo 8 - Mitigación de Pérdidas
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-069** | Mitigación de Pérdidas | El EA debe implementar mitigación de pérdidas reduciendo el riesgo en reentradas. El objetivo es recuperar la pérdida con menor riesgo. | Alta |
+| **RF-070** | Reducción de Tamaño de Posición tras Pérdida | El EA debe reducir automáticamente el tamaño de posición tras una pérdida (ej. de 2% a 1%, de 1% a 0.5%). El factor de reducción debe ser configurable (por defecto: 50%). | Alta |
+| **RF-071** | Reentrada en Mismo Setup | El EA debe permitir reentradas en el mismo setup con riesgo reducido si la tesis sigue válida (no se ha violado la estructura de mercado). | Alta |
+| **RF-072** | Cálculo de R2 como Mitigación | El EA debe calcular el R2 (2:1) como objetivo de mitigación para recuperar pérdidas iniciales. | Alta |
+| **RF-073** | Prioridad de Preservación de Capital | El EA debe priorizar la preservación del capital sobre la maximización de ganancias. | Alta |
+| **RF-074** | Reducción de Riesgo tras Pérdidas Consecutivas | El EA debe reducir automáticamente el riesgo tras pérdidas consecutivas (ej. después de 2 pérdidas seguidas, reducir a la mitad). | Alta |
+| **RF-075** | Prohibición de Aumentar Riesgo tras Pérdida | El EA nunca debe aumentar el riesgo tras una pérdida para "recuperar". | Alta |
+| **RF-076** | Contexto Semanal para Salidas | El EA debe considerar el contexto semanal (día de la semana) para decisiones de salida, priorizando cerrar sin pérdidas si es posible. | Media |
+
+---
+
+##### Dominio Analysis: Módulo 9 - Análisis de Contexto y Perspectivas
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-058** | Determinación de Bias | El EA debe determinar la dirección del mercado (alcista/bajista) en H4/Daily. **Debe clasificar liquidity runs como low o high resistance basado en monthly/weekly. Debe incluir filtrado de OB: solo operar OB en dirección del bias (liquidity-based bias).** | Alta |
+| **RF-059** | Transposición de Niveles | El EA debe transponer niveles de temporalidades altas a bajas. **Priorizar: Monthly → Weekly → Daily → H4 → H1 → M15 → M5.** | Alta |
+| **RF-060** | Refinamiento de Entradas | El EA debe permitir entrada en temporalidades bajas (M15/M5) basada en niveles de temporalidades altas. | Alta |
+| **RF-061** | Identificación de Niveles Institucionales | El EA debe identificar niveles de soporte/resistencia significativos en Daily y H4. | Alta |
+| **RF-062** | Configuración de Temporalidades | El EA debe permitir configurar temporalidades para Bias, Contexto y Entrada. | Media |
+| **RF-063** | Verificación de Sponsorship Institucional | El EA debe verificar que el nivel de entrada tenga sponsorship institucional. | Alta |
+| **RF-064** | Configuración de Riesgo por Porción | El EA debe permitir configurar el porcentaje de riesgo por porción de posición. | Media |
+| **RF-077** | Análisis Macro de Mercado | El EA debe considerar el contexto macro (inflación/deflación) como filtro. | Media |
+| **RF-078** | Análisis de Tasas de Interés | El EA debe considerar diferenciales de tasas de interés para bias direccional. | Media |
+| **RF-079** | Análisis Intermarket | El EA debe considerar la relación DXY/Commodities para contexto. | Media |
+| **RF-080** | Influencias Estacionales | El EA debe considerar estacionalidad como filtro. | Baja |
+| **RF-081** | Datos COT | El EA debe utilizar datos COT para validar bias direccional. | Media |
+| **RF-082** | Sentimiento de Mercado | El EA debe utilizar sentimiento (extremos) como filtro de reversión. | Media |
+| **RF-083** | SMT Divergence | El EA debe identificar SMT divergencias entre DXY y pares, o entre pares correlacionados. | Alta |
+| **RF-084** | Teoría de Tiempo y Precio | El EA debe integrar análisis temporal: Quarterly, Monthly, Weekly, Daily, Time of Day. | Alta |
+| **RF-085** | Alineación de 7 Factores | El EA debe requerir alineación de 7 factores para señales de alta calidad. | Alta |
+| **RF-086** | Pensamiento Procesal (Binario) | El EA debe operar de manera procesal y binaria (paso a paso, sin emociones). | Alta |
+| **RF-103** | Configuración de Modelo de Trading | El EA debe permitir configurar Position, Swing, Short-Term, Day Trading, Scalping, **Mega Trade** o **Stock Trading**. | Alta |
+| **RF-104** | Enfoque en 3 Setups Principales | El EA debe enfocarse en 3 setups principales: Pullback, Order Block, Turtle Soup. | Alta |
+| **RF-105** | Configuración de Bread and Butter Setup | El EA debe permitir configurar el setup preferido. | Media |
+| **RF-106** | Proyección de Setups Futuros | El EA debe proyectar niveles donde se formarán setups futuros (Fibonacci Grading). | Alta |
+| **RF-107** | Identificación de Institutional Order Flow | El EA debe identificar y seguir el flujo de órdenes institucionales. | Alta |
+| **RF-108** | Análisis Basado en Cuerpos de Velas | El EA debe basar su análisis en los cuerpos de las velas. **Aplicar específicamente a OB (open-to-close, no mechas).** | Alta |
+| **RF-109** | Identificación de Fund Level Liquidity | El EA debe identificar niveles de liquidez de grandes fondos en Monthly/Weekly. | Alta |
+| **RF-110** | Identificación de Mitigation Blocks | El EA debe identificar mitigation blocks como zonas de entrada/salida. | Alta |
+| **RF-111** | Identificación de Breakers | El EA debe identificar breakers como zonas de alta probabilidad. | Alta |
+| **RF-112** | Identificación de Hedging/Unwinding | El EA debe identificar zonas de unwinding como puntos de reversión. | Media |
+| **RF-113** | Priorización de Niveles de Whales | El EA debe priorizar niveles de grandes fondos sobre niveles retail. | Alta |
+| **RF-114** | Identificación de Institutional Sponsorship | El EA debe identificar sponsorship institucional como filtro de alta probabilidad. | Alta |
+| **RF-115** | Detección de Higher Time Frame Displacement | El EA debe detectar displacement en Daily/Weekly. **Debe identificar que el movimiento crea liquidity voids (desequilibrio).** | Alta |
+| **RF-116** | Identificación de Sell Side Liquidity Run | El EA debe identificar sell side liquidity runs como señales de compra. | Alta |
+| **RF-117** | Identificación de Buy Side Liquidity | El EA debe identificar buy side liquidity como objetivos de toma de beneficios. | Alta |
+| **RF-118** | Filtro por Time of Day | El EA debe considerar la hora del día como filtro. **Considerar: gaps tempranos tienden a llenarse, gaps tardíos tienden a quedar abiertos.** | Alta |
+| **RF-120** | Detección de Lethargic Response | El EA debe detectar respuestas lentas como señal de salida o reducción de riesgo. | Alta |
+| **RF-121** | Implementación de Power of 3 (PO3) | El EA debe implementar Power of 3: comprar cerca de apertura, vender cerca de cierre. | Alta |
+| **RF-122** | Referencia al Opening Price de NY | El EA debe utilizar el opening price de NY (5:00 PM ET) como nivel de referencia. | Alta |
+| **RF-123** | Definición de Rango Mensual | El EA debe definir el rango mensual usando la vela bajista más reciente y la vela alcista más reciente. | Alta |
+| **RF-124** | Identificación de Vela Bajista Reciente | El EA debe identificar la vela bajista más reciente en monthly y usar su high como referencia. | Alta |
+| **RF-125** | Identificación de Vela Alcista Reciente | El EA debe identificar la vela alcista más reciente en monthly y usar su low como referencia. | Alta |
+| **RF-126** | Referencia OHLC Mensual | El EA debe utilizar Open, High, Low, Close de velas mensuales como niveles clave de referencia. | Alta |
+| **RF-127** | Análisis de Institutional Market Structure | El EA debe analizar la estructura de mercado institucional comparando DXY y pares FX. | Alta |
+| **RF-128** | Identificación de Market Symmetry | El EA debe identificar condiciones de simetría de mercado. | Alta |
+| **RF-129** | Identificación de Asymmetrical Conditions | El EA debe identificar condiciones asimétricas como señales de reversión. | Alta |
+| **RF-130** | Identificación de SMT Divergence | El EA debe identificar SMT divergencias entre Dólar Index y pares FX. | Alta |
+| **RF-131** | Identificación de Accumulation/Distribution | El EA debe identificar zonas de acumulación y distribución institucional. | Alta |
+| **RF-132** | Identificación de Failure Swings | El EA debe identificar failure swings como señales de reversión. **Incluir failure swings basados en cuerpos de velas (no solo en wicks) y patrón M con confirmación MSS.** | Alta |
+| **RF-133** | Identificación de USDX SMT Divergence | El EA debe identificar USDX SMT Bullish y Bearish divergencias. | Alta |
+| **RF-134** | Análisis Macro to Micro | El EA debe integrar análisis macro (bonos, tasas) como filtro de contexto. | Alta |
+| **RF-135** | Monitoreo de 30-Year Treasury Bond | El EA debe monitorear el mercado de bonos a 30 años. | Alta |
+| **RF-136** | Monitoreo de 10-Year Note | El EA debe monitorear la nota del Tesoro a 10 años. | Alta |
+| **RF-137** | Tasas de Interés como Precursor | El EA debe utilizar tasas de interés como filtro direccional. | Alta |
+| **RF-138** | Consideración de Quarterly Shift | El EA debe considerar ciclos trimestrales (3-4 meses). | Media |
+| **RF-139** | Identificación de Divergencia en Bonos (SMT) | El EA debe identificar divergencias entre 10-year y 30-year bonos. | Alta |
+| **RF-140** | Monitoreo de Debt Instruments | El EA debe monitorear instrumentos de deuda como indicadores adelantados. | Alta |
+| **RF-141** | Ignorar Trendlines Diagonales | El EA debe ignorar trendlines diagonales como señales. | Alta |
+| **RF-142** | Identificación de Third Touch Trap | El EA debe identificar el tercer toque de una trendline como trampa. | Alta |
+| **RF-143** | Identificación de Phantom Support/Resistance | El EA debe identificar soportes/resistencias diagonales sin base institucional como no válidos. | Alta |
+| **RF-144** | Contrarian Trendline Trading | El EA debe operar en contra de trendlines cuando el contexto lo indique. | Alta |
+| **RF-145** | Detección de Head and Shoulders | El EA debe identificar patrones H&S como trampas. | Alta |
+| **RF-146** | Detección de Inverted Head and Shoulders | El EA debe identificar patrones iH&S como trampas. | Alta |
+| **RF-147** | Identificación de False H&S (Turtle Soup Long) | El EA debe identificar False H&S como señales de compra. | Alta |
+| **RF-148** | Identificación de False iH&S (Turtle Soup Short) | El EA debe identificar False iH&S como señales de venta. | Alta |
+| **RF-149** | Neckline Break como Señal de Reversión | El EA debe identificar rupturas de neckline como oportunidades de reversión. | Alta |
+| **RF-370** | Intermarket Analysis Confluences como Filtro | El EA debe verificar que las relaciones intermercado confirmen la dirección esperada para swing trading. | Alta |
+| **RF-371** | COT Hedging Program Alignment | El EA debe usar datos COT (comerciales) como filtro de confirmación para swing trading, con rango de 12 meses. | Alta |
+| **RF-472** | Short-Term Trading Model Implementation | El EA debe implementar el modelo de short-term trading con duración de 1 semana o pocos días, basado en rangos semanales y ejecución en 4H/1H. | Alta |
+| **RF-473** | OSOK as Premium Short-Term Mode | El EA debe implementar OSOK (One Shot One Kill) como modo premium del short-term trading, activable mediante input `OSOK_Enabled = true`. | Alta |
+| **RF-474** | OSOK Seasonal Requirement | El EA debe requerir seasonal tendency obligatoria para operaciones OSOK. Sin seasonal confirmada, no se ejecuta OSOK. | Alta |
+| **RF-475** | OSOK COT Requirement | El EA debe requerir COT (Commercial Hedging Program) obligatorio para operaciones OSOK. Sin COT confirmado, no se ejecuta OSOK. | Alta |
+| **RF-476** | OSOK Kill Zone Execution | El EA debe ejecutar operaciones OSOK únicamente dentro de las Kill Zones horarias (London Open, New York Open, Asian Session 6-9PM NY). | Alta |
+| **RF-477** | OSOK Max One Trade Per Week | El EA debe limitar las operaciones OSOK a un máximo de 1 por semana. | Alta |
+
+---
+
+##### Dominio Analysis: Módulo 10 - Conceptos Avanzados de Liquidez y Estructura de Mercado
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-150** | Identificación de External Range Liquidity | El EA debe identificar external range liquidity (buy stops arriba, sell stops abajo) como objetivos de salida. | Alta |
+| **RF-151** | Identificación de Internal Range Liquidity | El EA debe identificar internal range liquidity (FVG, order blocks) como zonas de entrada. | Alta |
+| **RF-152** | Priorización de Low Resistance Liquidity Runs | El EA debe priorizar low resistance liquidity runs (en sincronía con monthly/weekly). | Alta |
+| **RF-153** | Identificación de High Resistance Liquidity Runs | El EA debe identificar high resistance liquidity runs y evitarlos como entradas. | Alta |
+| **RF-155** | Internal Range Entry / External Range Exit | El EA debe implementar la estrategia: entradas en internal range liquidity, salidas en external range liquidity. | Alta |
+| **RF-157** | Medición de Order Block Height Multiple | El EA debe medir la altura del cuerpo del OB (open-to-close) para proyectar rallies de 2-3x. | Alta |
+| **RF-158** | Filtrado de Counter-Trend Order Blocks | El EA debe filtrar OB que vayan contra la dirección del monthly/weekly/daily. | Alta |
+| **RF-159** | Identificación de Mitigation Blocks | El EA debe identificar mitigation blocks como zonas de entrada/salida. | Alta |
+| **RF-160** | Identificación de Market Structure Shift (MSS) | El EA debe identificar MSS (break de swing low/high) como señal de cambio de dirección. | Alta |
+| **RF-161** | Identificación de M Pattern | El EA debe identificar el patrón M como señal de venta. | Alta |
+| **RF-162** | Identificación de Buyer's Remorse | El EA debe identificar buyer's remorse como oportunidad de venta. | Alta |
+| **RF-163** | Operación en Step Ladder Formation | El EA debe operar en step ladder formation: vender rallies en mercados bajistas. | Alta |
+| **RF-164** | Identificación de A-B-C Reference Points | El EA debe identificar los puntos A, B, C para mitigation blocks. | Alta |
+| **RF-165** | Identificación de Underwater Positions | El EA debe identificar zonas donde hay posiciones underwater como objetivos de mitigación. | Alta |
+| **RF-166** | Identificación de Bullish Breaker Block | El EA debe identificar bullish breakers como zonas de compra. | Alta |
+| **RF-167** | Identificación de Bearish Breaker Block | El EA debe identificar bearish breakers como zonas de venta. | Alta |
+| **RF-168** | Identificación de Breaker Formation | El EA debe identificar breakers en formación (run de stops + reprice). | Alta |
+| **RF-169** | Confirmación de Breaker | El EA debe esperar confirmación de breaker: run de stops + reprice + retorno al nivel roto. | Alta |
+| **RF-170** | Identificación de Swing High Between Two Lows | El EA debe identificar el swing high entre dos lows como nivel de entrada en bullish breaker. | Alta |
+| **RF-171** | Identificación de Swing Low Between Two Highs | El EA debe identificar el swing low entre dos highs como nivel de entrada en bearish breaker. | Alta |
+| **RF-172** | Identificación de Repricing After Stop Run | El EA debe identificar el reprice después de un run de stops como confirmación de breaker. | Alta |
+| **RF-173** | Identificación de Bearish Rejection Block | El EA debe identificar bearish rejection blocks como zonas de venta. | Alta |
+| **RF-174** | Identificación de Bullish Rejection Block | El EA debe identificar bullish rejection blocks como zonas de compra. | Alta |
+| **RF-175** | Identificación de Highest Body Reference | El EA debe identificar el highest body (open/close) dentro de un swing high. | Alta |
+| **RF-176** | Identificación de Lowest Body Reference | El EA debe identificar el lowest body (open/close) dentro de un swing low. | Alta |
+| **RF-177** | Utilización de Trigger Level en Rejection Blocks | El EA debe utilizar el trigger level (highest/lowest body) como nivel de entrada. | Alta |
+| **RF-178** | Identificación de Market Maker Buy Model | El EA debe identificar el MM Buy Model como contexto de compra. | Alta |
+| **RF-179** | Identificación de Market Maker Sell Model | El EA debe identificar el MM Sell Model como contexto de venta. | Alta |
+| **RF-180** | Identificación de Bullish Reclaimed Order Block | El EA debe identificar reclaimed bullish OBs como entradas de compra. | Alta |
+| **RF-181** | Identificación de Bearish Reclaimed Order Block | El EA debe identificar reclaimed bearish OBs como entradas de venta. | Alta |
+| **RF-182** | Identificación de Buy Side of the Curve | El EA debe identificar la buy side curve como contexto de compra. | Alta |
+| **RF-183** | Identificación de Sell Side of the Curve | El EA debe identificar la sell side curve como contexto de venta. | Alta |
+| **RF-184** | Identificación de Hedging During Accumulation | El EA debe identificar hedging (compras durante sell side curve) como señal de acumulación. | Alta |
+| **RF-185** | Identificación de Hedging During Distribution | El EA debe identificar hedging (ventas durante buy side curve) como señal de distribución. | Alta |
+| **RF-186** | Confirmación por Minor Displacement | El EA debe usar minor displacement como confirmación de hedging. | Alta |
+| **RF-187** | Identificación de Matching Order Blocks | El EA debe identificar OBs que se emparejan a través de la curva. | Alta |
+| **RF-188** | Identificación de Bullish Propulsion Block | El EA debe identificar propulsion blocks como entradas de compra. | Alta |
+| **RF-189** | Identificación de Bearish Propulsion Block | El EA debe identificar propulsion blocks como entradas de venta. | Alta |
+| **RF-190** | Identificación de Bullish Vacuum Block | El EA debe identificar bullish vacuum blocks como zonas de entrada. | Alta |
+| **RF-191** | Identificación de Bearish Vacuum Block | El EA debe identificar bearish vacuum blocks como zonas de entrada. | Alta |
+| **RF-192** | Identificación de Breakaway Gap | El EA debe diferenciar entre gaps que se llenan y breakaway gaps. | Alta |
+| **RF-193** | Identificación de Exhaustion Gap | El EA debe identificar exhaustion gaps como señales de reversión. | Alta |
+| **RF-194** | Identificación de Gap Fill | El EA debe identificar gap fills como objetivos de precio. | Alta |
+| **RF-195** | Utilización de Mean Threshold of Gap | El EA debe utilizar el mean threshold del gap como nivel de sensibilidad. | Alta |
+| **RF-196** | Identificación de Full Gap Fill | El EA debe identificar full gap fills como confirmación de balance. | Alta |
+| **RF-197** | Identificación de Liquidity Void | El EA debe identificar liquidity voids como zonas de retorno. | Alta |
+| **RF-198** | Identificación de Void of Contrarian Liquidity | El EA debe identificar qué lado de la liquidez falta en un void. | Alta |
+| **RF-199** | Identificación de Common Gaps | El EA debe identificar common gaps como liquidity voids. | Alta |
+| **RF-200** | Entrada en Gaps | El EA debe permitir entradas en gaps (sell limit en gap bajista, buy limit en gap alcista). | Alta |
+| **RF-201** | Identificación de One-Sided Ranges | El EA debe identificar velas largas y unidireccionales como creadoras de liquidity voids. | Alta |
+| **RF-202** | Identificación de Liquidity Pools | El EA debe identificar liquidity pools como zonas de objetivo. | Alta |
+| **RF-203** | Identificación de Pools de Buyers/Sellers | El EA debe identificar pools de compradores y vendedores. | Alta |
+| **RF-204** | Identificación de Liquidity Raids | El EA debe identificar liquidity raids como eventos de mercado. | Alta |
+| **RF-205** | Identificación de Sweep Below Old Low | El EA debe identificar sweeps por debajo de old lows como señales de compra. | Alta |
+| **RF-206** | Identificación de Sweep Above Old High | El EA debe identificar sweeps por encima de old highs como señales de venta. | Alta |
+| **RF-207** | Implementación de Accumulate/Distribute Strategy | El EA debe implementar: acumular sell stops (comprar) y distribuir a buy stops (vender). | Alta |
+| **RF-208** | FVG Fill como Entrada | El EA debe utilizar FVG fills como entradas en la dirección de la tendencia. | Alta |
+| **RF-209** | Identificación de Efficiency in Price Delivery | El EA debe identificar FVG fills como señales de eficiencia de precio. | Alta |
+| **RF-210** | Integración de FVG con Otros Conceptos | El EA debe integrar FVG con liquidity voids, pools, y order blocks. | Alta |
+| **RF-211** | Identificación de Type 1 Divergence | El EA debe identificar type 1 divergencias (clásicas) como trampas del Market Maker. | Alta |
+| **RF-212** | Identificación de Type 2 Hidden Divergence | El EA debe identificar type 2 divergencias como confirmación de continuación. | Alta |
+| **RF-213** | Identificación de Divergence Phantom | El EA debe identificar divergence phantoms como señales de contra-tendencia. | Alta |
+| **RF-214** | Uso de Stochastic como Sentiment Tool | El EA debe usar indicadores de momentum como filtro de sentimiento del retail. | Media |
+| **RF-215** | Priorización de Price Action sobre Indicadores | El EA debe priorizar price action sobre indicadores de momentum. | Alta |
+| **RF-216** | Identificación de Double Top | El EA debe identificar double tops como potenciales trampas del Market Maker. | Alta |
+| **RF-217** | Identificación de Double Bottom | El EA debe identificar double bottoms como potenciales trampas del Market Maker. | Alta |
+| **RF-218** | Cálculo de Measured Move desde Double Pattern | El EA debe calcular measured moves desde double tops/bottoms. | Alta |
+| **RF-219** | Utilización de Algorithm Projection | El EA debe utilizar proyecciones del algoritmo basadas en rangos de double tops/bottoms. | Alta |
+| **RF-220** | Identificación de Stop Run en Double Top | El EA debe identificar stop runs por encima de double tops como señales de reversión bajista. | Alta |
+| **RF-221** | Identificación de Stop Run en Double Bottom | El EA debe identificar stop runs por debajo de double bottoms como señales de reversión alcista. | Alta |
+
+---
+
+##### Dominio Analysis: Módulo 11 - Quarterly Shifts, IPDA Data Ranges y Open Float
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-222** | Detección de Quarterly Market Shift | El EA debe identificar cambios en la estructura de mercado que ocurren cada 3-4 meses, basados en el análisis de 60, 40 y 20 días hábiles. | Alta |
+| **RF-223** | Cálculo de IPDA Data Ranges | El EA debe calcular automáticamente los rangos de datos de 20, 40 y 60 días hábiles a partir del punto de anclaje (primer día de trading del mes anterior). | Alta |
+| **RF-224** | Look Back Analysis | El EA debe analizar los últimos 60, 40 y 20 días hábiles desde el punto de anclaje para identificar Institutional Order Flow, Order Blocks, FVGs, Liquidity Pools y Voids. | Alta |
+| **RF-225** | Cast Forward Projection | El EA debe proyectar 20, 40 y 60 días hábiles hacia adelante desde el punto de anclaje para anticipar cuándo ocurrirá el próximo setup de alta probabilidad. | Alta |
+| **RF-226** | Calibración por Market Structure Shift | El EA debe calibrar automáticamente el punto de anclaje al primer día de trading del mes anterior y ajustarlo al MSS más reciente. | Alta |
+| **RF-227** | Smart Money Accumulation para Buy Programs | El EA debe detectar condiciones de acumulación en Daily Chart: DXY Lower Low + Par Higher Low, o DXY Higher High + Par Higher Low. | Alta |
+| **RF-228** | Smart Money Distribution para Sell Programs | El EA debe detectar condiciones de distribución en Daily Chart: DXY Higher High + Par Lower High, o DXY Lower Low + Par Lower High. | Alta |
+| **RF-229** | Determinación de Institutional Order Flow (IOF) | El EA debe determinar si el mercado ha estado en tendencia alcista o bajista en los últimos 60 días hábiles desde el punto de anclaje. | Alta |
+| **RF-230** | Filtro de Setup por Data Range | El EA debe filtrar setups que no ocurran dentro de los rangos de 20, 40 o 60 días hábiles proyectados desde el punto de anclaje. | Alta |
+| **RF-231** | Identificación de Open Float | El EA debe identificar el Open Float (órdenes abiertas por encima y por debajo del precio) en forma de Buy Stops y Sell Stops. | Alta |
+| **RF-232** | Mapeo de Buy Stops | El EA debe identificar niveles de Buy Stops por encima de máximos de 3M, 6M y 12M, así como short-term highs. | Alta |
+| **RF-233** | Mapeo de Sell Stops | El EA debe identificar niveles de Sell Stops por debajo de mínimos de 3M, 6M y 12M, así como short-term lows. | Alta |
+| **RF-234** | Análisis de "Tug of War" | El EA debe analizar la lucha entre compradores y vendedores mediante la comparación de rallies y caídas en el Daily Chart. | Alta |
+| **RF-235** | Determinación de Bias por Open Float | El EA debe determinar el bias direccional basado en qué lado del Open Float es más débil (Buy Side o Sell Side). | Alta |
+| **RF-236** | Identificación de Intermediate Term Highs | El EA debe identificar Intermediate Term Highs (picos con highs a izquierda y derecha) como puntos de referencia de estructura. | Alta |
+| **RF-237** | Identificación de Intermediate Term Lows | El EA debe identificar Intermediate Term Lows (valles con lows a izquierda y derecha) como puntos de referencia de estructura. | Alta |
+| **RF-238** | Detección de Agotamiento de Liquidez | El EA debe detectar cuándo un lado de la liquidez se ha "agotado" (ej. buy stops ya fueron tomados) y el mercado se prepara para ir al otro lado. | Alta |
+| **RF-239** | Integración de Open Interest (OI) de Futuros | El EA debe integrar datos de Open Interest del mercado de futuros (AUD, EUR, GBP, etc.) como filtro de confirmación. | Alta |
+| **RF-240** | Análisis de Open Interest para Confirmación de Reversión | El EA debe detectar caídas significativas de OI (≥15%) en niveles de soporte/resistencia como señal de reversión. | Alta |
+| **RF-241** | Correlación Forex vs. Futuros | El EA debe comparar el precio en Forex con el precio en futuros para identificar divergencias y confirmar niveles. | Media |
+| **RF-242** | Filtro de Datos de Futuros | El EA debe permitir configurar la fuente de datos de futuros (símbolo, broker) para análisis de OI y volumen. | Media |
+| **RF-243** | Proyección de Objetivos por Data Ranges | El EA debe proyectar objetivos de precio basados en los rangos de 20, 40 y 60 días (Mean Threshold, Highs, Lows). | Alta |
+| **RF-244** | Definición de Open Float como Rango de 120 Días | El EA debe definir el Open Float como un rango continuo de 120 días hábiles (60 días look back + 60 días cast forward). | Alta |
+| **RF-245** | Tres Niveles de Liquidity Pools (20-40-60 días) | El EA debe identificar Liquidity Pools en tres horizontes: Near-Term (20 días), Short-Term (40 días), Intermediate-Term (60 días). | Alta |
+| **RF-246** | Monitoreo de Institutional Order Flow por Default | El EA debe monitorear qué lado de la liquidez se está "agotando" (buy stops vs. sell stops) para determinar el IOF por defecto. | Alta |
+| **RF-247** | Detección de Quarterly Shift por Cambio de IOF | El EA debe detectar un Quarterly Shift cuando el IOF cambia de un lado de la liquidez al otro (ej. de tomar buy stops a tomar sell stops). | Alta |
+| **RF-248** | Filtro de False Break (Turtle Soup) en Rangos de 20 días | El EA debe identificar falsos rompimientos (Turtle Soup) en los rangos de 20 días como oportunidades de entrada. | Alta |
+
+---
+
+##### Dominio Analysis: Módulo 12 - Institutional Swing Points y PD Arrays
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-249** | Detección de Breaker Swing Point | El EA debe identificar Breaker Swing Points (stop run + rejection) como señales de reversión. | Alta |
+| **RF-250** | Detección de Failure Swing Point | El EA debe identificar Failure Swing Points (fracaso en romper un nivel) como señales de reversión. | Alta |
+| **RF-251** | Identificación de Trigger Point | El EA debe identificar el Trigger Point (short-term low/high) después de un Breaker o Failure Swing como nivel de entrada. | Alta |
+| **RF-252** | Stop Loss Ajustado en Breaker | El EA debe colocar el stop loss justo por encima del high (para cortos) o justo por debajo del low (para largos) en setups de Breaker, ya que la liquidez ya fue tomada. | Alta |
+| **RF-253** | Clasificación de Reversiones como Breaker o Failure Swing | El EA debe clasificar automáticamente cada posible reversión como Breaker o Failure Swing para determinar la estrategia de entrada. | Alta |
+| **RF-296** | Definición de PD Arrays (Price Delivery Arrays) | El EA debe definir y utilizar el sistema de PD Arrays para organizar las herramientas de análisis en una jerarquía. | Alta |
+| **RF-297** | Clasificación de Contexto (Premium vs. Discount) | El EA debe clasificar la posición actual del precio como premium o discount en relación al equilibrio. | Alta |
+| **RF-298** | Jerarquía de PD Arrays para Premium | El EA debe buscar PD Arrays en el orden jerárquico definido para premium (Old High/Low → Rejection Block → Order Block → FVG → Liquidity Void → Breaker → Mitigation Block). | Alta |
+| **RF-299** | Jerarquía de PD Arrays para Discount | El EA debe buscar PD Arrays en el orden jerárquico definido para discount (Mitigation Block → Breaker → Liquidity Void → FVG → Order Block → Rejection Block → Old Low/High). | Alta |
+| **RF-300** | Prioridad del Breaker sobre otros Arrays | El EA debe dar prioridad a los Breakers sobre otros PD Arrays (Order Blocks, FVGs, Liquidity Voids). | Alta |
+| **RF-301** | Setup Progression (Monthly → Weekly → Daily) | El EA debe seguir un flujo de análisis jerárquico: Monthly para contexto, Weekly para objetivos, Daily para ejecución. | Alta |
+| **RF-302** | Transposición de Niveles HTF a LTF | El EA debe transponer niveles identificados en Monthly y Weekly al Daily chart para ejecución. | Alta |
+| **RF-303** | Identificación de Bullish Order Block por Down Candles | El EA debe identificar Bullish Order Blocks como 3 Down Candles consecutivas (el open de la primera es el nivel clave). | Alta |
+| **RF-304** | Escalado en Largo (Scaling In) en Down Candles | El EA debe permitir añadir posiciones en Down Candles dentro de un contexto alcista (escalado en largo). | Media |
+| **RF-305** | Jerarquía de Soporte (Daily → Weekly → Monthly) | El EA debe buscar soporte en Daily, luego Weekly, luego Monthly si los niveles inferiores se pierden. | Alta |
+
+---
+
+##### Dominio Analysis: Módulo 13 - Análisis Macro, Intermercado y Seasonal
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-254** | Integración de Datos del 10-Year Treasury Note | El EA debe integrar datos del 10-Year Treasury Note (futures o yield) como filtro de contexto macro. | Alta |
+| **RF-255** | Cálculo de Yield del 10-Year | El EA debe calcular el yield del 10-Year a partir del precio del futures (relación inversa). | Alta |
+| **RF-256** | Detección de Condición de Mercado (Trending vs. Consolidación) | El EA debe comparar la dirección del 10-Year y el DXY para determinar si el mercado está en trending o consolidación. | Alta |
+| **RF-257** | Filtro Estacional (Seasonal Tendency) | El EA debe considerar las tendencias estacionales del 10-Year (enero-febrero alto, junio-julio bajo, noviembre alto) como filtro de contexto. | Media |
+| **RF-258** | Uso del 10-Year como Leading Indicator | El EA debe usar movimientos en el 10-Year como señal adelantada para anticipar movimientos en el DXY y pares FX. | Alta |
+| **RF-259** | Detección de "Cracking Correlation" (10-Year vs. DXY) | El EA debe detectar cuando la correlación normal (inversa) entre el 10-Year y el DXY se rompe, indicando una oportunidad de trading. | Alta |
+| **RF-260** | Verificación de Market Symmetry | El EA debe verificar la simetría de mercado entre el 10-Year y el DXY para confirmar condiciones de consolidación o tendencia. | Alta |
+| **RF-261** | Confirmación con Yield del 10-Year | El EA debe usar la dirección del yield del 10-Year (precio inverso) como confirmación de la dirección esperada en el DXY y pares FX. | Alta |
+| **RF-262** | Blending de Filtros Macro y Técnicos | El EA debe combinar los filtros macro (10-Year/DXY, seasonal tendencies) con los filtros técnicos (Data Ranges, Open Float, Swing Points) para calificar operaciones. | Alta |
+| **RF-263** | Calificación de Trade como Requisito Previo | El EA debe usar la verificación de condiciones macro (10-Year/DXY) como un requisito previo (filtro) antes de considerar cualquier señal técnica. | Alta |
+| **RF-264** | Integración de Tasas de Interés de Bancos Centrales | El EA debe integrar datos de tasas de interés de los principales bancos centrales (Fed, ECB, BoJ, BoE, RBA, RBNZ, BoC, SNB). | Alta |
+| **RF-265** | Cálculo de Diferenciales de Tasas | El EA debe calcular el diferencial entre las tasas de interés de la divisa base y la divisa cotizada para cada par. | Alta |
+| **RF-266** | Selección de Pares por Diferencial de Tasas | El EA debe priorizar pares con diferenciales de tasas significativos (>0.5%) para operaciones de tendencia. | Alta |
+| **RF-267** | Confirmación de Setup con Open Interest (OI) | El EA debe usar cambios en Open Interest (de futuros) como confirmación de la dirección esperada (caída de OI en soporte = compra, aumento de OI en resistencia = venta). | Alta |
+| **RF-268** | Blending de Diferenciales de Tasas con Análisis Técnico | El EA debe combinar el análisis fundamental (diferenciales de tasas) con el análisis técnico (Data Ranges, Order Blocks, Swing Points) para calificar operaciones. | Alta |
+| **RF-269** | Integración de Análisis Intermercado (4 Grupos) | El EA debe integrar datos de los 4 grupos del análisis intermercado: Bonos, Materias Primas, Acciones y Divisas. | Alta |
+| **RF-270** | Verificación de Relación Bonos vs. Acciones | El EA debe verificar que los bonos y las acciones se mueven en la misma dirección para confirmar el contexto de mercado. | Alta |
+| **RF-271** | Verificación de Relación Bonos vs. Materias Primas | El EA debe verificar que los bonos y las materias primas se mueven en direcciones opuestas para confirmar el contexto inflacionario. | Alta |
+| **RF-272** | Verificación de Relación Dólar vs. Materias Primas | El EA debe verificar que el DXY y el CRB Index se mueven en direcciones opuestas para confirmar el contexto de divisas. | Alta |
+| **RF-273** | Uso de Indicadores Adelantados (Lead Indicators) | El EA debe usar los bonos (30-Year Treasury) como indicador adelantado para anticipar movimientos en acciones y divisas. | Alta |
+| **RF-274** | Reglas de Correlación Clave (Gold, Oil, Nikkei) | El EA debe aplicar las reglas de correlación: DXY/Gold, Gold/AUD-NZD, Oil/USD-CAD, Nikkei/USD-JPY. | Alta |
+| **RF-275** | Integración de Tendencias Estacionales | El EA debe integrar datos de tendencias estacionales (40+ años) para cada par y activo. | Alta |
+| **RF-276** | Inversión de Seasonal para Pares USD/XXX | El EA debe invertir automáticamente la señal estacional para pares cotizados en USD (USD/CAD, USD/JPY, etc.). | Alta |
+| **RF-277** | Blending de Seasonal + Quarterly Shifts | El EA debe combinar las tendencias estacionales con los Quarterly Shifts para calificar operaciones de alta probabilidad. | Alta |
+| **RF-278** | Correlación Estacional CAD vs. Crude Oil | El EA debe usar la tendencia estacional del petróleo (WTI) como confirmación para el sesgo en CAD. | Media |
+| **RF-279** | Seasonal como Filtro de Contexto | El EA debe usar las tendencias estacionales como un filtro de contexto (no como señal única), priorizando operaciones que se alineen con el sesgo estacional. | Alta |
+| **RF-280** | Integración de Bearish Seasonal Tendencies | El EA debe integrar tendencias estacionales bajistas para cada par (basadas en datos históricos de 15-19 años). | Alta |
+| **RF-281** | Uso Dual de Bearish Seasonal (Short o Anticipación de Long) | El EA debe usar las tendencias bajistas tanto para operar cortos como para anticipar puntos de entrada largos (quarterly shifts). | Alta |
+| **RF-282** | Convergencia de Datos Estacionales (19 vs. 15 años) | El EA debe usar la convergencia de múltiples períodos de datos estacionales (19 años y 15 años) como filtro de alta probabilidad. | Alta |
+| **RF-283** | Contextualización de Seasonal Tendencies | El EA debe considerar el contexto general del mercado (bullish/bearish) antes de aplicar seasonal tendencies (ej. 2008 anuló el patrón estacional). | Alta |
+| **RF-284** | Seasonal Tendencies como Elemento Temporal (Timing) | El EA debe usar las seasonal tendencies para determinar **cuándo** esperar un setup, no solo qué dirección tomar. | Alta |
+| **RF-285** | Definición de "Ideal Seasonal Tendency" por Par | El EA debe definir la "Ideal Seasonal Tendency" para cada par FX (momento del año de mayor probabilidad). | Alta |
+| **RF-286** | Comparación de Seasonal Tendencies (Activo vs. DXY) | El EA debe comparar la tendencia estacional del activo (futures) con la del DXY para identificar oposiciones ideales. | Alta |
+| **RF-287** | Verificación de Convergencia 40-Year vs. 15-Year | El EA debe verificar la convergencia de las líneas de 40 años y 15 años como filtro de confianza. | Alta |
+| **RF-288** | Calendario Estacional Integrado | El EA debe integrar un "calendario estacional" para saber qué pares monitorear en cada época del año. | Media |
+| **RF-289** | Seasonal como Filtro de Contexto | El EA debe usar las seasonal tendencies (especialmente las "ideales") como filtro de contexto para todas las operaciones. | Alta |
+
+---
+
+##### Dominio Execution: Módulo 14 - Gestión de Dinero y Posiciones para Position Trading
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-290** | Asignación del 30% del Equity para Posición Trading | El EA debe usar solo el 30% del equity total para el cálculo de riesgo en posición trading. | Alta |
+| **RF-291** | Riesgo del 1% sobre el 30% (0.3% del Equity Total) | El EA debe calcular el riesgo por operación como 1% del 30% del equity total (0.3% del equity total). | Alta |
+| **RF-292** | **Límite de Drawdown Anual (15%) (Optimizado)** | El EA debe pausar el trading si el drawdown anual supera el 15%. **Este requisito es un caso específico de RF-027 con un valor del 15% anual.** | Alta |
+| **RF-293** | Frecuencia Máxima de Setups (3 por Año) | El EA debe limitar el número de operaciones de posición a un máximo de 3 por año. | Alta |
+| **RF-294** | Trailing Stop Amplio para Posición Trading | El EA debe usar un trailing stop que solo se active después de que el precio haya avanzado al menos 2x el stop loss inicial. | Alta |
+| **RF-295** | Salida Parcial y Reentrada | El EA debe permitir salidas parciales de posiciones en zonas de resistencia y reentradas en retrocesos. | Media |
+| **RF-306** | Buy Stop Entry en Down Candles | El EA debe usar Buy Stops en el Open de Down Candles (Daily) para entradas largas, con contexto HTF alcista. | Alta |
+| **RF-307** | Sell Stop Entry en Up Candles | El EA debe usar Sell Stops en el Open de Up Candles (Daily) para entradas cortas, con contexto HTF bajista. | Alta |
+| **RF-308** | Contexto HTF Obligatorio para Stop Entries | El EA solo debe usar Stop Entries si hay un PD Array en Monthly o Weekly que justifique el movimiento. | Alta |
+| **RF-309** | Escalado en Largo con Down Candles | El EA debe permitir añadir posiciones largas en cada nueva Down Candle dentro de un contexto alcista. | Media |
+| **RF-310** | Escalado en Corto con Up Candles | El EA debe permitir añadir posiciones cortas en cada nueva Up Candle dentro de un contexto bajista. | Media |
+| **RF-311** | Reentrada tras Take Profit Parcial | El EA debe permitir reentrar en una posición parcialmente cerrada si el precio retorna al Open de la vela de entrada. | Media |
+| **RF-312** | Buy Limit Entry en Down Candles | El EA debe usar Buy Limits en el Close de Down Candles (Daily) para entradas largas en deep discount, con contexto HTF alcista. | Alta |
+| **RF-313** | Sell Limit Entry en Up Candles | El EA debe usar Sell Limits en el Close de Up Candles (Daily) para entradas cortas en deep premium, con contexto HTF bajista. | Alta |
+| **RF-314** | Contexto HTF Obligatorio para Limit Entries | El EA solo debe usar Limit Entries si hay un PD Array en Monthly o Weekly que justifique el movimiento. | Alta |
+| **RF-315** | Estrategia Híbrida (Stop + Limit Entries) | El EA debe permitir colocar tanto Stop como Limit Entries en la misma vela, activando la primera que se cumpla. | Media |
+| **RF-316** | Deep Discount / Deep Premium como Filtro | El EA debe priorizar Limit Entries cuando el precio está en deep discount (compras) o deep premium (ventas). | Media |
+| **RF-317** | Trailing Stop basado en IPDA Data Ranges | El EA debe usar un trailing stop basado en el lowest low (largos) o highest high (cortos) de los últimos 40 días. | Alta |
+| **RF-318** | Ajuste Dinámico del Trailing Stop (40 → 20 días) | El EA debe reducir el lookback a 20 días al alcanzar el 50% del rango objetivo. | Alta |
+| **RF-319** | Ajuste Dinámico del Trailing Stop (20 → 10 días) | El EA debe reducir el lookback a 10-20 días al alcanzar el 75% del rango objetivo. | Alta |
+| **RF-321** | No Mover Stop a Breakeven Prematuramente | El EA no debe mover el stop a breakeven en posición trading hasta que el precio haya avanzado significativamente (≥50% del objetivo). | Alta |
+| **RF-322** | Cálculo de Progreso del Trade | El EA debe calcular el progreso del trade (0-100%) respecto al rango objetivo definido por el Monthly/Weekly. | Alta |
+
+---
+
+##### Dominio Models: Módulo 15 - Swing Trading
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-324** | Soporte para Modelo de Swing Trading | El EA debe soportar el modelo de Swing Trading como una opción configurable, con duraciones de 2 semanas o más y objetivos de 200-500 pips. | Alta |
+| **RF-325** | Identificación de Market Profiles | El EA debe identificar el perfil de mercado actual (Consolidación, Trending, Reversal) en Monthly y Weekly. | Alta |
+| **RF-326** | Filtro de Mercados en Consolidación | El EA debe evitar operar en mercados que estén en consolidación en Monthly/Weekly, ya que indican falta de interés institucional. | Alta |
+| **RF-327** | Selección de Mercados en Tendencia | El EA debe priorizar mercados que estén en tendencia en Monthly/Weekly (large flows institucionales). | Alta |
+| **RF-328** | Ejecución en 4-Hour Chart para Swing Trading | El EA debe permitir la ejecución de órdenes en H4 para swing trading, manteniendo el análisis en HTF. | Alta |
+| **RF-329** | Rotación de Mercados para Swing Trading | El EA debe evaluar múltiples mercados periódicamente para identificar aquellos con los mejores perfiles de tendencia. | Media |
+| **RF-330** | Alineación con Quarterly Shifts | El EA debe alinear los setups de swing trading con los Quarterly Shifts (cada 3-4 meses). | Media |
+| **RF-331** | Filtrado de Swing Trading por Hallmarks | El EA debe evaluar la presencia de los 7 hallmarks del swing trading exitoso antes de ejecutar un setup. | Alta |
+| **RF-332** | Clean Price Action como Filtro | El EA debe priorizar setups con price action limpio y niveles claros, evitando aquellos que requieran "forzar" la idea. | Alta |
+| **RF-333** | Identificación de Bank Accumulation (Down Candles) | El EA debe identificar Down Candles como zonas de acumulación en mercados alcistas. | Alta |
+| **RF-334** | Identificación de Bank Distribution (Up Candles) | El EA debe identificar Up Candles como zonas de distribución en mercados bajistas. | Alta |
+| **RF-335** | Rule-Based Filtering Process | El EA debe aplicar un proceso de filtrado estático y estandarizado a todos los setups de swing trading, sin excepciones. | Alta |
+| **RF-336** | R:R Mínimo de 3:1 para Swing Trading | El EA debe filtrar setups de swing trading que no cumplan con un R:R mínimo de 3:1 (preferiblemente 5:1). | Alta |
+| **RF-337** | COT Data como Filtro Opcional | El EA debe permitir el uso de datos COT como filtro opcional para mejorar las probabilidades. | Media |
+| **RF-338** | PD Array Matrix (Premium/Discount Spectrum) | El EA debe clasificar cada PD Array como Premium (por encima del precio) o Discount (por debajo del precio). | Alta |
+| **RF-339** | Transposición de Niveles HTF → LTF | El EA debe transponer niveles de Monthly → Weekly → Daily → 4H para ejecución. | Alta |
+| **RF-340** | Alineación de Buy Program / Sell Program | El EA debe verificar que Monthly, Weekly y Daily estén alineados en la misma dirección para un swing trade de alta probabilidad. | Alta |
+| **RF-341** | Impulse Swing + Retracement + Expansion | El EA debe esperar el retracement después de un impulse swing antes de ejecutar en la expansión. | Alta |
+| **RF-342** | Setup Failure Protocol con Reducción del 50% | Si un setup falla, el EA debe buscar el siguiente PD Array y ejecutar con 50% del tamaño de posición. | Alta |
+| **RF-343** | Scaling Out en Múltiples Temporalidades | El EA debe escalar out en los PD Arrays de 4H, Daily, Weekly y Monthly, cerrando porciones progresivamente menores. | Alta |
+| **RF-344** | Análisis Fractal del Precio | El EA debe analizar el precio de forma fractal: impulse swings, retracements y expansions en todas las temporalidades. | Media |
+| **RF-345** | R:R Mínimo de 3:1 (preferiblemente 5:1) | El EA debe filtrar setups de swing trading que no cumplan con R:R mínimo de 3:1 (preferiblemente 5:1). | Alta |
+| **RF-346** | Monthly Weekly Daily Sequential | El EA debe analizar Monthly → Weekly → Daily → 4H secuencialmente para swing trading, confirmando la dirección en cada temporalidad. | Alta |
+| **RF-347** | Comprar Discount Arrays en Mercados Alcistas | El EA debe identificar y comprar todos los discount arrays (bullish OB, breakers, FVGs, voids, rejection blocks, old lows) en uptrends. | Alta |
+| **RF-348** | Nested Discount Arrays (Confluencia HTF) | El EA debe buscar confluencia entre discount arrays de diferentes temporalidades (Daily dentro de Weekly, Weekly dentro de Monthly). | Alta |
+| **RF-349** | Evitar Compras en Premium Zone | El EA debe evitar comprar en la zona premium (por encima del 50% del rango), incluso si hay un OB. | Alta |
+| **RF-350** | Down Candles como Soporte en Uptrends | El EA debe identificar Down Candles en el Daily/4H como niveles de soporte para entradas en uptrends. | Alta |
+| **RF-351** | Fibonacci Expansion para Definir Rango | El EA debe usar Fibonacci Expansion para definir el rango (0-100%) y los niveles de premium/discount (20%, 30%, 50%, 80%, 90%). | Media |
+| **RF-352** | Swing Trading Time Horizon: 2 Semanas a 1 Mes | El EA debe configurarse para mantener posiciones de swing trading durante 2 semanas a 1 mes, no como intraday. | Alta |
+| **RF-353** | Bearish Monthly Weekly Daily Sequential | El EA debe analizar Monthly → Weekly → Daily → 4H secuencialmente para swing trading en mercados bajistas. | Alta |
+| **RF-354** | Vender Premium Arrays en Mercados Bajistas | El EA debe identificar y vender todos los premium arrays (bearish OB, breakers, FVGs, voids, rejection blocks, old highs) en downtrends. | Alta |
+| **RF-355** | Nested Premium Arrays (Confluencia HTF) | El EA debe buscar confluencia entre premium arrays de diferentes temporalidades para ventas. | Alta |
+| **RF-356** | Evitar Ventas en Discount Zone | El EA debe evitar vender en la zona discount (por debajo del 50% del rango), incluso si hay un OB. | Alta |
+| **RF-357** | Up Candles como Resistencia en Downtrends | El EA debe identificar Up Candles en el Daily/4H como niveles de resistencia para entradas en downtrends. | Alta |
+| **RF-358** | Mean Threshold de Bearish Order Blocks | El EA debe calcular el mean threshold (50% del cuerpo) de los bearish order blocks como nivel de entrada. | Alta |
+| **RF-359** | Layered Resistance (Monthly + Weekly) | El EA debe identificar y priorizar niveles donde coinciden premium arrays de Monthly y Weekly (layered resistance). | Alta |
+| **RF-360** | Múltiples Pasadas a Niveles HTF | El EA debe permitir múltiples entradas en el mismo nivel HTF (Monthly/Weekly) ya que los grandes fondos construyen posiciones gradualmente. | Media |
+| **RF-361** | R:Mínimo de 3:1 para Swing Trading | El EA debe filtrar setups de swing trading con R:R < 3:1. Idealmente buscar R:R ≥ 5:1. | Alta |
+| **RF-363** | Frecuencia de Swing Trades: 1-2 cada 4-6 Semanas | El EA debe limitar la frecuencia de swing trades a 1-2 por cada 4-6 semanas (6-8 por año). | Alta |
+| **RF-364** | Framing de Swing Trade en Monthly/Weekly | El EA debe definir el rango y los objetivos de swing trading en Monthly/Weekly, y la entrada en 4H. | Alta |
+| **RF-365** | Stop Loss Ajustado en 4H para Swing Trading | El EA debe usar stops ajustados en 4H (ej. ~70 pips) para maximizar R:R en swing trading. | Alta |
+| **RF-368** | Control de Leverage (3:1 o menos) | El EA debe usar bajo apalancamiento (≤3:1) para swing trading. | Media |
+| **RF-369** | Verificación de Market Profiles (4 Asset Classes) | El EA debe verificar que al menos 2 de las 4 asset classes (Stocks, Bonds, Commodities, Currencies) estén en tendencia. | Alta |
+| **RF-372** | **Open Interest como Filtro de Confirmación (Optimizado)** | El EA debe usar Open Interest (de futuros) como filtro para confirmar reversiones en soporte/resistencia. **Este requisito referencia al análisis completo de OI en RF-681 a RF-700 (COIAnalyzer).** | Alta |
+| **RF-373** | Volatility Contraction (Inside Bar) como Filtro | El EA debe detectar contracciones de volatilidad (inside bars, rango estrecho) como señal de expansión inminente. | Alta |
+| **RF-374** | Williams %R como Filtro de Sentimiento | El EA debe usar Williams %R (15 periodos) como filtro de sentimiento (sobrecompra/sobreventa). | Media |
+| **RF-375** | Calificación de Explosividad (8 Hallmarks) | El EA debe calcular una puntuación de explosividad basada en los 8 hallmarks (mínimo 5/8 para considerar). | Alta |
+| **RF-376** | Million Dollar Swing Setup (Filtro en Cascada) | El EA debe implementar un proceso de filtrado en cascada (8 etapas) para identificar swing trades de máxima calidad. | Alta |
+| **RF-377** | Seasonal como Primer Filtro Obligatorio | El EA no debe ejecutar swing trades sin una tendencia estacional que apoye la dirección. | Alta |
+| **RF-378** | Filtro de Major Market Analysis (4 Asset Classes) | El EA debe verificar que al menos 2 de las 4 asset classes estén en tendencia antes de un swing trade. | Alta |
+| **RF-379** | COT Hedging Program como Filtro Obligatorio | El EA debe usar COT (comerciales, rango 12 meses) como filtro obligatorio para swing trades. | Alta |
+| **RF-380** | Open Interest Filter (10-15% cambio) | El EA debe verificar que el OI haya cambiado 10-15%+ en la dirección correcta antes de un swing trade. | Alta |
+| **RF-381** | Técnica de Entrada según Tipo de PD Array | El EA debe usar Stop Entry para Breaker/Mitigation/FVG/Void, y Limit Entry para Order Block/Rejection Block/Old High/Low. | Alta |
+| **RF-382** | Gestión de Swing Trade: 25% Profit + Breakeven | El EA debe tomar 20-30% de profit al 25% del objetivo y mover stop a breakeven. | Alta |
+| **RF-383** | Reentrada al 50% del Objetivo | El EA debe buscar reentrar en la posición al 50% del objetivo (después de un retracement). | Media |
+| **RF-384** | Trailing Stop Ajustado al 75% del Objetivo | El EA debe ajustar el trailing stop al 75% del objetivo para proteger ganancias. | Alta |
+| **RF-385** | Detección de Stop Runs en Swing Trading | El EA debe anticipar stop runs en el punto medio del rango (equilibrium) y ajustar la gestión en consecuencia. | Media |
+
+---
+
+##### Dominio Models: Módulo 16 - Short-Term Trading & One Shot One Kill (OSOK)
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-386** | Short-Term Trading Model | El EA debe soportar el modelo de Short-Term Trading como una opción configurable, con duración de 1 semana o pocos días. | Alta |
+| **RF-387** | Weekly Range as Backbone | El EA debe utilizar el rango semanal como la estructura principal para enmarcar los setups de short-term trading. | Alta |
+| **RF-388** | Monday-Wednesday Range | El EA debe identificar el rango formado entre el lunes y el miércoles de cada semana como referencia clave para confirmación de dirección. | Alta |
+| **RF-389** | Break of MW Range Confirmation | El EA debe usar la ruptura del rango de lunes-miércoles como confirmación de dirección (break al alza = bullish, break a la baja = bearish). | Alta |
+| **RF-390** | One Shot One Kill Approach | El EA debe priorizar una sola operación de alta probabilidad por semana (One Shot One Kill), evitando operaciones forzadas. | Alta |
+| **RF-391** | Opposing PD Array Targeting | El EA debe buscar movimientos desde un PD Array mensual hacia un PD Array semanal opuesto (premium→discount o discount→premium). | Alta |
+| **RF-392** | Short-Term Point of Origin | El EA debe definir el punto de origen desde la temporalidad mensual para enmarcar el movimiento esperado en short-term trading. | Alta |
+| **RF-393** | Short-Term Killzone: Asian Session | El EA debe permitir la ejecución de short-term trades dentro de la Killzone de la sesión asiática (6PM-9PM hora NY). | Media |
+| **RF-394** | Short-Term Time Filter: Mon-Wed | El EA debe filtrar los setups de short-term trading a los días lunes, martes y miércoles. | Alta |
+| **RF-395** | Weekly Premium/Discount Arrays | El EA debe identificar PD Arrays (premium y discount) en el gráfico semanal como objetivos para short-term trades. | Alta |
+| **RF-396** | Short-Term Executable TF: 1H | El EA debe utilizar el gráfico de 1 hora como temporalidad ejecutable para short-term trading. | Alta |
+| **RF-397** | Monthly PD Array Directional Bias | El EA debe determinar el sesgo direccional a partir de la PD Array mensual (premium = bearish, discount = bullish). | Alta |
+| **RF-398** | Classic Tuesday Low/High Detection | El EA debe identificar los perfiles de martes (mínimo o máximo de la semana) basados en la relación del precio con arrays HTF. | Alta |
+| **RF-399** | Wednesday Low/High Detection | El EA debe identificar los perfiles de miércoles (mínimo o máximo de la semana) basados en la relación del precio con arrays HTF. | Alta |
+| **RF-400** | Thursday Reversal Detection | El EA debe identificar perfiles de reversión el jueves, donde el precio consolida L-M-M y luego revierte tras correr un extremo semanal. | Alta |
+| **RF-401** | Midweek Rally/Decline Detection | El EA debe identificar perfiles de expansión de mitad de semana, donde el precio consolida y luego expande hacia el viernes. | Alta |
+| **RF-402** | Seek and Destroy Profile Detection | El EA debe identificar perfiles "Seek and Destroy" (baja probabilidad) y evitarlos o ajustar el riesgo. | Media |
+| **RF-403** | Wednesday Weekly Reversal Detection | El EA debe identificar perfiles de reversión el miércoles, donde el precio corre stops y revierte fuertemente. | Alta |
+| **RF-404** | Weekly Range Profile Classification | El EA debe clasificar automáticamente el perfil de rango semanal actual para contextualizar la operativa. | Alta |
+| **RF-405** | HTF Array Proximity for Profile Anticipation | El EA debe monitorear la proximidad del precio a arrays HTF (premium/discount) para anticipar perfiles semanales. | Alta |
+| **RF-406** | Market Driver / News Event Filter | El EA debe detectar días con eventos de mercado (NFP, tipos de interés, FOMC) y ajustar los perfiles esperados. | Media |
+| **RF-407** | Summer Months Avoidance (Jul-Aug) | El EA debe permitir desactivar operativas en los meses de verano (julio-agosto) para evitar perfiles de baja probabilidad. | Baja |
+| **RF-408** | Stop Run Inducement Detection | El EA debe identificar cuando el precio está induciendo stops (sell stops o buy stops) como parte de un perfil semanal. | Alta |
+| **RF-409** | Market Maker Manipulation Templates | El EA debe implementar las plantillas de manipulación del Market Maker para identificar patrones de formación de rangos semanales. | Alta |
+| **RF-410** | Liquidity Pool Run Detection | El EA debe detectar cuándo el precio está corriendo un liquidity pool (buy stops o sell stops) en niveles HTF. | Alta |
+| **RF-411** | Entry at Discount Array with HTF Liquidity Run | El EA debe permitir entradas largas cuando el precio corre sell stops en un discount array HTF (old low, OB, FVG, etc.). | Alta |
+| **RF-412** | Entry at Premium Array with HTF Liquidity Run | El EA debe permitir entradas cortas cuando el precio corre buy stops en un premium array HTF (old high, OB, rejection, etc.). | Alta |
+| **RF-413** | Lesser Time Frame Target Rule | El EA debe utilizar una temporalidad menor para los objetivos que la utilizada para la entrada (ej: entrada en weekly → objetivo en daily/4H). | Alta |
+| **RF-414** | Fibonacci Extension Projections (127/168) | El EA debe calcular extensiones de Fibonacci de 127% y 168% como objetivos de precio. | Alta |
+| **RF-415** | Perfect Symmetrical Price Swing Target | El EA debe calcular el objetivo de 100% de medida simétrica (perfect symmetrical price swing). | Alta |
+| **RF-416** | Tuesday/Wednesday Extreme Formation | El EA debe identificar que los extremos de la semana (máximos/mínimos) se forman típicamente el martes o miércoles. | Alta |
+| **RF-417** | Thursday/Friday Expansion Target | El EA debe buscar la expansión hacia los objetivos el jueves y viernes, especialmente con eventos de mercado. | Alta |
+| **RF-418** | FOMC/NFP Event Handling | El EA debe ajustar la gestión de riesgo para eventos de alto impacto (FOMC, NFP), con posiciones muy pequeñas. | Media |
+| **RF-419** | Manipulation Template Classification | El EA debe clasificar automáticamente qué plantilla de manipulación se está formando (classic Tuesday low, Wednesday high, consolidation Thursday reversal, etc.). | Alta |
+| **RF-420** | Swing Grade Entry Points | El EA debe permitir entradas en tres niveles: primer swing grade, equilibrium y tercer swing grade. | Media |
+| **RF-421** | Fulcrum Point for FIB Projections | El EA debe identificar el punto de fulcro (máximo/mínimo del swing) para proyectar extensiones de Fibonacci. | Alta |
+| **RF-422** | Blending Time and Price for Short-Term | El EA debe combinar los IPDA Data Ranges (tiempo) con los PD Arrays (precio) para predecir liquidity runs. | Alta |
+| **RF-423** | Hierarchical PD Array Search (20/40/60 Days) | El EA debe buscar PD Arrays en el orden jerárquico dentro de cada Data Range (20, 40, 60 días). | Alta |
+| **RF-424** | PD Array Exhaustion Detection | El EA debe detectar cuándo un PD Array ha sido "exhausto" (ya alcanzado y reaccionado) y buscar el siguiente en la jerarquía. | Alta |
+| **RF-425** | Look Back Period Contextualization | El EA debe contextualizar los PD Arrays dentro de los períodos de look back de 20, 40 y 60 días hábiles. | Alta |
+| **RF-426** | Daily Cast Forward Shift | El EA debe actualizar los Data Ranges diariamente (cast forward) para mantener la relevancia de los PD Arrays. | Media |
+| **RF-427** | Premium/Discount Range Classification by Data Range | El EA debe clasificar el precio actual como premium o discount en relación con los rangos de 20, 40 y 60 días. | Alta |
+| **RF-428** | Failure Swing as Reversal Signal | El EA debe usar un failure swing (fallo en romper un nivel) como señal de cambio de dirección en short-term trading. | Alta |
+| **RF-429** | Institutional Price Level Identification | El EA debe identificar niveles de precio institucionales como puntos de referencia para entradas. | Media |
+| **RF-430** | Live Analysis Adaptation | El EA debe poder cambiar de dirección (bullish→bearish o viceversa) cuando el análisis inicial falle, basado en failure swings. | Alta |
+| **RF-431** | Consolidation Range Definition (60-Day Bodies) | El EA debe definir el rango de consolidación usando los cuerpos (open/close) de las velas de los últimos 60 días hábiles, no las mechas. | Alta |
+| **RF-432** | Fibonacci Midpoint Calculation | El EA debe calcular el punto medio (50%) del rango de consolidación usando la herramienta Fibonacci. | Alta |
+| **RF-433** | Premium/Discount Quadrant Classification | El EA debe clasificar el precio en cuadrantes de premium (superior) y discount (inferior) basados en el midpoint del rango de consolidación. | Alta |
+| **RF-434** | Fractal Quadrant Division | El EA debe subdividir cada cuadrante en mitades premium/discount de forma fractal (anidada). | Media |
+| **RF-435** | Low Resistance Liquidity Run Detection | El EA debe identificar movimientos de baja resistencia entre PD Arrays en el mismo cuadrante o entre cuadrantes adyacentes. | Alta |
+| **RF-436** | Best Buy Zone: Lower Quadrant | El EA debe priorizar entradas largas en el cuadrante inferior (discount) del rango de consolidación. | Alta |
+| **RF-437** | Best Sell Zone: Upper Quadrant | El EA debe priorizar entradas cortas en el cuadrante superior (premium) del rango de consolidación. | Alta |
+| **RF-438** | Chop Zone Avoidance (Middle Range) | El EA debe evitar operar en el centro del rango de consolidación donde ocurre "chopping". | Media |
+| **RF-439** | Fresh PD Array Priority | El EA debe priorizar PD Arrays que no han sido "exhaustos" (no han sido alcanzados recientemente). | Alta |
+| **RF-440** | First Profit at Premium/Discount Boundary | El EA debe tomar el primer profit cuando el precio cruza de discount a premium (o viceversa) en el cuadrante correspondiente. | Alta |
+| **RF-441** | 4H as Primary Short-Term Executable TF | El EA debe utilizar el gráfico de 4 horas como la temporalidad ejecutable principal para One Shot One Kill setups. | Alta |
+| **RF-442** | Weekly Dividers Visualization | El EA debe mostrar divisores verticales semanales en el gráfico para visualizar los rangos semanales. | Baja |
+| **RF-443** | Trending Market Low Resistance Run | El EA debe identificar low resistance liquidity runs en condiciones de tendencia (discount→premium o premium→discount). | Alta |
+| **RF-444** | Weekly Range Completion Monitoring | El EA debe monitorear el porcentaje del rango semanal completado (30-50% típicamente para el miércoles). | Media |
+| **RF-445** | Pip Objective Scaling | El EA debe permitir configurar objetivos de pips escalonados (30-50, 50-75, 75-100 pips/semana). | Media |
+| **RF-446** | Deep Discount Buy Zone | El EA debe identificar condiciones de descuento profundo (oversold) como zonas de alta probabilidad para compras. | Alta |
+| **RF-447** | Trending Environment Classification | El EA debe clasificar el mercado como "tendencia" o "consolidación" para aplicar diferentes estrategias de low resistance runs. | Alta |
+| **RF-448** | Quadrants as Algorithm Targets | El EA debe tratar los cuadrantes premium/discount como "marcadores de milla" que el algoritmo IPDA buscará alcanzar. | Alta |
+| **RF-449** | Weekly Range Anticipation Exercise | El EA debe permitir al usuario practicar la anticipación del rango semanal (modo simulación/análisis). | Baja |
+| **RF-450** | Failure to Complete Weekly Range | El EA debe detectar cuando el mercado no completa el rango semanal esperado y ajustar la estrategia. | Media |
+| **RF-451** | Intra-Week Reversal Detection | El EA debe detectar patrones de reversión intra-semanal basados en velocidad y magnitud del movimiento en lunes y martes. | Alta |
+| **RF-452** | Speed & Magnitude Monitoring (Mon-Tue) | El EA debe monitorear la velocidad y magnitud del movimiento en lunes y martes como señal temprana de reversión. | Alta |
+| **RF-453** | 24-Hour Move Threshold Detection | El EA debe detectar cuando el precio se mueve más de 200 pips en 24 horas como señal de posible reversión. | Media |
+| **RF-454** | Average Daily Range Exceedance Detection | El EA debe comparar el movimiento actual con el rango diario promedio de los últimos 5 días; si lo supera significativamente, señal de reversión. | Media |
+| **RF-455** | Overlapping Trading Models Conflict Detection | El EA debe detectar conflictos entre modelos de trading (short-term vs swing vs position) como señal de posible reversión. | Alta |
+| **RF-456** | HTF Model Priority in Conflicts | El EA debe priorizar el modelo de mayor temporalidad cuando haya conflicto entre modelos (HTF siempre gana). | Alta |
+| **RF-457** | Institutional Reference Point as Reversal Catalyst | El EA debe identificar PD Arrays HTF (daily/weekly/monthly) como puntos de referencia que pueden causar reversiones. | Alta |
+| **RF-458** | Unwillingness to Leave Premium Detection | El EA debe detectar cuando el mercado está en la porción superior del rango premium y muestra resistencia a salir (señal de continuación al alza). | Media |
+| **RF-459** | Reversal Profile Classification | El EA debe clasificar las reversiones intra-semanales como perfiles específicos (ej: Wednesday low reversal, Tuesday high reversal). | Alta |
+| **RF-460** | Model Blending for Reversal Anticipation | El EA debe combinar información de múltiples modelos de trading para anticipar reversiones intra-semanales. | Alta |
+| **RF-461** | One Shot One Kill Trading Model | El EA debe implementar el modelo completo de One Shot One Kill como una estrategia de trading integrada. | Alta |
+| **RF-462** | OSOK Procedural Execution | El EA debe ejecutar el procedimiento OSOK paso a paso: macro → seasonal → COT → PD Arrays → MM templates → execution. | Alta |
+| **RF-463** | **Commercial Hedging Program Analysis (Optimizado)** | El EA debe analizar el programa de cobertura comercial usando datos COT (rango de 12 meses, nueva línea cero). **Este requisito referencia al análisis completo de COT en RF-601 a RF-620 (CCOTAnalyzer).** | Alta |
+| **RF-464** | Seasonal + COT Blending | El EA debe combinar seasonal tendencies con COT hedging program para confirmar dirección. | Alta |
+| **RF-465** | Weekly High/Low Projection (OSOK) | El EA debe proyectar el high y low de la semana usando técnicas OSOK (intraday swing measurements, FIB, PD Arrays). | Alta |
+| **RF-466** | Monday/Tuesday/Wednesday High/Low Anticipation | El EA debe anticipar que el high/low de la semana se formará entre lunes y miércoles (76% probabilidad). | Alta |
+| **RF-467** | Volatility Signal for Range Expansion | El EA debe usar señales de volatilidad (contracción/expansión) para timing de entradas OSOK. | Media |
+| **RF-468** | Premium/Discount Range Classification for OSOK | El EA debe clasificar el precio en premium/discount ranges como parte del procedimiento OSOK. | Alta |
+| **RF-469** | FIB Convergence with PD Arrays | El EA debe identificar convergencia entre niveles de Fibonacci (127%, 168%) y PD Arrays opuestos. | Alta |
+| **RF-470** | Intermarket Confirmation for OSOK | El EA debe confirmar setups OSOK con análisis intermercado (DXY, Euro/Pound, Bonds). | Alta |
+| **RF-471** | Scale-In on OSOK | El EA debe permitir escalado en posiciones OSOK (ej: entrar con pequeña porción el lunes, añadir el martes si no hay higher high). | Media |
+
+---
+
+##### Dominio Models: Módulo 17 - Day Trading (FUSIONADO)
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-500** | Day Trading Model Implementation | El EA debe implementar el modelo de Day Trading como una opción configurable, con duración intradía, objetivos de 30-100 pips por día y captura del 65-70% del rango diario. | Alta |
+| **RF-501** | IPDA True Day Framework | El EA debe definir el IPDA True Day como el marco temporal para day trading: desde las 12:00 AM (medianoche) hasta las 3:00 PM hora NY. | Alta |
+| **RF-502** | Kill Zones for Day Trading | El EA debe identificar y operar dentro de las Kill Zones específicas: London Kill Zone (1-5 AM NY), New York Kill Zone (7-10 AM NY), London Close Kill Zone (10 AM-12 PM NY). | Alta |
+| **RF-503** | CBDR (Central Bank Dealers Range) Calculation | El EA debe calcular el CBDR como el rango de precio entre las 2:00 PM y 8:00 PM hora NY. | Alta |
+| **RF-504** | CBDR Standard Deviation Projections | El EA debe usar el rango del CBDR como una desviación estándar para proyectar máximos y mínimos diarios (1-4 SD). | Alta |
+| **RF-505** | Intraday Profiles Detection | El EA debe identificar 4 perfiles intraday para la sesión de Londres: Normal Buy, Normal Sell, Delayed Protraction Buy, Delayed Protraction Sell. **(Fusionado en CDayTrading como sub-estructura)** | Alta |
+| **RF-506** | High Probability Day Trade Setups | El EA debe identificar 12 setups de alta probabilidad para day trading: Previous Day High/Low, Intra-Week High/Low, Intermediate Term High/Low, NY Session Reversal, London Close Reversal, CME Open Reversal, etc. | Alta |
+| **RF-507** | Market Reversals Classification (8 Types) | El EA debe identificar y clasificar 8 tipos de reversiones de mercado: Previous Day High/Low, Intra-Week High/Low, Intermediate Term High/Low, NY Session, London Close, CME Open. **(Fusionado en CDayTrading como sub-estructura)** | Alta |
+| **RF-508** | Daily Routine Structure | El EA debe implementar la rutina diaria estructurada para day trading: calendario económico → DXY → IPDA Data Ranges → PD Arrays → bias → lower TFs → standard deviations → weekly templates → ejecución. | Alta |
+| **RF-509** | News Catalyst Timing | El EA debe integrar eventos de mercado (FOMC, NFP, CPI) como filtros de timing para day trading, con gestión de riesgo ajustada. | Alta |
+| **RF-510** | **ADR (Average Daily Range) Calculation for Day Trading** | El EA debe calcular el Average Daily Range de los últimos 5 días hábiles para day trading. **Este requisito referencia a RF-510.1 (cálculo genérico de ADR).** | Alta |
+| **RF-511** | Day Trading Risk per Trade | El EA debe usar un riesgo del 1.5% por operación de day trading, con stop loss ajustado a la estructura de mercado. | Alta |
+| **RF-512** | Day Trading Max Trades Per Day | El EA debe limitar las operaciones de day trading a un máximo de 1-2 por día. | Alta |
+| **RF-513** | Day Trading Profit Target | El EA debe permitir configurar un objetivo de profit diario (ej. 30-100 pips) y pausar la operativa al alcanzarlo. | Media |
+| **RF-514** | Day Trading Stop Loss | El EA debe usar stop loss ajustado en M15 (ej. 15-25 pips) para day trading. | Alta |
+| **RF-515** | Day Trading Take Profit | El EA debe usar take profit dinámico basado en el rango diario proyectado (65-70% del rango). | Alta |
+| **RF-516** | Day Trading Trailing Stop | El EA debe implementar trailing stop agresivo para day trading, moviendo el stop a breakeven tras 10-15 pips de ganancia. | Media |
+| **RF-517** | Day Trading Scaling Out | El EA debe permitir scaling out en day trading: TP1 al 50% del objetivo, TP2 al 100% del objetivo. | Media |
+| **RF-518** | Day Trading Logging | El EA debe registrar estadísticas específicas de day trading: pips por día, win rate diario, drawdown diario. | Media |
+| **RF-519** | Day Trading Panel Display | El EA debe mostrar en el panel: IPDA True Day, CBDR, Kill Zone activa, ADR, proyección de high/low diario. | Media |
+
+---
+
+##### Dominio Models: Módulo 18 - Scalping (FUSIONADO)
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-520** | Scalping Model Implementation | El EA debe implementar el modelo de Scalping como una opción configurable, con duración de 1-2 horas, objetivos de 15-30 pips por operación y R:R 1:1. | Alta |
+| **RF-521** | Scalping Executable TF: M5 | El EA debe utilizar el gráfico de 5 minutos como temporalidad ejecutable principal para scalping. | Alta |
+| **RF-522** | Scalping Risk per Trade | El EA debe usar un riesgo del 0.5%-1% por operación de scalping, con stop loss ultra ajustado (5-10 pips). | Alta |
+| **RF-523** | Scalping Max Trades Per Day | El EA debe limitar las operaciones de scalping a un máximo de 3-5 por día. | Alta |
+| **RF-524** | Price Engine Models for Scalping | El EA debe implementar los 4 Price Engine Models: Offset Accumulation (buys), Re-Accumulation (buys), Offset Distribution (sells), Redistribution (sells). **(Fusionado en CScalping como sub-estructura)** | Alta |
+| **RF-525** | Offset Accumulation Detection | El EA debe identificar el modelo de Offset Accumulation: IPDA repricing por debajo de old low para inducir sell stops y acumular sell side liquidity (compras). | Alta |
+| **RF-526** | Offset Distribution Detection | El EA debe identificar el modelo de Offset Distribution: IPDA repricing por encima de old high para inducir buy stops y acumular buy side liquidity (ventas). | Alta |
+| **RF-527** | Re-Accumulation Detection | El EA debe identificar el modelo de Re-Accumulation: IPDA repricing a fair value array (discount) para proporcionar smart money discount pricing (compras). | Alta |
+| **RF-528** | Redistribution Detection | El EA debe identificar el modelo de Redistribution: IPDA repricing a fair value array (premium) para proporcionar smart money premium pricing (ventas). | Alta |
+| **RF-529** | 20 Pips Per Day Strategy | El EA debe implementar la estrategia de scalping "20 Pips Per Day": Asian Turtle Soup (6-8 PM NY) y New York Expansion. | Alta |
+| **RF-530** | Asian Turtle Soup Setup | El EA debe identificar el setup de Asian Turtle Soup: precio rompe el rango asiático (6-9 PM NY) y revierte agresivamente. | Alta |
+| **RF-531** | New York Expansion Setup | El EA debe identificar el setup de New York Expansion: precio rompe el rango de London y expande durante la sesión NY. | Alta |
+| **RF-532** | **ADR Exit Rule for Scalping** | El EA debe implementar la regla de salida ADR: cerrar posición si el precio está a 15 pips del Average Daily Range. **Este requisito referencia a RF-510.1 (cálculo genérico de ADR).** | Alta |
+| **RF-533** | Sentiment Effect Analysis | El EA debe analizar el sentimiento del retail a través de la caída del precio en soporte o subida en resistencia, como confirmación de entrada en scalping. | Media |
+| **RF-534** | Bread & Butter Buy Setup | El EA debe identificar el "Bread & Butter" Buy Setup en temporadas de consolidación: comprar en soporte de rango con confirmación de precio. | Media |
+| **RF-535** | Bread & Butter Sell Setup | El EA debe identificar el "Bread & Butter" Sell Setup en temporadas de consolidación: vender en resistencia de rango con confirmación de precio. | Media |
+| **RF-536** | Scalping Stop Loss | El EA debe usar stop loss ultra ajustado (5-10 pips) para scalping, basado en estructura de precio en M5. | Alta |
+| **RF-537** | Scalping Take Profit | El EA debe usar take profit fijo de 15-30 pips o basado en estructura de precio (liquidity pools cercanos). | Alta |
+| **RF-538** | Scalping Breakeven Rule | El EA debe mover el stop a breakeven tras 5-10 pips de ganancia en scalping. | Media |
+| **RF-539** | Scalping Logging | El EA debe registrar estadísticas específicas de scalping: pips por operación, tiempo de duración, número de operaciones por sesión. | Media |
+| **RF-540** | Scalping Panel Display | El EA debe mostrar en el panel: ADR, Price Engine Model activo, sesión activa (Asian/NY), distancia al ADR. | Media |
+| **RF-541** | Scalping Spread Filter | El EA debe filtrar entradas de scalping cuando el spread supere 0.5 pips (para pares mayores). | Alta |
+| **RF-542** | Scalping Slippage Protection | El EA debe configurar slippage máximo de 1 pip para scalping. | Alta |
+| **RF-543** | Scalping Kill Zones | El EA debe ejecutar scalping únicamente dentro de las Kill Zones de mayor liquidez (Asian 6-9 PM NY, NY 8-11 AM NY). | Alta |
+| **RF-544** | Filling the Numbers Strategy | El EA debe implementar la estrategia "Filling the Numbers": operar en niveles redondos (ej. 1.2000, 1.2100) como objetivos de scalping. | Media |
+
+---
+
+##### Dominio Analysis: Módulo 19 - COT Analysis
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-601** | COT Short Format Analysis | El EA debe analizar el formato corto del COT (Commitment of Traders) para identificar posicionamiento de grandes jugadores. | Alta |
+| **RF-602** | Buy Program Identification | El EA debe identificar condiciones de Buy Program (comerciales netos largos sostenidos por encima de línea cero). | Alta |
+| **RF-603** | Sell Program Identification | El EA debe identificar condiciones de Sell Program (comerciales netos cortos sostenidos por debajo de línea cero). | Alta |
+| **RF-604** | Hedging Program Detection | El EA debe detectar programas de cobertura (hedging) donde los comerciales compran/venden agresivamente en niveles específicos. | Alta |
+| **RF-605** | 6-Month Commercial Range | El EA debe calcular el rango de 6 meses de la posición neta comercial para identificar tendencias de medio plazo. | Alta |
+| **RF-606** | 12-Month Commercial Range | El EA debe calcular el rango de 12 meses de la posición neta comercial para identificar el programa de cobertura dominante. | Alta |
+| **RF-607** | New Zero Line Calculation | El EA debe calcular la nueva línea cero a partir del punto medio del rango de 12 meses de comerciales. | Alta |
+| **RF-608** | Buy Hedge (COT) Detection | El EA debe identificar acciones de compra agresiva dentro de un programa de venta (sell program). | Alta |
+| **RF-609** | Sell Hedge (COT) Detection | El EA debe identificar acciones de venta agresiva dentro de un programa de compra (buy program). | Alta |
+| **RF-610** | Hedging Nodule Identification | El EA debe identificar nódulos de hedging (picos/valles en la línea de posición neta comercial). | Alta |
+| **RF-611** | COT Extremes Detection | El EA debe detectar extremos históricos en la posición neta comercial como señales de reversión. | Alta |
+| **RF-612** | Commercial Bias Determination | El EA debe determinar el bias de los comerciales (bullish/bearish/neutral) basado en la posición neta. | Alta |
+| **RF-613** | COT vs Price Divergence | El EA debe identificar divergencias entre la posición neta comercial y el precio. | Alta |
+| **RF-614** | COT Alignment with Technicals | El EA debe verificar alineación entre COT y análisis técnico (PD Arrays, estructura). | Alta |
+| **RF-615** | COT as Swing Filter | El EA debe usar COT como filtro obligatorio para swing trading (alineación con programa de cobertura). | Alta |
+| **RF-616** | COT as OSOK Filter | El EA debe usar COT como filtro obligatorio para OSOK (programa de cobertura confirmando dirección). | Alta |
+| **RF-617** | COT as Day Trading Context | El EA debe usar COT como contexto para day trading (bias general del mercado). | Media |
+| **RF-618** | COT Data Update Automation | El EA debe automatizar la actualización de datos COT (descarga semanal). | Alta |
+| **RF-619** | COT Historical Database | El EA debe mantener una base de datos histórica de COT para análisis de tendencias. | Media |
+| **RF-620** | COT Logging | El EA debe registrar datos COT en el log para análisis posterior. | Media |
+
+---
+
+##### Dominio Analysis: Módulo 20 - Relative Strength
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-621** | DXY Context Analysis | El EA debe analizar el contexto del DXY (Dólar Index) para determinar fortaleza/ debilidad del dólar. | Alta |
+| **RF-622** | Relative Strength Calculation | El EA debe calcular la fortaleza relativa de cada par FX comparado con DXY y otros pares. | Alta |
+| **RF-623** | Higher Low Identification | El EA debe identificar condiciones de Higher Low como señal de acumulación y fortaleza. | Alta |
+| **RF-624** | Lower High Identification | El EA debe identificar condiciones de Lower High como señal de distribución y debilidad. | Alta |
+| **RF-625** | Accumulation Pattern Detection | El EA debe identificar patrones de acumulación (compresión de rango, higher lows). | Alta |
+| **RF-626** | Distribution Pattern Detection | El EA debe identificar patrones de distribución (expansión de rango, lower highs). | Alta |
+| **RF-627** | Leadership Market Identification | El EA debe identificar los mercados líderes (mayor fortaleza/ debilidad relativa). | Alta |
+| **RF-628** | Sympathetic Rally Detection | El EA debe identificar rallies simpáticos (movimientos correlacionados al alza). | Alta |
+| **RF-629** | Sympathetic Decline Detection | El EA debe identificar declives simpáticos (movimientos correlacionados a la baja). | Alta |
+| **RF-630** | Commodity Basket Group Analysis | El EA debe analizar grupos de materias primas (metales, energía, agrícolas) para contexto. | Alta |
+| **RF-631** | Relative Strength Ranking | El EA debe rankear pares por fortaleza relativa para selección de mejores oportunidades. | Alta |
+| **RF-632** | Relative Weakness Ranking | El EA debe rankear pares por debilidad relativa para selección de mejores oportunidades. | Alta |
+| **RF-633** | Cross-Currency Strength Analysis | El EA debe analizar la fortaleza de divisas individuales (USD, EUR, GBP, JPY, AUD, CAD, NZD, CHF). | Alta |
+| **RF-634** | Strength Divergence Detection | El EA debe identificar divergencias entre fortaleza relativa de divisas y precio. | Alta |
+| **RF-635** | Relative Strength as Trade Filter | El EA debe usar fortaleza/ debilidad relativa como filtro para entradas (comprar fortaleza, vender debilidad). | Alta |
+| **RF-636** | Relative Strength as Exit Filter | El EA debe usar fortaleza/ debilidad relativa como filtro para salidas (cerrar cuando la fortaleza se agota). | Media |
+| **RF-637** | Relative Strength Logging | El EA debe registrar datos de fortaleza relativa en el log para análisis posterior. | Media |
+| **RF-638** | Relative Strength Dashboard | El EA debe mostrar un dashboard de fortaleza relativa en el panel de control. | Media |
+| **RF-639** | Multi-Period Strength Analysis | El EA debe analizar fortaleza relativa en múltiples temporalidades (Daily, Weekly, Monthly). | Alta |
+| **RF-640** | Strength Momentum Detection | El EA debe detectar cambios en el momentum de fortaleza/ debilidad relativa. | Media |
+
+---
+
+##### Dominio Analysis: Módulo 21 - Seasonal Tendencies
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-641** | 40-Year Seasonal Data Integration | El EA debe integrar datos estacionales de 40+ años para todos los activos principales. | Alta |
+| **RF-642** | 15-Year Seasonal Data Integration | El EA debe integrar datos estacionales de 15 años para convergencia con 40-year data. | Alta |
+| **RF-643** | Ideal Seasonal Tendency Detection | El EA debe detectar "Ideal Seasonal Tendencies" (oposición activo vs DXY). | Alta |
+| **RF-644** | Seasonal Convergence (40/15 Year) | El EA debe identificar convergencia entre 40-year y 15-year datos estacionales como filtro de alta probabilidad. | Alta |
+| **RF-645** | Seasonal Calendar Integration | El EA debe integrar un calendario estacional para saber qué activos monitorear en cada época del año. | Alta |
+| **RF-646** | Seasonal Bias Determination | El EA debe determinar el bias estacional (bullish/bearish) para cada activo. | Alta |
+| **RF-647** | Seasonal as Mandatory Filter | El EA debe usar seasonal como filtro obligatorio para swing trading y OSOK. | Alta |
+| **RF-648** | Seasonal as Context Filter | El EA debe usar seasonal como filtro de contexto para day trading y scalping. | Media |
+| **RF-649** | Seasonal Timing for Entries | El EA debe usar seasonal para determinar timing óptimo de entradas (cuándo esperar el setup). | Alta |
+| **RF-650** | Seasonal Divergence Detection | El EA debe identificar divergencias entre seasonal y precio actual. | Media |
+| **RF-651** | Seasonal Strength Score | El EA debe calcular un score de fortaleza estacional para cada activo. | Media |
+| **RF-652** | Seasonal Ranking | El EA debe rankear activos por fortaleza estacional para selección de mejores oportunidades. | Media |
+| **RF-653** | Seasonal Historical Validation | El EA debe validar la fiabilidad de cada tendencia estacional con datos históricos. | Media |
+| **RF-654** | Seasonal Exception Detection | El EA debe detectar excepciones a tendencias estacionales (ej. eventos macro que anulan el patrón). | Alta |
+| **RF-655** | Seasonal Logging | El EA debe registrar datos estacionales en el log para análisis posterior. | Media |
+| **RF-656** | Seasonal Dashboard | El EA debe mostrar un dashboard estacional en el panel de control. | Media |
+| **RF-657** | Commodity Seasonal Analysis | El EA debe analizar tendencias estacionales de materias primas (petróleo, oro, plata, etc.). | Alta |
+| **RF-658** | Bond Seasonal Analysis | El EA debe analizar tendencias estacionales de bonos (30-Year Treasury). | Alta |
+| **RF-659** | Stock Seasonal Analysis | El EA debe analizar tendencias estacionales de stocks (Dow 30, S&P 500). | Alta |
+| **RF-660** | Currency Pair Seasonal Analysis | El EA debe analizar tendencias estacionales de pares FX (todos los pares principales). | Alta |
+
+---
+
+##### Dominio Analysis: Módulo 22 - Premium vs Carrying Charge
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-661** | Nearby Contract Price Analysis | El EA debe analizar el precio del contrato nearby (fecha de entrega más cercana). | Alta |
+| **RF-662** | Next Month Out Price Analysis | El EA debe analizar el precio del contrato next month out (siguiente mes). | Alta |
+| **RF-663** | Spread Chart Calculation | El EA debe calcular el spread (diferencia) entre nearby y next month out. | Alta |
+| **RF-664** | Premium Market Identification | El EA debe identificar condiciones de Premium Market (nearby > next month out, escasez de oferta). | Alta |
+| **RF-665** | Carrying Charge Market Identification | El EA debe identificar condiciones de Carrying Charge Market (nearby < next month out, estructura normal). | Alta |
+| **RF-666** | Spread Divergence Detection | El EA debe identificar divergencias entre precio del nearby y el spread. | Alta |
+| **RF-667** | Premium Magnitude Analysis | El EA debe analizar la magnitud del premium para determinar fuerza de la señal. | Alta |
+| **RF-668** | Commercial Bull Market Detection | El EA debe detectar condiciones de Commercial Bull Market (contango con premium creciente). | Alta |
+| **RF-669** | Commercial Bear Market Detection | El EA debe detectar condiciones de Commercial Bear Market (backwardation con premium decreciente). | Alta |
+| **RF-670** | Spread as Trade Filter | El EA debe usar el spread como filtro para entradas (premium = bullish, carrying charge = bearish). | Alta |
+| **RF-671** | Spread as Exit Signal | El EA debe usar cambios en el spread como señal de salida (reversión de premium). | Media |
+| **RF-672** | Contract Rollover Management | El EA debe gestionar automáticamente el rollover de contratos (cambio de nearby). | Alta |
+| **RF-673** | Spread Historical Database | El EA debe mantener una base de datos histórica de spreads para análisis de tendencias. | Media |
+| **RF-674** | Spread Divergence with PD Arrays | El EA debe combinar spread divergence con PD Arrays para confirmación de señales. | Alta |
+| **RF-675** | Spread Logging | El EA debe registrar datos de spread en el log para análisis posterior. | Media |
+| **RF-676** | Spread Dashboard | El EA debe mostrar un dashboard de spreads en el panel de control. | Media |
+| **RF-677** | Commodity Spread Analysis | El EA debe analizar spreads de materias primas (petróleo, metales, agrícolas). | Alta |
+| **RF-678** | Bond Spread Analysis | El EA debe analizar spreads de bonos (30-Year Treasury). | Alta |
+| **RF-679** | Currency Futures Spread Analysis | El EA debe analizar spreads de futuros de divisas. | Media |
+| **RF-680** | Spread as Leading Indicator | El EA debe usar el spread como indicador adelantado para movimientos de precio. | Alta |
+
+---
+
+##### Dominio Analysis: Módulo 23 - Open Interest
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-681** | Open Interest Trend Analysis | El EA debe analizar la tendencia del Open Interest (aumento/disminución sostenida). | Alta |
+| **RF-682** | Seasonal Average of OI | El EA debe calcular el promedio multi-anual de OI para comparar con el OI actual. | Alta |
+| **RF-683** | OI vs Seasonal Average | El EA debe comparar OI actual con el promedio estacional para identificar anomalías. | Alta |
+| **RF-684** | OI + PD Array Blending | El EA debe combinar OI con PD Arrays para confirmación de señales (OI en soporte/resistencia). | Alta |
+| **RF-685** | OI + COT Blending | El EA debe combinar OI con COT para confirmación de dirección (OI y comerciales alineados). | Alta |
+| **RF-686** | Smart Money Footprints Detection | El EA debe identificar huellas de smart money: OI declinando en soporte + COT largo + PD Array discount. | Alta |
+| **RF-687** | OI Change Significance | El EA debe detectar cambios significativos en OI (≥10-15%) como señal de fuerza. | Alta |
+| **RF-688** | OI at Support/Resistance | El EA debe analizar OI en niveles de soporte/resistencia para confirmar reversiones. | Alta |
+| **RF-689** | OI as Trade Filter | El EA debe usar OI como filtro de confirmación para entradas (OI en dirección correcta). | Alta |
+| **RF-690** | OI as Exit Signal | El EA debe usar cambios en OI como señal de salida (OI agotado). | Media |
+| **RF-691** | OI Historical Database | El EA debe mantener una base de datos histórica de OI para análisis de tendencias. | Media |
+| **RF-692** | OI Logging | El EA debe registrar datos de OI en el log para análisis posterior. | Media |
+| **RF-693** | OI Dashboard | El EA debe mostrar un dashboard de OI en el panel de control. | Media |
+| **RF-694** | Commodity OI Analysis | El EA debe analizar OI de materias primas (petróleo, metales, agrícolas). | Alta |
+| **RF-695** | Bond OI Analysis | El EA debe analizar OI de bonos (30-Year Treasury). | Alta |
+| **RF-696** | Currency Futures OI Analysis | El EA debe analizar OI de futuros de divisas. | Alta |
+| **RF-697** | OI Divergence Detection | El EA debe identificar divergencias entre OI y precio. | Media |
+| **RF-698** | OI as Smart Money Indicator | El EA debe usar OI como indicador de actividad de smart money. | Alta |
+| **RF-699** | OI Volume Blending | El EA debe combinar OI con volumen para confirmación de señales. | Media |
+| **RF-700** | OI Seasonality Adjustment | El EA debe ajustar el análisis de OI por estacionalidad. | Media |
+
+---
+
+##### Dominio Analysis: Módulo 24 - Bond Trading Basics
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-701** | 30Y Treasury Bond Analysis | El EA debe analizar el mercado de bonos del Tesoro a 30 años. | Alta |
+| **RF-702** | Bond Opening Range Detection | El EA debe detectar el Opening Range de bonos (8:00 AM - 9:00 AM NY). | Alta |
+| **RF-703** | Bond Opening Range Breakout | El EA debe identificar rupturas del Opening Range de bonos como señales de dirección. | Alta |
+| **RF-704** | Bond Volume Divergence | El EA debe identificar divergencias entre precio de bonos y volumen. | Alta |
+| **RF-705** | Bond Price Action Analysis | El EA debe analizar price action de bonos (velas, rangos, estructura). | Alta |
+| **RF-706** | Bond Support/Resistance Levels | El EA debe identificar niveles de soporte/resistencia clave en bonos. | Alta |
+| **RF-707** | Bond Trend Identification | El EA debe identificar tendencia del mercado de bonos (alcista/bajista). | Alta |
+| **RF-708** | Bond Momentum Analysis | El EA debe analizar momentum de bonos (velocidad de movimiento). | Media |
+| **RF-709** | Bond as Leading Indicator | El EA debe usar bonos como indicador adelantado para acciones y divisas. | Alta |
+| **RF-710** | Bond Correlation with DXY | El EA debe analizar correlación entre bonos y DXY. | Alta |
+| **RF-711** | Bond Correlation with Stocks | El EA debe analizar correlación entre bonos y acciones (relación inversa). | Alta |
+| **RF-712** | Bond Correlation with Gold | El EA debe analizar correlación entre bonos y oro (relación inversa). | Alta |
+| **RF-713** | Bond Logging | El EA debe registrar datos de bonos en el log para análisis posterior. | Media |
+| **RF-714** | Bond Dashboard | El EA debe mostrar un dashboard de bonos en el panel de control. | Media |
+| **RF-715** | Bond Trading as Context | El EA debe usar el análisis de bonos como contexto para todas las operaciones. | Alta |
+
+---
+
+##### Dominio Analysis: Módulo 25 - Bond Split Session
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-716** | Bond AM Session Analysis | El EA debe analizar la sesión AM de bonos (8:00 AM - 12:00 PM NY). | Alta |
+| **RF-717** | Bond PM Session Analysis | El EA debe analizar la sesión PM de bonos (12:00 PM - 3:00 PM NY). | Alta |
+| **RF-718** | AM Session Opening Range | El EA debe detectar el Opening Range de la sesión AM (8:00 AM - 9:00 AM NY). | Alta |
+| **RF-719** | AM Session Trend Detection | El EA debe detectar la tendencia de la sesión AM (alcista/bajista/consolidación). | Alta |
+| **RF-720** | PM Session Continuation Detection | El EA debe detectar si la sesión PM continúa la dirección de la AM. | Alta |
+| **RF-721** | PM Session Reversal Detection | El EA debe detectar si la sesión PM revierte la dirección de la AM. | Alta |
+| **RF-722** | PM Session Consolidation Detection | El EA debe detectar si la sesión PM consolida (rango estrecho). | Alta |
+| **RF-723** | Split Session Rules Application | El EA debe aplicar las reglas de split session para determinar dirección del día. | Alta |
+| **RF-724** | Runner Detection (AM→PM) | El EA debe detectar cuando el movimiento AM se extiende continuamente a través de PM (Runner). | Alta |
+| **RF-725** | AM/PM Range Comparison | El EA debe comparar el rango de la AM con el de la PM para identificar fuerza. | Alta |
+| **RF-726** | Session Volume Analysis | El EA debe analizar el volumen relativo de AM vs PM. | Media |
+| **RF-727** | Session Momentum Analysis | El EA debe analizar el momentum de cada sesión. | Media |
+| **RF-728** | Split Session Logging | El EA debe registrar datos de split session en el log para análisis posterior. | Media |
+| **RF-729** | Split Session Dashboard | El EA debe mostrar un dashboard de split session en el panel de control. | Media |
+| **RF-730** | Split Session as Trade Context | El EA debe usar el análisis de split session como contexto para operaciones de bonos. | Alta |
+
+---
+
+##### Dominio Analysis: Módulo 26 - Bond Consolidation
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-731** | Bond Consolidation Day Detection | El EA debe detectar días de consolidación en bonos (rango estrecho). | Alta |
+| **RF-732** | Small Opening Range Detection | El EA debe detectar Opening Range pequeño como señal de consolidación. | Alta |
+| **RF-733** | Auction Day Detection | El EA debe detectar días de subasta (auction days) como días de alto impacto. | Alta |
+| **RF-734** | Consolidation Range Identification | El EA debe identificar el rango de consolidación (high/low del día). | Alta |
+| **RF-735** | Consolidation Breakout Detection | El EA debe detectar rupturas del rango de consolidación como señales de entrada. | Alta |
+| **RF-736** | Consolidation False Breakout Detection | El EA debe detectar falsas rupturas de consolidación (turtle soup). | Alta |
+| **RF-737** | Consolidation Range Compression | El EA debe medir la compresión del rango (contracción de volatilidad). | Alta |
+| **RF-738** | Consolidation Expansion Potential | El EA debe calcular el potencial de expansión después de la consolidación. | Alta |
+| **RF-739** | Pre-Auction Setup Detection | El EA debe detectar setups previos a días de subasta. | Media |
+| **RF-740** | Post-Auction Setup Detection | El EA debe detectar setups posteriores a días de subasta. | Media |
+| **RF-741** | Consolidation Volume Analysis | El EA debe analizar el volumen durante la consolidación (bajo volumen). | Media |
+| **RF-742** | Consolidation as Trade Context | El EA debe usar consolidación como contexto para operaciones de bonos. | Alta |
+| **RF-743** | Consolidation Logging | El EA debe registrar datos de consolidación en el log para análisis posterior. | Media |
+| **RF-744** | Consolidation Dashboard | El EA debe mostrar un dashboard de consolidación en el panel de control. | Media |
+| **RF-745** | Consolidation Breakout Target | El EA debe proyectar objetivos de ruptura basados en el rango de consolidación. | Alta |
+
+---
+
+##### Dominio Analysis: Módulo 27 - Index Trading
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-746** | Index Trading Model Implementation | El EA debe implementar el modelo de Index Trading para E-mini S&P y otros índices. | Alta |
+| **RF-747** | Index Opening Range Detection | El EA debe detectar el Opening Range de índices (9:30 AM - 10:30 AM NY). | Alta |
+| **RF-748** | Index AM Session Analysis | El EA debe analizar la sesión AM de índices (9:30 AM - 12:00 PM NY). | Alta |
+| **RF-749** | Index PM Session Analysis | El EA debe analizar la sesión PM de índices (1:00 PM - 4:00 PM NY). | Alta |
+| **RF-750** | Index AM Trend Detection | El EA debe detectar el AM Trend (tendencia o swing de precio en sesión AM). | Alta |
+| **RF-751** | Index PM Trend Detection | El EA debe detectar el PM Trend (tendencia o swing de precio en sesión PM). | Alta |
+| **RF-752** | Index Opening Range Breakout | El EA debe identificar rupturas del Opening Range de índices. | Alta |
+| **RF-753** | Index False Breakout Detection | El EA debe detectar falsas rupturas en índices. | Alta |
+| **RF-754** | Index SMT Divergence | El EA debe identificar SMT divergencias entre índices (DOW vs S&P vs NASDAQ). | Alta |
+| **RF-755** | Index Correlation with Bonds | El EA debe analizar correlación entre índices y bonos. | Alta |
+| **RF-756** | Index Correlation with DXY | El EA debe analizar correlación entre índices y DXY. | Alta |
+| **RF-757** | Index Logging | El EA debe registrar datos de índices en el log para análisis posterior. | Media |
+| **RF-758** | Index Dashboard | El EA debe mostrar un dashboard de índices en el panel de control. | Media |
+| **RF-759** | Index Trading as Context | El EA debe usar el análisis de índices como contexto para todas las operaciones. | Alta |
+| **RF-760** | Index Support/Resistance Levels | El EA debe identificar niveles de soporte/resistencia clave en índices. | Alta |
+
+---
+
+##### Dominio Analysis: Módulo 28 - Index Trade Setups
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-761** | 8 Projected Range Patterns | El EA debe identificar 8 patrones de rango proyectado para índices. | Alta |
+| **RF-762** | Pattern 1: Normal AM Trend + PM Continuation | El EA debe identificar: AM trend alcista/bajista → PM continuación. | Alta |
+| **RF-763** | Pattern 2: Normal AM Trend + PM Reversal | El EA debe identificar: AM trend alcista/bajista → PM reversión. | Alta |
+| **RF-764** | Pattern 3: Opening Range Breakout + AM Trend | El EA debe identificar: Breakout OR → AM trend en dirección del breakout. | Alta |
+| **RF-765** | Pattern 4: Opening Range Breakout + AM Reversal | El EA debe identificar: Breakout OR → AM reversión (turtle soup). | Alta |
+| **RF-766** | Pattern 5: AM Consolidation + PM Breakout | El EA debe identificar: AM consolidación → PM breakout. | Alta |
+| **RF-767** | Pattern 6: AM Consolidation + PM Reversal | El EA debe identificar: AM consolidación → PM reversión. | Alta |
+| **RF-768** | Pattern 7: Opening Range Range-Bound | El EA debe identificar: OR range-bound (operar dentro del rango). | Alta |
+| **RF-769** | Pattern 8: Opening Range Extended | El EA debe identificar: OR extended (operar en extensión). | Alta |
+| **RF-770** | Pattern Probability Score | El EA debe asignar un score de probabilidad a cada patrón. | Alta |
+| **RF-771** | Pattern Entry Levels | El EA debe calcular niveles de entrada para cada patrón. | Alta |
+| **RF-772** | Pattern Stop Levels | El EA debe calcular niveles de stop para cada patrón. | Alta |
+| **RF-773** | Pattern Target Levels | El EA debe calcular niveles de objetivo para cada patrón. | Alta |
+| **RF-774** | Pattern Confirmation Filters | El EA debe aplicar filtros de confirmación para cada patrón (volumen, momentum). | Alta |
+| **RF-775** | Pattern Rejection Detection | El EA debe detectar rechazos de niveles clave en cada patrón. | Alta |
+| **RF-776** | Pattern Trend Alignment | El EA debe verificar alineación del patrón con tendencia general. | Alta |
+| **RF-777** | Pattern SMT Confirmation | El EA debe usar SMT divergencia como confirmación de patrones. | Alta |
+| **RF-778** | Pattern Logging | El EA debe registrar patrones detectados en el log para análisis posterior. | Media |
+| **RF-779** | Pattern Dashboard | El EA debe mostrar un dashboard de patrones en el panel de control. | Media |
+| **RF-780** | Pattern Success Rate Calculation | El EA debe calcular la tasa de éxito de cada patrón históricamente. | Media |
+| **RF-781** | Pattern Optimization | El EA debe permitir optimización de parámetros de patrones. | Media |
+| **RF-782** | Pattern as Entry Signal | El EA debe usar patrones como señales de entrada para trading de índices. | Alta |
+| **RF-783** | Pattern as Exit Signal | El EA debe usar cambios de patrón como señales de salida. | Media |
+| **RF-784** | Pattern Risk Management | El EA debe aplicar gestión de riesgo específica para cada patrón. | Alta |
+| **RF-785** | Pattern Backtesting | El EA debe soportar backtesting de patrones en el Strategy Tester. | Media |
+
+---
+
+##### Dominio Models: Módulo 29 - Stock Trading (FUSIONADO)
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-800** | Stock Trading Model Implementation | El EA debe implementar el modelo de Stock Trading para acciones individuales (Dow 30, NASDAQ 100, S&P 500). | Alta |
+| **RF-801** | Stock Watchlists (Buy/Sell) | El EA debe construir automáticamente watchlists de stocks para compra (higher low + SMT divergence) y venta (lower high + SMT divergence). **(Fusionado en CStockTrader como sub-estructura)** | Alta |
+| **RF-802** | CAN SLIM Stock Filter | El EA debe aplicar el filtro CAN SLIM: Current earnings, Annual earnings, New factor, Supply/Demand, Leader/Laggard, Institutional sponsorship. **(Fusionado en CStockTrader como sub-estructura)** | Alta |
+| **RF-803** | Current Earnings Growth | El EA debe filtrar stocks con crecimiento de earnings actual ≥ 25% (Current earnings). | Alta |
+| **RF-804** | Annual Earnings Growth | El EA debe filtrar stocks con crecimiento de earnings anual ≥ 25% (Annual earnings). | Alta |
+| **RF-805** | New Factor Analysis | El EA debe identificar stocks con nuevos productos/servicios/management (New factor). | Media |
+| **RF-806** | Supply/Demand Analysis | El EA debe analizar oferta/demanda de acciones (float, volumen). | Alta |
+| **RF-807** | Leader/Laggard Analysis | El EA debe identificar stocks líderes y rezagados en el sector (Leader/Laggard). | Alta |
+| **RF-808** | Institutional Sponsorship Analysis | El EA debe identificar apoyo institucional (grandes fondos) para cada stock. | Alta |
+| **RF-809** | Market Direction Analysis | El EA debe analizar dirección general del mercado para stock trading. | Alta |
+| **RF-810** | SMT Divergence for Stocks | El EA debe identificar SMT divergencias entre stocks individuales y el índice (DOW/S&P/NASDAQ). | Alta |
+| **RF-811** | **Seasonal Analysis for Stocks (Optimizado)** | El EA debe analizar tendencias estacionales de stocks (40+ años de datos del Dow). **Este requisito referencia al análisis estacional completo en RF-641 a RF-660 (CSeasonal).** | Alta |
+| **RF-812** | Stock Buy Watchlist | El EA debe construir watchlist de compra: stocks con higher low + SMT divergence + seasonal bullish. | Alta |
+| **RF-813** | Stock Sell Watchlist | El EA debe construir watchlist de venta: stocks con lower high + SMT divergence + seasonal bearish. | Alta |
+| **RF-814** | Stock Entry Levels | El EA debe calcular niveles de entrada para stocks basados en estructura de precio. | Alta |
+| **RF-815** | Stock Stop Loss Levels | El EA debe calcular niveles de stop loss para stocks (basado en ATR o estructura). | Alta |
+| **RF-816** | Stock Take Profit Levels | El EA debe calcular niveles de take profit para stocks (R:R ≥ 3:1). | Alta |
+| **RF-817** | Stock Options Selection | El EA debe seleccionar opciones (calls/puts) para stocks en watchlists basado en timing. **(Fusionado en CStockTrader como sub-estructura)** | Media |
+| **RF-818** | Stock Call Option Selection | El EA debe seleccionar calls para stocks en buy watchlist con estructura alcista. | Media |
+| **RF-819** | Stock Put Option Selection | El EA debe seleccionar puts para stocks en sell watchlist con estructura bajista. | Media |
+| **RF-820** | Stock Option Timing | El EA debe determinar timing óptimo para entrada en opciones (basado en estructura). | Media |
+| **RF-821** | Stock Dogs of the Dow Strategy | El EA debe implementar la estrategia "Dogs of the Dow" (selección de los peores del año anterior). | Media |
+| **RF-822** | Stock Float Analysis | El EA debe analizar el float de cada stock (menor float = mayor potencial). | Alta |
+| **RF-823** | Stock Growth vs Index Stocks | El EA debe diferenciar entre growth stocks y index stocks para aplicar estrategias distintas. | Media |
+| **RF-824** | Stock High/Low Magnitude Periods | El EA debe identificar períodos de alta (Feb-May, Oct-Dic) y baja (May-Oct) magnitud. | Alta |
+| **RF-825** | Stock Seasonal Calendar | El EA debe integrar un calendario estacional de 12 meses para stocks. | Alta |
+| **RF-826** | Stock Logging | El EA debe registrar datos de stocks en el log para análisis posterior. | Media |
+| **RF-827** | Stock Dashboard | El EA debe mostrar un dashboard de stocks (watchlists, status) en el panel de control. | Media |
+| **RF-828** | Stock Risk Management | El EA debe aplicar gestión de riesgo específica para stock trading (1.5% por operación). | Alta |
+| **RF-829** | Stock Max Trades | El EA debe limitar el número de operaciones de stock trading (configurable). | Alta |
+| **RF-830** | Stock Correlation Analysis | El EA debe analizar correlación entre stocks para diversificación. | Media |
+| **RF-831** | Stock Sector Analysis | El EA debe analizar el sector de cada stock para contexto. | Media |
+| **RF-832** | Stock Institutional Ownership | El EA debe analizar el porcentaje de propiedad institucional de cada stock. | Alta |
+| **RF-833** | Stock Earnings Calendar | El EA debe integrar un calendario de earnings para evitar operar antes de resultados. | Media |
+| **RF-834** | Stock Gap Risk Management | El EA debe gestionar gap risk en stocks (evitar earnings gaps). | Alta |
+| **RF-835** | Stock Trailing Stop | El EA debe implementar trailing stop para stock trading. | Alta |
+| **RF-836** | Stock Scaling Out | El EA debe implementar scaling out para stock trading. | Media |
+| **RF-837** | Stock Position Sizing | El EA debe calcular tamaño de posición para stocks basado en riesgo y distancia al stop. | Alta |
+| **RF-838** | Stock Watchlist Update Frequency | El EA debe actualizar watchlists periódicamente (diario/semanal). | Alta |
+| **RF-839** | Stock Trading Hours | El EA debe limitar stock trading a horas de mercado (9:30 AM - 4:00 PM NY). | Alta |
+| **RF-840** | Stock Backtesting | El EA debe soportar backtesting de stock trading en el Strategy Tester. | Media |
+| **RF-841** | Stock Multi-Asset Context | El EA debe integrar análisis multi-asset como contexto para stock trading. | Alta |
+| **RF-842** | Stock SMT with Index | El EA debe identificar SMT divergencias entre stock e índice (DOW/S&P/NASDAQ). | Alta |
+| **RF-843** | Stock Momentum Filter | El EA debe aplicar filtros de momentum para selección de stocks (RSI, MACD). | Media |
+| **RF-844** | Stock Volume Confirmation | El EA debe usar volumen como confirmación de señales de stock trading. | Alta |
+| **RF-845** | Stock Breakout Detection | El EA debe detectar rupturas de niveles clave en stocks. | Alta |
+
+---
+
+##### Dominio Analysis: Módulo 30 - Multi-Asset Analysis
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-850** | Multi-Asset Analysis Implementation | El EA debe implementar análisis integrado de las 4 clases de activos (Bonos, Commodities, Divisas, Acciones). | Alta |
+| **RF-851** | Asset Class State Monitoring | El EA debe monitorear el estado de cada clase de activo (tendencia/consolidación/reversión). | Alta |
+| **RF-852** | Risk On/Off Detection | El EA debe clasificar el entorno de mercado como Risk On o Risk Off. | Alta |
+| **RF-853** | Symmetry Detection | El EA debe identificar cuando todas las 4 clases se comportan como deberían según teoría económica. | Alta |
+| **RF-854** | Decoupling Detection | El EA debe identificar desacoplamientos entre clases de activos (una o más no se comportan como deberían). | Alta |
+| **RF-855** | Intermarket Correlation Analysis | El EA debe analizar correlaciones entre las 4 clases de activos. | Alta |
+| **RF-856** | Leadership Asset Identification | El EA debe identificar la clase de activo líder (mayor fuerza/debilidad relativa). | Alta |
+| **RF-857** | Alignment Score Calculation | El EA debe calcular un score de alineación (0-100) basado en cuántas clases confirman la misma dirección. | Alta |
+| **RF-858** | Risk On Environment Conditions | El EA debe identificar condiciones Risk On: stocks ↑, commodities ↑, divisas débiles, bonos ↓. | Alta |
+| **RF-859** | Risk Off Environment Conditions | El EA debe identificar condiciones Risk Off: stocks ↓, commodities ↓, divisas fuertes, bonos ↑. | Alta |
+| **RF-860** | Multi-Asset as Trade Filter | El EA debe usar el análisis multi-asset como filtro de contexto para todas las operaciones. | Alta |
+| **RF-861** | Multi-Asset as Trade Confirmation | El EA debe usar alineación multi-asset como confirmación de señales. | Alta |
+| **RF-862** | Multi-Asset Divergence as Trade Signal | El EA debe usar divergencias/decouplings como señales de trading. | Alta |
+| **RF-863** | Asset Class Trend Strength | El EA debe calcular la fuerza de tendencia de cada clase de activo. | Alta |
+| **RF-864** | Asset Class Momentum | El EA debe calcular el momentum de cada clase de activo. | Media |
+| **RF-865** | Multi-Asset Logging | El EA debe registrar datos multi-asset en el log para análisis posterior. | Media |
+| **RF-866** | Multi-Asset Dashboard | El EA debe mostrar un dashboard multi-asset en el panel de control (4 clases, Risk On/Off, Alignment Score, clase líder). | Media |
+| **RF-867** | Multi-Asset for Mega Trades | El EA debe usar análisis multi-asset como filtro para Mega Trades (alignment score ≥ 70). | Alta |
+| **RF-868** | Multi-Asset for Stock Trading | El EA debe usar análisis multi-asset como contexto para stock trading. | Alta |
+| **RF-869** | Asset Class Rotation Detection | El EA debe detectar rotación entre clases de activos (money flow). | Alta |
+| **RF-870** | Multi-Asset Risk Assessment | El EA debe evaluar el riesgo general del mercado basado en multi-asset. | Alta |
+| **RF-871** | Multi-Asset Backtesting | El EA debe soportar backtesting de multi-asset analysis. | Media |
+| **RF-872** | Multi-Asset Data Sources | El EA debe integrar múltiples fuentes de datos para cada clase de activo. | Alta |
+| **RF-873** | Multi-Asset Correlation Matrix | El EA debe calcular una matriz de correlación entre todas las clases y subclases. | Media |
+| **RF-874** | Multi-Asset Historical Analysis | El EA debe analizar históricamente las relaciones entre clases de activos. | Media |
+| **RF-875** | Multi-Asset as Early Warning | El EA debe usar multi-asset como sistema de alerta temprana para cambios de régimen. | Alta |
+
+---
+
+##### Dominio Models: Módulo 31 - Mega Trades (FUSIONADO)
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-900** | Mega Trades Framework Implementation | El EA debe implementar el framework completo de Mega Trades para operaciones de 3-6 meses. **Fusionado con CQuarterlyShift, CTopDown, CDecisionTree y CScenarioPlan.** | Alta |
+| **RF-901** | Top-Down Analysis for Mega Trades | El EA debe implementar análisis jerárquico: Macro → DXY → IPDA Data Ranges → PD Arrays → Bias → Lower TFs → Ejecución. **(Fusionado en CMegaTrade)** | Alta |
+| **RF-902** | Quarterly Shift Analysis for Mega Trades | El EA debe analizar Quarterly Shifts como base para Mega Trades. **(Fusionado en CMegaTrade)** | Alta |
+| **RF-903** | Multi-Asset Alignment for Mega Trades | El EA debe requerir alignment score ≥ 70 para Mega Trades. | Alta |
+| **RF-904** | Mega Trade Decision Tree | El EA debe implementar un árbol de decisión para filtrar oportunidades de Mega Trades. **(Fusionado en CMegaTrade)** | Alta |
+| **RF-905** | Scenario Planning for Mega Trades | El EA debe implementar planificación de escenarios para Mega Trades (bull/bear/base case). **(Fusionado en CMegaTrade)** | Alta |
+| **RF-906** | **Mega Trade R:R Requirement** | El EA debe requerir R:R ≥ 5:1 para Mega Trades. | Alta |
+| **RF-907** | Mega Trade Risk per Trade | El EA debe usar riesgo de 0.3% por Mega Trade. | Alta |
+| **RF-908** | Mega Trade Max Frequency | El EA debe limitar Mega Trades a 1-3 por año. | Alta |
+| **RF-909** | Mega Trade Duration | El EA debe esperar duración de 3-6 meses por Mega Trade. | Alta |
+| **RF-910** | Mega Trade Entry Levels | El EA debe calcular niveles de entrada para Mega Trades (basados en PD Arrays HTF). | Alta |
+| **RF-911** | Mega Trade Stop Loss | El EA debe calcular stop loss amplio para Mega Trades (basado en estructura HTF). | Alta |
+| **RF-912** | Mega Trade Take Profit | El EA debe calcular take profit para Mega Trades (R:R ≥ 5:1, basado en liquidez HTF). | Alta |
+| **RF-913** | Mega Trade Trailing Stop | El EA debe implementar trailing stop para Mega Trades (basado en IPDA Data Ranges). | Alta |
+| **RF-914** | Mega Trade Scaling Out | El EA debe implementar scaling out para Mega Trades (TPs escalonados). | Media |
+| **RF-915** | Mega Trade Progress Monitoring | El EA debe monitorear el progreso del Mega Trade (0-100% del objetivo). | Alta |
+| **RF-916** | Mega Trade Logging | El EA debe registrar datos de Mega Trades en el log para análisis posterior. | Media |
+| **RF-917** | Mega Trade Dashboard | El EA debe mostrar un dashboard de Mega Trades (progreso, R:R, duración estimada) en el panel de control. | Media |
+| **RF-918** | Mega Trade Backtesting | El EA debe soportar backtesting de Mega Trades en el Strategy Tester. | Media |
+| **RF-919** | Mega Trade SMT Confirmation | El EA debe usar SMT divergencia como confirmación para Mega Trades. | Alta |
+| **RF-922** | Mega Trade Seasonality Filter | El EA debe usar seasonal tendencies como filtro de timing para Mega Trades. | Alta |
+| **RF-923** | Mega Trade COT Filter | El EA debe usar COT como filtro de confirmación para Mega Trades. | Alta |
+| **RF-924** | Mega Trade Intermarket Filter | El EA debe usar análisis intermercado como filtro para Mega Trades. | Alta |
+| **RF-925** | Mega Trade Open Interest Filter | El EA debe usar Open Interest como filtro de confirmación para Mega Trades. | Alta |
+| **RF-926** | Mega Trade PD Array Priority | El EA debe priorizar PD Arrays de Monthly y Weekly para Mega Trades. | Alta |
+| **RF-927** | Mega Trade Liquidity Analysis | El EA debe analizar liquidez en HTF para Mega Trades. | Alta |
+| **RF-928** | Mega Trade Quarterly Shift Timing | El EA debe usar Quarterly Shifts para timing de entradas de Mega Trades. | Alta |
+| **RF-929** | Mega Trade Data Range Projection | El EA debe usar Cast Forward de Data Ranges para proyectar objetivos de Mega Trades. | Alta |
+| **RF-930** | Mega Trade Decision Tree Nodes | El EA debe implementar los nodos del árbol de decisión: Macro Alignment → Quarterly Shift → PD Arrays HTF → R:R ≥ 5:1 → Ejecución. | Alta |
+| **RF-931** | Mega Trade Base Case Scenario | El EA debe definir el escenario base (mayor probabilidad) para cada Mega Trade. | Alta |
+| **RF-932** | Mega Trade Bull Case Scenario | El EA debe definir el escenario alcista (R:R ≥ 8:1) para cada Mega Trade. | Alta |
+| **RF-933** | Mega Trade Bear Case Scenario | El EA debe definir el escenario bajista (R:R ≥ 5:1) para cada Mega Trade. | Alta |
+| **RF-934** | Mega Trade Risk Adjustment | El EA debe ajustar el riesgo de Mega Trades basado en escenarios. | Media |
+| **RF-935** | Mega Trade Performance Tracking | El EA debe trackear el rendimiento de Mega Trades históricamente. | Media |
+| **RF-936** | Mega Trade Optimization | El EA debe permitir optimización de parámetros de Mega Trades. | Media |
+| **RF-937** | Mega Trade as High Conviction Signal | El EA debe clasificar Mega Trades como señales de alta convicción. | Alta |
+| **RF-938** | Mega Trade vs Other Models | El EA debe priorizar Mega Trades sobre otros modelos cuando hay conflicto. | Alta |
+| **RF-939** | Mega Trade Exit Conditions | El EA debe definir condiciones de salida para Mega Trades (objetivo alcanzado, Quarterly Shift en contra, stop). | Alta |
+| **RF-940** | Mega Trade Review Protocol | El EA debe implementar un protocolo de revisión para Mega Trades (mensual). | Media |
+
+---
+
+##### Dominio TradingPlan: Módulo 32 - Trading Plan & Psychology (FUSIONADO)
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RF-950** | Trading Plan Framework | El EA debe implementar un framework completo de Trading Plan con reglas predefinidas. | Alta |
+| **RF-951** | Rule-Based Trading Implementation | El EA debe operar basado en reglas predefinidas (sin emociones). | Alta |
+| **RF-952** | Process-Oriented Trading | El EA debe implementar pensamiento orientado a procesos (paso a paso). | Alta |
+| **RF-953** | Daily Loss Limit Management | El EA debe aplicar límite de pérdida diaria (configurable, ej. 2% del equity). **(Fusionado en CTradingPlan)** | Alta |
+| **RF-954** | Weekly Loss Limit Management | El EA debe aplicar límite de pérdida semanal (configurable, ej. 5% del equity). **(Fusionado en CTradingPlan)** | Alta |
+| **RF-955** | Monthly Loss Limit Management | El EA debe aplicar límite de pérdida mensual (configurable, ej. 10% del equity). **(Fusionado en CTradingPlan)** | Alta |
+| **RF-956** | Cooldown Period Management | El EA debe implementar períodos de enfriamiento (cooldown) tras pérdidas consecutivas. **(Fusionado en CTradingPlan)** | Alta |
+| **RF-957** | FOMO Prevention | El EA debe evitar FOMO (Fear of Missing Out) respetando reglas de entrada. **(Fusionado en CTradingPlan)** | Alta |
+| **RF-958** | Revenge Trading Prevention | El EA debe evitar revenge trading (no aumentar riesgo tras pérdidas). **(Fusionado en CTradingPlan)** | Alta |
+| **RF-959** | Overconfidence Prevention | El EA debe evitar overconfidence (no aumentar riesgo tras racha ganadora). **(Fusionado en CTradingPlan)** | Alta |
+| **RF-960** | Analysis Paralysis Prevention | El EA debe evitar analysis paralysis (no retrasar decisiones cuando se cumplen reglas). **(Fusionado en CTradingPlan)** | Alta |
+| **RF-961** | Discipline Score Calculation | El EA debe calcular un score de disciplina (0-100) basado en adherencia a reglas. **(Fusionado en CTradingPlan)** | Alta |
+| **RF-962** | Discipline Dashboard | El EA debe mostrar el score de disciplina en el panel de control. **(Fusionado en CTradingPlan)** | Media |
+| **RF-963** | Rule Violation Logging | El EA debe registrar violaciones de reglas en el log para análisis. **(Fusionado en CTradingPlan)** | Media |
+| **RF-964** | Journaling System | El EA debe implementar un sistema de diario de trading para registrar operaciones, emociones, errores, lecciones. **Este es el requisito PRINCIPAL de Journaling (RF-970 ha sido renombrado a RF-041.1 en el Módulo 5).** | Media |
+| **RF-965** | Journal Entry Automation | El EA debe automatizar entradas en el journal (registro automático de operaciones). **(Fusionado en CTradingPlan)** | Media |
+| **RF-966** | Journal Manual Entry Support | El EA debe permitir entradas manuales en el journal (emociones, lecciones). **(Fusionado en CTradingPlan)** | Baja |
+| **RF-967** | Journal Logging | El EA debe guardar el journal en un archivo externo. **(Fusionado en CTradingPlan)** | Media |
+| **RF-968** | Journal Dashboard | El EA debe mostrar entradas del journal en el panel de control. **(Fusionado en CTradingPlan)** | Baja |
+| **RF-969** | Daily Routine Automation | El EA debe automatizar la rutina diaria: pre-market → ejecución → post-market. **(Fusionado en CTradingPlan)** | Media |
+| **RF-970** | Weekly Routine Automation | El EA debe automatizar la rutina semanal: revisión de rendimiento, ajustes. **(Fusionado en CTradingPlan)** | Media |
+| **RF-971** | Monthly Routine Automation | El EA debe automatizar la rutina mensual: revisión de rendimiento, objetivos, ajustes. **(Fusionado en CTradingPlan)** | Media |
+| **RF-972** | Performance Grade Calculation | El EA debe calcular un grade de rendimiento (A-F) basado en métricas. **(Fusionado en CTradingPlan)** | Media |
+| **RF-973** | Trading Plan Dashboard | El EA debe mostrar un dashboard de Trading Plan (límites de pérdida, disciplina score, journal, performance grade) en el panel de control. **(Fusionado en CTradingPlan)** | Media |
+| **RF-974** | Trading Plan Auditing | El EA debe generar informes de auditoría del Trading Plan. **(Fusionado en CTradingPlan)** | Media |
+| **RF-975** | Trading Plan Backtesting | El EA debe soportar backtesting del Trading Plan. **(Fusionado en CTradingPlan)** | Media |
+
+---
+
+### 3.3 Requisitos de Rendimiento
+
+| ID | Requisito | Descripción | Métrica | Prioridad |
+| :--- | :--- | :--- | :--- | :--- |
+| **RE-01** | Procesamiento de Ticks | El EA debe procesar cada tick entrante en menos de 1 ms para no afectar el rendimiento general de MT5. | < 1 ms por tick | Alta |
+| **RE-02** | Latencia de Ejecución | El tiempo entre la detección de una señal y el envío de la orden no debe superar los 100 ms. **Para scalping: < 50 ms; para Mega Trades: < 200 ms.** | < 100 ms | Alta |
+| **RE-03** | Capacidad Multi-Símbolo | El EA debe poder analizar hasta 20 símbolos simultáneamente sin degradación significativa del rendimiento. | 20+ símbolos | Alta |
+| **RE-04** | Cálculo de Indicadores | El EA debe calcular y actualizar todos los indicadores (FVG, Order Blocks, PD Arrays, etc.) en menos de 1 ms por símbolo y temporalidad. | < 1 ms por cálculo | Alta |
+| **RE-05** | Consumo de Memoria | El EA no debe consumir más de 50 MB de memoria RAM en condiciones normales de operación. | < 50 MB RAM | Alta |
+| **RE-06** | Carga de CPU | El EA no debe utilizar más del 10% de la CPU en un sistema con procesador estándar (Intel i5 o similar). **Con optimizaciones: < 30% del estado actual.** | < 10% CPU | Alta |
+| **RE-07** | Estabilidad | El EA no debe causar caídas o bloqueos de la plataforma MT5 en condiciones normales. | 100% uptime (MT5) | Alta |
+| **RE-08** | Ejecución en VPS | El EA debe funcionar correctamente en entornos VPS (Virtual Private Server) con latencia de red moderada (100-200 ms). **Para scalping: VPS con latencia < 50 ms.** | Latencia < 200 ms | Alta |
+| **RE-09** | Backtesting | El EA debe completar backtests de al menos 12 meses de datos en menos de 5 minutos en un equipo estándar. | < 5 min / 12 meses | Media |
+| **RE-10** | Optimización | El EA debe ser compatible con el "Strategy Tester" de MT5 para optimización de parámetros, completando ciclos de optimización en menos de 30 minutos. | < 30 min / ciclo | Media |
+
+---
+
+### 3.4 Requisitos de Seguridad
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **RS-01** | Protección de Licencia | El EA debe incluir un sistema de licencia que valide la activación del producto, previniendo su uso sin autorización. | Alta |
+| **RS-02** | Ofuscación de Código | El código del EA debe estar ofuscado (compilado con protección en MQL5) para prevenir ingeniería inversa y modificación no autorizada. | Alta |
+| **RS-03** | Activación Única | La licencia debe permitir la activación en un número limitado de dispositivos (según el tipo de licencia). | Alta |
+| **RS-04** | Sistema de Activación | El EA debe incluir un sistema de activación que valide la licencia contra un servidor externo o mediante archivo de licencia local. | Alta |
+| **RS-05** | Licencia de Prueba | El EA debe incluir una licencia de prueba (demo) con funcionalidad completa durante un período configurable (ej. 30 días). | Alta |
+| **RS-06** | Prevención de Uso No Autorizado | El EA debe detectar y bloquear el uso en cuentas no autorizadas (ej. mediante validación del número de cuenta de MT5). | Alta |
+| **RS-07** | Protección de Datos | El EA no debe almacenar ni transmitir datos sensibles (contraseñas, números de cuenta) sin cifrado adecuado. | Alta |
+| **RS-08** | Registro de Auditoría | El EA debe registrar todas las acciones críticas (activación, desactivación, errores de licencia) en un log de auditoría. | Media |
+
+---
+
+### 3.5 Atributos de Calidad del Sistema (ISO/IEC 25010)
+
+| Atributo | Descripción | Métrica | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **Fiabilidad** | El EA debe operar de manera consistente sin fallos, incluso en condiciones de mercado adversas. | Tasa de fallos < 0.5% mensual | Alta |
+| **Disponibilidad** | El EA debe estar operativo durante todas las sesiones de mercado configuradas (ej. 24/5). | Uptime > 99.9% | Alta |
+| **Mantenibilidad** | El código debe estar estructurado, documentado y modular para facilitar actualizaciones y correcciones. | Deuda técnica < 5% (SonarQube) | Media |
+| **Usabilidad** | Los inputs deben estar claramente etiquetados y organizados en secciones lógicas. Los valores por defecto deben ser razonables. | Curva de aprendizaje < 2 horas | Media |
+| **Eficiencia** | El EA debe utilizar los recursos de MT5 de manera eficiente, sin degradar el rendimiento de la plataforma. | CPU < 10%, RAM < 50 MB | Alta |
+| **Seguridad** | El EA debe proteger el código, la lógica de trading y la licencia contra accesos no autorizados. | Cumplimiento OWASP Top 10 | Alta |
+| **Portabilidad** | El EA debe ser compatible con cualquier instalación de MT5 (Windows 10+, VPS, etc.) sin requerir dependencias adicionales. | Compatibilidad 100% | Alta |
+| **Extensibilidad** | La arquitectura del EA debe permitir la adición de nuevos módulos y funcionalidades en futuras versiones. | Modularidad > 80% | Media |
+
+---
+
+### 3.6 Requisitos de Adaptación al Entorno del Broker
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **AE-01** | Detección de Tipo de Cuenta | El EA debe detectar automáticamente el tipo de cuenta (Micro, Pro, Raw Spread, etc.) utilizando funciones MQL5. | Alta |
+| **AE-02** | Detección de Moneda de Cuenta | El EA debe detectar la moneda de la cuenta (USD, EUR, centavos, etc.) utilizando `AccountInfoString(ACCOUNT_CURRENCY)`. | Alta |
+| **AE-03** | Adaptación de Cálculo de Lotes | El EA debe ajustar automáticamente el cálculo del tamaño de posición (lotes) para cuentas Micro/Cent. | Alta |
+| **AE-04** | Adaptación de Filtro de Spread | El EA debe aplicar filtros de spread máximo específicos según el tipo de cuenta. **Para scalping: < 0.5 pips; para day trading: < 1 pip; para Mega Trades: < 2 pips.** | Alta |
+| **AE-05** | Detección de Comisiones | El EA debe detectar si la cuenta aplica comisiones por lote y ajustar el cálculo de rentabilidad. | Alta |
+| **AE-06** | Detección de Apalancamiento | El EA debe detectar el apalancamiento de la cuenta (`AccountInfoInteger(ACCOUNT_LEVERAGE)`) y utilizarlo para el cálculo de margen y tamaño de posición. | Alta |
+| **AE-07** | Verificación de Símbolos Disponibles | El EA debe verificar que los símbolos configurados estén disponibles en el broker. | Alta |
+| **AE-08** | Verificación de Modo de Ejecución | El EA debe detectar el modo de ejecución de órdenes del broker (Market, Instant, Exchange) y adaptar el método de envío. | Alta |
+| **AE-09** | Verificación de Trading Permitido | El EA debe verificar si el trading automatizado está permitido en la cuenta (`TerminalInfoInteger(TERMINAL_TRADE_ALLOWED)`). | Alta |
+| **AE-10** | Log de Entorno | El EA debe registrar las características detectadas de la cuenta y el broker al iniciar. | Media |
+
+---
+
+### 3.7 Requisitos de Gestión de Condiciones de Mercado y Broker
+
+| ID | Requisito | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- |
+| **GC-01** | Detección de Spread Anormal | El EA debe detectar spreads anormalmente altos y pausar la operativa hasta que el spread vuelva a niveles normales. | Alta |
+| **GC-02** | Detección de Slippage | El EA debe detectar slippage excesivo en la ejecución de órdenes y ajustar la gestión de riesgo en consecuencia. | Media |
+| **GC-03** | Detección de Conexión Perdida | El EA debe detectar la pérdida de conexión con el broker y pausar la operativa hasta que la conexión se restablezca. | Alta |
+| **GC-04** | Detección de Nueva Vela | El EA debe sincronizar sus análisis con la apertura de nuevas velas en las temporalidades configuradas. | Alta |
+| **GC-05** | Gestión de Horario de Mercado | El EA debe ajustar su operativa a los horarios de mercado (ej. pausar durante el cierre de fin de semana). | Media |
+
+---
+
+## ✅ CAPÍTULO 3 - COMPLETO (VERSIÓN 1.1 - OPTIMIZADA)
+
+| Sección | Estado |
+| :--- | :--- |
+| 3.1 Interfaces Externas | ✅ COMPLETO (actualizado con Meses 10-12) |
+| 3.2 Requisitos Funcionales | ✅ **~890+ RFs OPTIMIZADOS** (Módulos 1-32) |
+| 3.3 Requisitos de Rendimiento | ✅ COMPLETO (actualizado con optimizaciones) |
+| 3.4 Requisitos de Seguridad | ✅ COMPLETO |
+| 3.5 Atributos de Calidad (ISO 25010) | ✅ COMPLETO |
+| 3.6 Adaptación al Entorno del Broker | ✅ COMPLETO (actualizado) |
+| 3.7 Gestión de Condiciones de Mercado | ✅ COMPLETO |
+| **CAPÍTULO 3 COMPLETO (v1.1)** | ✅ **LISTO** |
+
+---
+
+### 📊 Resumen de Optimizaciones Aplicadas al Capítulo 3
+
+| Optimización | RFs Afectados | Acción |
+| :--- | :--- | :--- |
+| **Eliminación de menciones duplicadas** | RF-026, RF-052 | Eliminada mención de Mega Trades |
+| **Modificación para referenciar** | RF-463, RF-372, RF-811, RF-292 | Ahora referencian a los módulos principales |
+| **Creación de RF genérico** | RF-510.1 | Cálculo genérico de ADR |
+| **Renombrado de RF duplicado** | RF-970 → RF-041.1 | Journal Logging Reference |
+| **Fusiones de funcionalidades** | RF-505, RF-507, RF-524, RF-801, RF-802, RF-817, RF-901, RF-902, RF-904, RF-905, RF-953-975 | Fusionados en clases principales |
+
+---
+
+### 📊 Resumen de Requisitos Funcionales por Dominio (Versión 1.1 Optimizada)
+
+| Dominio | Módulos | RFs | Rango de IDs |
+| :--- | :--- | :--- | :--- |
+| **Core** | 6 | 20+ | RF-036 a RF-050, RF-323, RF-041.1 |
+| **Analysis** | 14 | 450+ | RF-001 a RF-010, RF-058 a RF-149, RF-150 a RF-221, RF-222 a RF-248, RF-249 a RF-305, RF-254 a RF-289, RF-370, RF-371, RF-472 a RF-477, RF-601 a RF-660, RF-661 a RF-700, RF-701 a RF-745, RF-746 a RF-785, RF-850 a RF-875 |
+| **Execution** | 4 | 80+ | RF-011 a RF-035, RF-052 a RF-057, RF-069 a RF-076, RF-119, RF-154, RF-156, RF-306 a RF-322, RF-362, RF-366, RF-367, RF-510.1, RF-920, RF-921 |
+| **Models** | 6 | 300+ | RF-324 a RF-385, RF-386 a RF-471, RF-500 a RF-519, RF-520 a RF-544, RF-800 a RF-845, RF-900 a RF-940 |
+| **TradingPlan** | 2 | 27 | RF-509, RF-950 a RF-975 |
+| **TOTAL** | **32** | **~890+** | RF-001 a RF-975 |
+
+---
+
+**El Capítulo 3 está ahora completo en su versión 1.1 optimizada.**
+
+**¿Procedemos con el Capítulo 4 - Anexos (v1.1 optimizada)?**

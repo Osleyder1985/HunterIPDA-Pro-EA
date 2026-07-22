@@ -1,0 +1,629 @@
+**Aquí tienes el documento completo de "Capítulo 1 - Introducción" (v1.1) con TODAS las optimizaciones aplicadas, sin omitir absolutamente nada.**
+
+---
+
+## 📄 CAPÍTULO 1 - INTRODUCCIÓN (VERSIÓN 1.1 - OPTIMIZADA)
+
+---
+
+### 1. INTRODUCCIÓN
+
+#### 1.1 Propósito
+
+El presente documento tiene como propósito definir de manera completa, inequívoca y verificable todos los requisitos funcionales y no funcionales del sistema **HunterIPDA Pro EA**, un **Asesor Experto (Expert Advisor)** desarrollado en **MQL5** para la plataforma **MetaTrader 5**.
+
+HunterIPDA Pro EA es un sistema de trading algorítmico diseñado para **traders y gestores de fondos** que buscan automatizar la identificación y ejecución de setups de trading basados en la metodología **ICT (Inner Circle Trader)** , específicamente en el seguimiento del **Interbank Price Delivery Algorithm (IPDA)** .
+
+**Objetivos del Sistema:**
+
+1. **Automatizar completamente** la detección y ejecución de setups de trading basados en conceptos ICT, eliminando la intervención manual del trader.
+2. **Detectar en tiempo real** las condiciones de mercado: Expansión, Retracement, Reversal y Consolidación.
+3. **Identificar y operar** puntos de referencia institucionales: Order Blocks, Fair Value Gaps (FVG), Liquidity Pools, Liquidity Voids, Equilibrium, Zonas de Descuento/Prima y Optimal Trade Entry (OTE).
+4. **Gestionar el riesgo automáticamente** mediante stop loss, take profit, trailing stop, ajuste dinámico de tamaño de posición, gestión de drawdown, mitigación de pérdidas y scaling out (salida gradual).
+5. **Operar en múltiples símbolos y temporalidades** según las capacidades del broker conectado, con análisis top-down completo (Monthly, Weekly, Daily, H4, H1, M15, M5).
+6. **Proporcionar estadísticas y logs** detallados de todas las operaciones ejecutadas.
+7. **Detectar trampas del Market Maker** como False Flags, False Breakouts, Trendline Phantoms, False Head & Shoulders, Divergence Phantoms, Double Tops/Bottoms.
+8. **Identificar Institutional Sponsorship** (apoyo institucional) como filtro de alta probabilidad para entradas.
+9. **Integrar análisis macroeconómico** (bonos, tasas de interés, SMT divergencias, análisis intermercado, diferenciales de tasas de bancos centrales) como contexto para operaciones.
+10. **Implementar modelos de trading configurables:** Position Trading, Swing Trading, Short-Term Trading, Day Trading, Scalping, **Mega Trading** y **Stock Trading**.
+11. **Identificar conceptos avanzados de estructura de mercado:** Mitigation Blocks, Breaker Blocks, Rejection Blocks, Reclaimed Order Blocks, Propulsion Blocks, Vacuum Blocks.
+12. **Operar basado en liquidez:** identificar External/Internal Range Liquidity, Low/High Resistance Liquidity Runs, Liquidity Pools y Liquidity Voids.
+13. **Identificar Quarterly Shifts (cambios trimestrales)** y utilizar **IPDA Data Ranges** (20, 40 y 60 días hábiles) para anticipar movimientos de mercado.
+14. **Gestionar posiciones de largo plazo** mediante trailing stop basado en IPDA Data Ranges, con ajuste dinámico del stop loss según el progreso del trade (40 días → 20 días → 10 días).
+15. **Utilizar técnicas de entrada específicas para posición trading:** Stop Entries (buy stops en down candles, sell stops en up candles) y Limit Entries (buy limits en el close de down candles, sell limits en el close de up candles).
+16. **Integrar tendencias estacionales (Seasonal Tendencies)** basadas en 40+ años de datos históricos como filtro de contexto.
+17. **Utilizar Open Interest (OI) del mercado de futuros** como filtro de confirmación para reversiones en niveles clave.
+18. **Soportar Swing Trading (trading de mediano plazo)** con duraciones de 2 semanas o más, objetivos de 200-500 pips, y ejecución en temporalidad 4H.
+19. **Implementar un proceso de filtrado en cascada para swing trading:** Seasonal Tendency → Major Market Analysis → Intermarket Analysis → COT Hedging Program → Open Interest Filter → Top-Down Analysis → Trade Setup → Trade Management.
+20. **Soportar técnicas de entrada específicas para swing trading:** Stop Entries para Breaker/Mitigation/FVG/Void, y Limit Entries para Order Block/Rejection Block/Old High/Low.
+21. **Gestionar posiciones de swing trading** con toma de profits parciales (20-30% al 25% del objetivo), reentradas al 50% del objetivo, y trailing stop ajustado al 75% del objetivo.
+22. **Identificar los 8 Hallmarks para movimientos explosivos** como filtro de selección de mercados para swing trading.
+23. **Implementar el modelo One Shot One Kill (OSOK)** como modo premium dentro del Short-Term Trading, permitiendo 1 operación de alta probabilidad por semana con proyección de high/low semanal.
+24. **Identificar perfiles de rango semanal (Weekly Range Profiles)** para anticipar la formación de máximos y mínimos semanales (Martes Low/High, Miércoles Low/High, Reversión de Jueves, etc.).
+25. **Aplicar plantillas de manipulación del Market Maker (MM Manipulation Templates)** para identificar patrones de formación de rangos semanales.
+26. **Detectar reversiones intra-semanales (Intra-Week Reversals)** basadas en velocidad y magnitud del movimiento en lunes y martes.
+27. **Integrar análisis COT (Commitment of Traders) automatizado** con cálculo de rango de 12 meses y nueva línea cero (Commercial Hedging Program) como filtro de confirmación.
+28. **Blending de tiempo y precio** combinando IPDA Data Ranges (20/40/60 días) con PD Arrays para identificar liquidity runs de baja resistencia.
+29. **Implementar el modelo de Day Trading** para capturar el 65-70% del rango diario, con ejecución en H1/M15 y objetivos de 30-100 pips por día.
+30. **Implementar el modelo de Scalping** para capturar 15-30 pips por operación, con duración de 1-2 horas, R:R 1:1 y ejecución en M5.
+31. **Definir el IPDA True Day** (12:00 AM - 3:00 PM NY) como marco temporal para day trading, con Kill Zones específicas (London 1-5 AM NY, New York 7-10 AM NY, London Close 10 AM-12 PM NY).
+32. **Calcular el Central Bank Dealers Range (CBDR)** como herramienta para proyectar máximos y mínimos diarios mediante desviaciones estándar.
+33. **Identificar perfiles intraday (Intraday Profiles)** para la sesión de Londres: Normal/Delayed Protraction para Buy/Sell.
+34. **Identificar 8 tipos de reversiones de mercado** (Previous Day High/Low, Intra-Week High/Low, Intermediate Term High/Low, NY Session, London Close, CME Open).
+35. **Aplicar Price Engine Models** para scalping: Offset Accumulation, Re-Accumulation, Offset Distribution y Redistribution.
+36. **Implementar una rutina diaria estructurada** para day trading: calendario económico → DXY → IPDA Data Ranges → PD Arrays → bias → lower TFs → standard deviations → weekly templates → ejecución.
+37. **Implementar análisis Multi-Asset** integrando las 4 clases de activos (Bonos, Commodities, Divisas, Acciones) para detectar entornos Risk On/Off y simetría/decoupling.
+38. **Implementar el modelo de Mega Trades** para operaciones de 3-6 meses con R:R ≥ 5:1, 1-3 por año, riesgo 0.3%, basado en Quarterly Shifts y Top-Down Analysis.
+39. **Implementar Stock Trading** con selección basada en CAN SLIM, SMT Divergence y Seasonals, incluyendo opciones calls/puts.
+40. **Implementar un Plan de Trading** con límites de pérdida diarios/semanales/mensuales, control de disciplina, journaling y gestión psicológica (FOMO, revenge trading, overconfidence).
+
+**Alcance de la Documentación:**
+
+Este documento SRS sirve como el **contrato técnico** entre el equipo de desarrollo, los stakeholders y los usuarios finales (tanto para uso personal como para venta comercial), garantizando la trazabilidad desde los requisitos hasta la implementación del código MQL5.
+
+---
+
+### 1.2 Alcance
+
+**HunterIPDA Pro EA** es un Asesor Experto para MetaTrader 5 que opera de forma **completamente automática**, analizando el mercado en tiempo real y ejecutando operaciones basadas en la metodología ICT.
+
+**Símbolos Soportados:**
+
+| Categoría                        | Símbolos Soportados                                                                      |
+| :---                             | :---                                                                                     |
+| **Forex (FX)**                   | Todos los pares mayores, menores y exóticos disponibles en el broker conectado (EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD, EUR/GBP, EUR/JPY, GBP/JPY, etc.). |
+| **Índices** | Índices disponibles en el broker (US30, DE40, UK100, etc.).                                                   |
+| **Materias Primas**              | Oro (XAU/USD), Plata (XAG/USD), Petróleo (WTI, Brent), según disponibilidad del broker.  |
+| **Criptomonedas**                | Criptomonedas disponibles en el broker (BTC/USD, ETH/USD, etc.).                         |
+| **Macro Instrumentos**           | Dólar Index (DXY), 30-Year Treasury Bond, 10-Year Note, CRB Commodity Index, Goldman Sachs Commodity Index (para análisis intermercado). |
+| **Futures (para Open Interest)** | Futures de divisas (AUD, NZD, CAD, JPY, EUR, GBP, CHF) y materias primas (Gold, Silver, Crude Oil) para análisis de Open Interest como filtro de confirmación. |
+| **Stocks**                       | Acciones individuales del Dow 30, NASDAQ 100 y S&P 500 para trading de acciones.         |
+
+**Temporalidades Soportadas:**
+
+- **Análisis multi-temporal completo:** Monthly (M), Weekly (W), Daily (D1), 4 Horas (H4), 1 Hora (H1), 15 Minutos (M15), 5 Minutos (M5), 1 Minuto (M1).
+- **El usuario podrá configurar** la temporalidad principal de operativa y las temporalidades superiores para análisis de contexto (Top-Down Analysis).
+- **Modelos de trading configurables:**
+  - **Position Trading:** Análisis en Monthly/Weekly, ejecución en Daily. Duración: varios meses. Objetivos: grandes movimientos estructurales.
+  - **Swing Trading:** Análisis en Monthly/Weekly/Daily, ejecución en 4H. Duración: 2 semanas a 1 mes. Objetivos: 200-500 pips.
+  - **Short-Term Trading:** Análisis en Daily/H4, ejecución en H1. **Modo OSOK (One Shot One Kill)** como opción premium.
+  - **Day Trading:** Análisis en H4/H1, ejecución en H1/M15. Duración: intradía. Objetivos: 30-100 pips/día.
+  - **Scalping:** Análisis en H1/M15, ejecución en M5. Duración: 1-2 horas. Objetivos: 15-30 pips.
+  - **Mega Trading:** Análisis en Monthly/Weekly, ejecución en Daily. Duración: 3-6 meses. Objetivos: movimientos de Quarterly Shifts.
+  - **Stock Trading:** Análisis en Weekly/Daily, ejecución en Daily/4H. Duración: semanas a meses.
+
+**Módulos Funcionales del EA (Optimizados por Dominios):**
+
+| Dominio         | Módulo             | Descripción                                                                         |
+| :---            | :---               | :---                                                                                |
+| **Core**        | CHunterIPDA        | Clase principal del EA. Coordinación de todos los módulos.                          |
+| **Core**        | CConfig            | Gestión de configuración y parámetros.                                              |
+| **Core**        | CLogger            | Logging y estadísticas de rendimiento.                                              |
+| **Core**        | CPanel             | Panel de control y visualización.                                                   |
+| **Core**        | CLicense           | Gestión de licencias y seguridad.                                                   |
+| **Core**        | CUtils             | Utilidades y funciones auxiliares.                                                  |
+| **Core**        | CConstants         | Constantes y enumeraciones del sistema.                                             |
+| **Analysis**    | CDetector          | Detección de setups ICT (Order Blocks, FVG, Turtle Soup, etc.).                     |
+| **Analysis**    | CContext           | Análisis de contexto, bias, sponsorship, SMT divergencia.                           |
+| **Analysis**    | CMultiAsset        | Análisis multi-asset (Risk On/Off, Alignment Score).                                |
+| **Analysis**    | CMacroAnalyzer     | Análisis macro (10-Year, DXY, Intermarket).                                         |
+| **Analysis**    | CSeasonal          | Tendencias estacionales (40+ años).                                                 |
+| **Analysis**    | CDataRange         | IPDA Data Ranges, Quarterly Shifts.                                                 |
+| **Analysis**    | CCOTAnalyzer       | Análisis COT (Buy/Sell Programs, Hedging).                                          |
+| **Analysis**    | COIAnalyzer        | Análisis Open Interest.                                                             |
+| **Analysis**    | CRelStrength       | Análisis de fortaleza relativa.                                                     |
+| **Analysis**    | CPremiumCarry      | Premium vs Carrying Charge.                                                         |
+| **Analysis**    | CCOExtended        | COT Extended (nódulos de hedging, extremos).                                        |
+| **Analysis**    | CAssetClass        | Estado de clases de activos.                                                        |
+| **Analysis**    | CIntermarket       | Correlación intermercado.                                                           |
+| **Analysis**    | CRiskOnOff         | Detección Risk On/Off.                                                              |
+| **Analysis**    | CCorrelation       | Matrices de correlación.                                                            |
+| **Execution**   | CExecutor          | Ejecución de órdenes y gestión de posiciones.                                       |
+| **Execution**   | CEntryManager      | Gestión de entradas (Stop/Limit/Híbrida).                                           |
+| **Execution**   | CRiskManager       | Gestión de riesgo (SL, TP, Trailing, Drawdown).                                     |
+| **Execution**   | CMultiSymbol       | Gestión multi-símbolo.                                                              |
+| **Models**      | CSwingFilter       | Filtros de Swing Trading (Seasonal, COT, OI, 8 Hallmarks).                          |
+| **Models**      | CHallmarkAnalyzer  | 8 Hallmarks para movimientos explosivos.                                            |
+| **Models**      | CSwingManager      | Gestión de posiciones de Swing.                                                     |
+| **Models**      | CShortTerm         | Modelo Short-Term Trading.                                                          |
+| **Models**      | CWeeklyRange       | Perfiles de rango semanal.                                                          |
+| **Models**      | CMMManipulation    | Plantillas de manipulación MM.                                                      |
+| **Models**      | CIntraWeekReversal | Reversiones intra-semanales.                                                        |
+| **Models**      | COSOKAnalyzer      | One Shot One Kill.                                                                  |
+| **Models**      | CDayTrading        | Modelo Day Trading *(incluye intraday profiles y market reversals)*.                |
+| **Models**      | CScalping          | Modelo Scalping *(incluye Price Engine, Asian Turtle Soup, ADR Exit)*.              |
+| **Models**      | CStockTrader       | Modelo Stock Trading *(incluye Watchlists, CAN SLIM, Options, Seasonal)*.           |
+| **Models**      | CMegaTrade         | Modelo Mega Trades *(incluye Quarterly Shift, Top-Down, Decision Tree, Scenarios)*. |
+| **TradingPlan** | CTradingPlan       | Trading Plan *(incluye Discipline, Loss Manager, Psychology, Journal)*.             |
+| **TradingPlan** | CNewsEvent         | Gestión de eventos de mercado.                                                      |
+
+---
+
+### 1.3 Definiciones y Acrónimos
+
+La siguiente tabla recoge los términos técnicos, acrónimos y conceptos específicos utilizados en el presente documento, basados en la metodología ICT y los estándares de ingeniería de software aplicables.
+
+| Término / Acrónimo                 | Definición |
+| :---                               | :--- |
+| **10-Year Note**                   | Nota del Tesoro a 10 años. Complemento del análisis de bonos para tasas de interés. |
+| **Accumulation**                   | Fase donde los market makers acumulan posiciones en zonas de descuento. |
+| **ADR (Average Daily Range)**      | Rango diario promedio de los últimos 5 días hábiles. Se usa como referencia para objetivos y stops en day trading y scalping. |
+| **Algorithm Projection**           | Proyección del IPDA basada en rangos de double tops/bottoms. |
+| **Alignment Score**                | Puntuación de alineación entre las 4 clases de activos (0-100). Indica la fuerza del contexto multi-asset. |
+| **AM Session (Bonds)**             | Sesión de bonos de 8:00 AM a 12:00 PM NY. Tiene el mayor volumen del día. |
+| **AM Session (Indices)**           | Sesión de índices de 9:30 AM a 12:00 PM NY. Contiene el opening range y el AM trend. |
+| **AM Trend (Indices)**             | Tendencia o swing de precio en la sesión AM de índices (9:30 AM - 12 PM NY). |
+| **Anticipatory Skill**             | Habilidad de anticipar dónde se formarán setups futuros basados en el rango mensual. |
+| **API**                            | Application Programming Interface. Conjunto de reglas y protocolos para la integración entre sistemas. |
+| **Asian Range**                    | Rango de precio entre las 8:00 PM y 12:00 AM hora NY. Fundamental para scalping en la sesión asiática. |
+| **Asset Class**                    | Una de las 4 clases de activos: Bonos, Commodities, Divisas o Acciones. |
+| **Asymmetrical Market Condition**  | Condición donde DXY y pares FX no se mueven de manera simétrica (divergencia). Señal de reversión. |
+| **Backtesting**                    | Simulación de una estrategia de trading sobre datos históricos para evaluar su rendimiento potencial. |
+| **Bear Flag**                      | Patrón de continuación: impulso a la baja → consolidación → otro impulso a la baja. |
+| **Bodies vs. Wicks**               | Los cuerpos de las velas contienen volumen institucional; las mechas (wicks) son principalmente retail. |
+| **Bond Market (30-Year Treasury)** | Mercado de bonos del Tesoro a 30 años. Barómetro de tasas de interés. |
+| **Bond Opening Range**             | Rango de precio entre 8:00 AM y 9:00 AM NY en bonos. Tiende a contener el high/low del día. |
+| **Bracketing the Range**           | Colocar órdenes de compra y venta alrededor de un rango de consolidación (estrategia de breakout traders). |
+| **Breakaway Gap**                  | Gap que no se llena completamente, indicando fuerza en la dirección del gap. |
+| **Breaker Block (Bullish)**        | Área donde un short-term high es violado al alza, y luego el precio retorna a él como soporte. |
+| **Breaker Block (Bearish)**        | Área donde un short-term low es violado a la baja, y luego el precio retorna a él como resistencia. |
+| **Breaker Confirmation**           | Run de stops + reprice rápido en dirección opuesta + retorno al nivel roto. |
+| **Breaker Formation**              | Patrón donde un soporte/resistencia es roto y luego el precio retorna para mitigar posiciones. |
+| **Breaker Swing Point**            | Punto de giro donde el precio rompe un old high/low (stop run) y luego revierte agresivamente. |
+| **Breakout Trader**                | Trader que coloca órdenes por encima de máximos y por debajo de mínimos para capturar tendencias. |
+| **Bull Flag**                      | Patrón de continuación: impulso al alza → consolidación → otro impulso al alza. |
+| **Buy Hedge (COT)**                | Acción de compra agresiva por parte de los comerciales dentro de un programa de venta (sell program). |
+| **Buy Limit Entry**                | Técnica de entrada larga: colocar un Buy Limit en el Close de una Down Candle en Daily, con contexto HTF alcista (deep discount). |
+| **Buy Program (COT)**              | Condición donde los comerciales mantienen una posición neta larga sostenida (por encima de la línea cero). |
+| **Buy Side Liquidity**             | Liquidez de compra (buy stops) utilizada por el smart money para salir de posiciones largas. |
+| **Buy Side of the Curve**          | Fase donde el precio sube después de un mínimo (MM Buy Model). |
+| **Buy Stop**                       | Orden de compra colocada por encima del precio actual de mercado, que se activa cuando el precio alcanza ese nivel. |
+| **Buy Stop Entry**                 | Técnica de entrada larga: colocar un Buy Stop en el Open de una Down Candle en Daily, con contexto HTF alcista. |
+| **Buyer's Remorse**                | Compradores que entraron en un short-term low, vieron un pop, y luego vieron el mercado romper por debajo. |
+| **CAN SLIM**                       | Metodología de William O'Neil para selección de stocks: Current earnings, Annual earnings, New factor, Supply/Demand, Leader/Laggard, Institutional sponsorship, Market direction. |
+| **Carrying Charge Market**         | Condición donde el contrato nearby cotiza a un precio más bajo que el next month out (estructura normal de mercado). |
+| **Cast Forward**                   | Proyección de 20, 40 y 60 días hábiles hacia adelante desde un punto de anclaje (Quarterly Shift) para anticipar setups. |
+| **CBDR (Central Bank Dealers Range)** | Rango de precio entre las 2:00 PM y 8:00 PM hora NY. Se usa con desviaciones estándar para proyectar máximos y mínimos diarios. |
+| **Clean High / Clean Low**         | Nivel donde se han formado dos máximos o mínimos iguales en proximidad, que actúa como imán de liquidez. |
+| **CME Open**                       | Apertura del mercado de futuros CME (Chicago Mercantile Exchange) a las 8:20 AM hora NY. Punto de referencia clave para la New York Judas swing. |
+| **CMMI**                           | Capability Maturity Model Integration. Modelo de madurez de capacidades para la mejora de procesos de software. |
+| **Common Gap**                     | Espacio entre cierre y apertura de velas consecutivas (liquidity void). |
+| **Compounding Interest**           | Interés compuesto. Crecimiento exponencial del capital a través del tiempo con ganancias consistentes. |
+| **Consolidation Day (Bonds)**      | Día donde el mercado de bonos se mueve en un rango estrecho, precediendo a eventos de alto impacto. |
+| **Contract Rollover**              | Proceso de trasladar posiciones de un contrato de futuros al siguiente mes de entrega. |
+| **Cooldown**                       | Período de enfriamiento forzado después de pérdidas consecutivas para prevenir revenge trading. |
+| **COT Data**                       | Commitment of Traders. Datos de posicionamiento de grandes comerciales y especuladores publicados por la CFTC. |
+| **COT Hedging Program**            | Programa de cobertura de los grandes comerciales (hedgers). Su posición neta (rango de 12 meses) confirma la dirección del mercado. |
+| **Cracking Correlation**           | Ruptura de la relación normal (inversa) entre el 10-Year Treasury Note y el DXY, indicando una oportunidad de trading. |
+| **CRB Index**                      | Commodity Research Bureau Index. Índice de materias primas utilizado en análisis intermercado. |
+| **Daily Loss Limit**               | Límite de pérdida diaria (ej. 2% del equity) para proteger el capital y prevenir revenge trading. |
+| **Daily Routine**                  | Rutina diaria estructurada para day trading: calendario económico → DXY → IPDA Data Ranges → PD Arrays → bias → lower TFs → standard deviations → weekly templates → ejecución. |
+| **Day Trading**                    | Modelo de trading intradía para capturar el 65-70% del rango diario, con ejecución en H1/M15 y objetivos de 30-100 pips por día. |
+| **Debt Instruments**               | Instrumentos de deuda (bonos, notas) como indicadores adelantados de movimientos en FX. |
+| **Decoupling**                     | Desacoplamiento entre las clases de activos. Una o más clases no se comportan como deberían, indicando incertidumbre. |
+| **Deep Discount**                  | Condición donde el precio está significativamente por debajo del equilibrio (soporte extremo). Ideal para entradas con Buy Limit. |
+| **Deep Premium**                   | Condición donde el precio está significativamente por encima del equilibrio (resistencia extrema). Ideal para entradas con Sell Limit. |
+| **Discipline Score**               | Puntuación (0-100) que mide la adherencia a las reglas de trading y la disciplina operativa. |
+| **Displacement**                   | Movimiento fuerte y rápido del precio que indica la entrada de "dinero inteligente" (smart money) en el mercado. |
+| **Distribution**                   | Fase donde los market makers distribuyen/liquidan posiciones en zonas de prima. |
+| **Divergence Phantom**             | Divergencia que parece real pero es una trampa del Market Maker. |
+| **Dogs of the Dow**                | Estrategia de selección de stocks basada en los de peor rendimiento del año anterior. |
+| **Double Bottom (Trampa)**         | Dos mínimos iguales; retail ve soporte, smart money ve liquidez (sell stops). |
+| **Double Top (Trampa)**            | Dos máximos iguales; retail ve resistencia, smart money ve liquidez (buy stops). |
+| **Dynamic Response**               | Respuesta inmediata y fuerte del precio al llegar a un nivel de sponsorship. Confirmación de entrada. |
+| **EA**                             | Expert Advisor. Asesor Experto en MetaTrader, programa automatizado de trading. |
+| **Efficiency in Price Delivery**   | El FVG se llena cuando ambos lados del mercado (compra y venta) han sido ofrecidos. |
+| **Elephant in the Pool**           | Analogía de una entidad grande (smart money) entrando al mercado y causando desplazamiento (displacement). |
+| **Equilibrium**                    | Punto medio (50%) de un rango de precio. Representa el "Fair Market Value" o valor justo del mercado. |
+| **Exhaustion Gap**                 | Gap al final de una tendencia, indicando capitulación y posible reversión. |
+| **Explosive Swing Trade**          | Swing trade con alta probabilidad de movimiento rápido y de gran magnitud, identificado por la alineación de los 8 Hallmarks. |
+| **External Range Liquidity**       | Liquidez fuera del rango actual: buy stops arriba, sell stops abajo. Objetivos de salida. |
+| **Failure Swing**                  | Movimiento que fracasa en romper un nivel (lower high / higher low) y revierte. Es una de las dos formas de swing points institucionales. |
+| **Fair Value Gap (FVG)**           | Hueco en el precio donde no hubo negociación en ambos sentidos debido a un movimiento rápido y direccional. El mercado tiende a volver a esta zona. **Se forma con 3 velas: izquierda (rango), central (direccional), derecha (confirmación).** |
+| **False Breakout**                 | Movimiento de precio que rompe un rango de consolidación pero rápidamente revierte en dirección opuesta. |
+| **False Head and Shoulders**       | H&S que parece bajista pero en realidad es una trampa alcista (turtle soup long). |
+| **False Inverted Head and Shoulders** | iH&S que parece alcista pero en realidad es una trampa bajista (turtle soup short). |
+| **Fibonacci Expansion** | Herramienta de medición de rangos para definir niveles de Premium (80-90%) y Discount (20-30%) en swing trading. |
+| **Filling the Numbers** | Estrategia de scalping que opera en niveles redondos (ej. 1.2000, 1.2100) como objetivos de precio. |
+| **Flagpole** | Primer impulso (al alza o a la baja) que define la magnitud del patrón de bandera. |
+| **Float (Stocks)** | Número de acciones disponibles para trading. Menor float = mayor potencial de movimiento explosivo. |
+| **FOMO (Fear of Missing Out)** | Miedo a perderse un movimiento del mercado, que lleva a decisiones impulsivas sin seguir reglas. |
+| **Full Gap Fill** | Cuando el gap se llena completamente, el vacío de liquidez está balanceado. |
+| **Fund Level Liquidity** | Liquidez de grandes fondos (whales) en niveles de Monthly y Weekly. |
+| **FVG** | Véase Fair Value Gap. |
+| **FVG Fill as Entry** | Cuando el FVG se llena, puede usarse como entrada en la dirección de la tendencia. |
+| **Gap Fill** | El mercado retorna para llenar el vacío de liquidez creado por el gap. |
+| **Gap Risk** | Riesgo de que el mercado reprecie agresivamente para cerrar un gap o FVG. |
+| **GDPR** | General Data Protection Regulation. Reglamento General de Protección de Datos de la Unión Europea. |
+| **Goldman Sachs Commodity Index** | Índice de materias primas con fuerte ponderación en energía, utilizado en análisis intermercado. |
+| **Growth Stocks** | Stocks con alto potencial de crecimiento explosivo (vs. index stocks que son más estables). |
+| **Hallmarks (8)** | Ocho condiciones que, cuando se alinean, indican alta probabilidad de movimiento explosivo en swing trading: Market Profiles, Intermarket Analysis, COT Hedging, Open Interest, Seasonal, Volatility Contraction, News Sentiment, Williams %R Sentiment. |
+| **Head and Shoulders (H&S)** | Patrón clásico de reversión bajista: hombro izquierdo → cabeza → hombro derecho. |
+| **Hedging** | Los bancos compran y venden simultáneamente para gestionar riesgo (bookmaking). |
+| **Hedging During Accumulation** | Smart money compra durante la sell side curve. |
+| **Hedging During Distribution** | Smart money vende durante la buy side curve. |
+| **Hedging Program (COT)** | Programa de cobertura a corto plazo dentro de un programa mayor. Ocurre cuando los comerciales compran/venden agresivamente en niveles específicos. |
+| **High Magnitude Period (Stocks)** | Períodos de alta volatilidad direccional en el mercado de acciones (Feb-May y Oct-Dic). |
+| **High Resistance Liquidity Run** | Movimiento con alta resistencia, en contra de la dirección del monthly/weekly. |
+| **High Reward Setup** | Setup donde las tres perspectivas (Big Picture, Intermediate, Short-Term) están alineadas (7 factores en acuerdo). |
+| **Higher Time Frame Price Displacement** | Movimiento fuerte en temporalidades altas que indica entrada de grandes jugadores. |
+| **Highest Body Reference** | El cuerpo más alto (open/close) dentro de un swing high (rejection block). |
+| **HunterIPDA Pro EA** | Nombre del sistema objeto del presente documento. |
+| **ICT** | Inner Circle Trader. Metodología de trading creada por Michael J. Huddleston, centrada en el análisis del flujo de órdenes institucionales. |
+| **Ideal Seasonal Tendency** | Ocurre cuando la tendencia estacional del activo y la del DXY son diametralmente opuestas (una sube, la otra baja), creando una señal de alta probabilidad. |
+| **IEEE 830** | Estándar del IEEE para la elaboración de Especificaciones de Requisitos de Software. |
+| **Impulse Price Swing** | Movimiento de precio fuerte y rápido que crea un nuevo rango o rompe la estructura de mercado existente. |
+| **Indicator Lags Price** | Los indicadores miden el pasado; el precio siempre lidera. |
+| **Inside Bar (Volatility Contraction)** | Vela cuyo rango está completamente dentro del rango de la vela anterior. Indica contracción de volatilidad y posible expansión explosiva. |
+| **Institutional Market Structure** | Análisis de la estructura de mercado desde la perspectiva institucional, comparando activos correlacionados (DXY vs FX). |
+| **Institutional Order Flow (IOF)** | Flujo de órdenes de grandes bancos y fondos. Determina si el mercado tiene sesgo alcista o bajista. |
+| **Institutional Sponsorship** | Apoyo de grandes instituciones (bancos/fondos) a un movimiento de precio. Es la "firma" del smart money. |
+| **Institutional Swing Points** | Solo hay dos formas de cambio de dirección: Breaker (stop run + reversión) y Failure Swing (fracaso en romper un nivel). |
+| **Interest Rate Analysis** | Análisis de tasas de interés y diferenciales entre divisas para establecer bias direccional. |
+| **Interest Rate Differentials** | Diferencia entre las tasas de interés de dos bancos centrales. Los fondos buscan yield (rendimiento) en divisas con tasas más altas. |
+| **Interest Rates as Precursor** | Las tasas de interés son el precursor de hacia dónde se moverán las divisas. |
+| **Intermarket Analysis** | Análisis de la relación entre los cuatro grandes grupos de activos: bonos, materias primas, acciones y divisas. |
+| **Internal Range Liquidity** | Liquidez dentro del rango actual: FVG, order blocks. Zonas de entrada. |
+| **Interbank Price Delivery Algorithm (IPDA)** | Algoritmo interbancario responsable de la entrega de precios en los mercados financieros globales. |
+| **Intra-Week Market Reversal** | Reversión del precio que ocurre dentro de la misma semana, típicamente el miércoles o jueves, identificada por velocidad y magnitud del movimiento en lunes y martes. |
+| **Inverted Head and Shoulders (iH&S)** | Patrón clásico de reversión alcista: hombro izquierdo → cabeza → hombro derecho invertido. |
+| **IPDA** | Interbank Price Delivery Algorithm. Véase definición anterior. |
+| **IPDA Data Ranges** | Rangos de 20, 40 y 60 días hábiles que el algoritmo IPDA utiliza para buscar liquidez y ejecutar Quarterly Shifts. |
+| **IPDA True Day** | El día de trading interbancario que comienza a las 12:00 AM (medianoche) y termina a las 3:00 PM hora NY. Marco temporal del IPDA. |
+| **ISO/IEC 12207** | Estándar internacional que establece los procesos del ciclo de vida del software. |
+| **ISO/IEC 25010** | Estándar internacional que define un modelo de calidad para productos software y sistemas. |
+| **Journaling** | Sistema de diario de trading para registrar operaciones, emociones, errores y lecciones aprendidas. |
+| **Judas Swing** | Movimiento falso del precio (protracción) diseñado para engañar a los traders, seguido de un movimiento en dirección opuesta. |
+| **Kill Zones** | Zonas horarias específicas para day trading: London Kill Zone (1-5 AM NY), New York Kill Zone (7-10 AM NY), London Close Kill Zone (10 AM-12 PM NY). |
+| **Layered Resistance** | Confluencia de niveles de resistencia de múltiples temporalidades (Monthly + Weekly), aumentando la probabilidad de rechazo. |
+| **Leadership Asset** | Clase de activo que muestra la mayor fuerza (o debilidad) relativa, indicando dónde está el money flow institucional. |
+| **Lethargic Response** | Respuesta lenta y sin energía del precio (ausencia de sponsorship). Señal de salida. |
+| **Limit Entry** | Técnica de entrada que utiliza órdenes Limit (Buy Limit en el Close de Down Candles, Sell Limit en el Close de Up Candles) para entrar en deep discount/premium. |
+| **Liquidity** | Conjunto de órdenes de compra (buy stops) y venta (sell stops) que el mercado busca activar. |
+| **Liquidity Pool** | Conjunto de órdenes de compra (buy stops) o venta (sell stops) acumuladas en un nivel de precio específico. |
+| **Liquidity Raid** | Movimiento del precio para activar stops en un liquidity pool, recolectando liquidez. |
+| **Liquidity Run** | Movimiento del precio diseñado para activar stops y recolectar liquidez (buy stops o sell stops). |
+| **Liquidity Void** | Vacío de liquidez. Movimiento rápido del precio con pocos wicks y gran rango, indicando negociación ineficiente. |
+| **Look Back** | Análisis de 20, 40 y 60 días hábiles a la izquierda de un punto de anclaje para identificar flujo de órdenes institucionales y puntos de liquidez. |
+| **Low Magnitude Period (Stocks)** | Período de consolidación en el mercado de acciones (May-Oct). Menor volatilidad direccional. |
+| **Low Resistance Liquidity Run** | Movimiento con poca resistencia, en sincronía con la dirección del monthly/weekly. |
+| **Lowest Body Reference** | El cuerpo más bajo (open/close) dentro de un swing low (rejection block). |
+| **M Pattern** | Patrón en forma de "M" que indica failure swing y posible reversión bajista. |
+| **Macro Market Analysis** | Análisis de inflación/deflación y su impacto en divisas y activos. |
+| **Macro to Micro** | Análisis desde macroeconomía (bonos, tasas de interés) hasta ejecución técnica en pares FX. |
+| **Major Market Analysis** | Análisis de las 4 grandes clases de activos (Bonos, Acciones, Materias Primas, Divisas) para determinar perfiles de tendencia/consolidación. |
+| **Market Efficiency Paradigm** | Modelo que explica la interacción entre Smart Money (bancos) y Uninformed Money (retail), donde el precio es manipulado por el primero. |
+| **Market Maker** | Entidad (generalmente bancos o grandes instituciones) que proporciona liquidez al mercado y fija los precios de compra y venta. |
+| **Market Maker Buy Model** | El mercado baja para subir (sell side curve → buy side curve). Acumulación. |
+| **Market Maker Manipulation Templates** | Plantillas de patrones de manipulación del Market Maker que anticipan la formación de rangos semanales. |
+| **Market Maker Sell Model** | El mercado sube para bajar (buy side curve → sell side curve). Distribución. |
+| **Market Maker Trap** | Trampa del Market Maker: patrones clásicos (banderas, rupturas, trendlines, H&S, divergencias, double tops/bottoms) que engañan al retail. |
+| **Market Profile** | Perfil de mercado: Consolidación, Trending o Reversal. Se utiliza para seleccionar mercados para swing trading. |
+| **Market Protraction** | Fase del mercado donde ocurren movimientos manipulativos en horas específicas del día (Zero GMT, London Open, New York Open). |
+| **Market Sentiment** | Consenso de traders sobre dirección del mercado (bullish/bearish extremes). |
+| **Market Structure Break** | Ruptura de un swing high o swing low reciente, indicando un cambio de dirección en el mercado. |
+| **Market Structure Shift (MSS)** | Cambio en la estructura de mercado (break de swing low/high) como señal de cambio de dirección. |
+| **Market Symmetry** | Cuando DXY y pares FX se mueven en direcciones opuestas de manera consistente. |
+| **Mean Threshold** | Punto medio de una vela (50% del rango open-to-close). Nivel clave de soporte/resistencia. |
+| **Measured Move** | Proyección de precio basada en la magnitud del flagpole (primer impulso) o de un double top/bottom. |
+| **Mega Trade** | Operación de gran magnitud con duración de 3-6 meses, R:R ≥ 5:1, 1-3 por año, riesgo 0.3%, basada en Quarterly Shifts. |
+| **Million Dollar Swing Setup** | El mejor setup de swing trading de ICT, que requiere la alineación de múltiples filtros. |
+| **Minor Displacement Confirmation** | Pequeño movimiento en dirección opuesta confirmando hedging. |
+| **Mitigation Block** | Área donde el precio retorna para mitigar (deshacer) posiciones previas underwater. |
+| **Mitigation of Losing Trades** | Estrategia de recuperación de pérdidas mediante reducción del tamaño de posición en reentradas. |
+| **Monthly Range** | Rango definido por la vela bajista más reciente (high) y la vela alcista más reciente (low). |
+| **MQL5** | MetaQuotes Language 5. Lenguaje de programación para el desarrollo de EAs, indicadores y scripts en MetaTrader 5. |
+| **MT5** | MetaTrader 5. Plataforma de trading de MetaQuotes. |
+| **Multi-Asset Analysis** | Análisis integrado de las 4 clases de activos (Bonos, Commodities, Divisas, Acciones) para contexto macro. |
+| **Multiple Timeframe Analysis** | Análisis coordinado de diferentes temporalidades (Monthly, Weekly, Daily, H4, H1, M15, M5, M1) para obtener contexto y precisión. |
+| **Nearby Contract** | El contrato de futuros con la fecha de entrega más cercana. Generalmente tiene el mayor open interest y volumen. |
+| **Neckline** | Línea que conecta los hombros en un patrón H&S o iH&S. |
+| **Nested Discount Arrays** | Discount arrays de una temporalidad inferior (Daily) que coinciden con discount arrays de una temporalidad superior (Weekly/Monthly). |
+| **Nested Premium Arrays** | Premium arrays de una temporalidad inferior (Daily) que coinciden con premium arrays de una temporalidad superior (Weekly/Monthly). |
+| **Neutralizing Orders** | El Market Maker rompe el rango para activar stops y usar esa liquidez para posicionarse en dirección opuesta. |
+| **Next Month Out** | El contrato de futuros inmediatamente posterior al nearby. Se usa para calcular el spread y determinar premium. |
+| **Nódulo de Hedging (COT)** | Pico o valle en la línea de posición neta comercial que indica actividad de cobertura agresiva. |
+| **Offset Accumulation** | Price Engine Model para buys: IPDA repricing por debajo de old low para inducir sell stops y acumular sell side liquidity. |
+| **Offset Distribution** | Price Engine Model para sells: IPDA repricing por encima de old high para inducir buy stops y acumular buy side liquidity. |
+| **OHLC Reference** | Open, High, Low, Close de velas mensuales como niveles clave de referencia. |
+| **Old High / Old Low** | Nivel de precio máximo/mínimo anterior que actúa como un imán de liquidez (buy stops arriba, sell stops abajo). |
+| **One Shot One Kill (OSOK)** | Estrategia de trading de alta probabilidad donde una sola operación bien ejecutada por semana genera la mayor parte de la rentabilidad. Modo premium del Short-Term Trading. |
+| **One-Sided Ranges** | Velas largas y unidireccionales que crean liquidity voids. |
+| **Open Float** | El total de órdenes abiertas (interés abierto) por encima y por debajo del precio actual de mercado. |
+| **Open Interest (OI)** | Interés abierto en el mercado de futuros. Su caída en niveles de soporte/resistencia confirma reversiones. |
+| **Opening Price at Midnight NY** | Precio de apertura del día en Nueva York (5:00 PM ET). Nivel clave institucional. |
+| **Optimal Trade Entry (OTE)** | Zona entre el 62% y el 79% de retroceso de un rango de precio. Área de alta probabilidad para entradas de trading. |
+| **Order Block** | Área donde se originó un movimiento impulsivo significativo (displacement). El precio tiende a retornar a esta zona para mitigar órdenes pendientes. |
+| **OrderSend** | Función de MQL5 que permite enviar órdenes de trading (market, limit, stop) a MetaTrader 5. |
+| **OTE** | Véase Optimal Trade Entry. |
+| **OWASP** | Open Web Application Security Project. Estándar de seguridad para aplicaciones web. |
+| **Parent Price Swing** | Rango principal que contiene todos los movimientos menores. Se mide desde el mínimo al máximo del swing principal. |
+| **PD Arrays (Premium/Discount Arrays)** | Jerarquía de herramientas de análisis organizada por importancia: Old High/Low → Rejection Block → Order Block → FVG → Liquidity Void → Breaker → Mitigation Block. |
+| **Performance Grade** | Calificación del rendimiento del trader: A (Excelente), B (Bueno), C (Aceptable), D (Necesita mejora), F (Insuficiente). |
+| **Phantom Resistance** | Resistencia que solo existe en la mente del retail, no en la realidad institucional (trendline diagonal). |
+| **Phantom Support** | Soporte que solo existe en la mente del retail, no en la realidad institucional (trendline diagonal). |
+| **Pip Objective Scaling** | Escalamiento progresivo de objetivos semanales en OSOK: Nivel 1 (30-50 pips), Nivel 2 (50-75 pips), Nivel 3 (75-100 pips). |
+| **PM Session (Bonds)** | Sesión de bonos de 12:00 PM a 3:00 PM NY. Puede ser continuación, reversión o consolidación de la AM. |
+| **PM Session (Indices)** | Sesión de índices de 1:00 PM a 4:00 PM NY. El último hora (3-4 PM) crea el extremo opuesto del rango. |
+| **PM Trend (Indices)** | Tendencia o swing de precio en la sesión PM de índices (1 PM - 4 PM NY). |
+| **Pool of Buyers** | Buy stops por encima de old highs. |
+| **Pool of Sellers** | Sell stops por debajo de old lows. |
+| **Position Trading** | Trading de largo plazo basado en monthly y weekly chart. 2-3 setups por año. |
+| **PositionModify** | Función de MQL5 que permite modificar el stop loss y take profit de una posición abierta. |
+| **Power of 3 (PO3)** | Concepto de operar dentro del rango diario: comprar cerca de apertura y vender cerca de cierre. |
+| **Premium Market (Commodities)** | Condición donde el contrato nearby cotiza a un precio más alto que el next month out. Indica escasez de oferta y alta demanda. |
+| **Premium Zone** | Área por encima del punto de equilibrio (nivel 50% de un rango de precio). Zona de alta probabilidad para operaciones de venta. |
+| **Price Imbalance / Displacement** | Movimiento fuerte que crea un desequilibrio (liquidity void). |
+| **Price in Balance** | El precio en equilibrio (consolidación) antes de un desplazamiento. |
+| **Process Oriented Thinking** | Pensamiento orientado a procesos (binario, paso a paso, sin emociones). |
+| **Propulsion Block (Bullish)** | Down candle que tradea de nuevo en un bullish OB previo, propulsando el precio al alza. |
+| **Propulsion Block (Bearish)** | Up candle que tradea de nuevo en un bearish OB previo, propulsando el precio a la baja. |
+| **Propulsion Candle** | La vela que tradea de nuevo en un Order Block previo, creando la entrada. |
+| **Protractionary Market Phase** | Fase del mercado donde ocurren movimientos manipulativos en horas específicas. |
+| **Quarterly Shift** | Cambio en la dirección del mercado o sentimiento que ocurre cada 3-4 meses. |
+| **R-Multiple** | Relación entre la recompensa y el riesgo (R:R). En swing trading, los R-múltiples de 5:1 a 10:1 son ideales. |
+| **R2 Mitigation** | Con un múltiplo de R2 (2:1) en la reentrada, se recupera la pérdida inicial. |
+| **R3 Objective** | Con un múltiplo de R3 (3:1) se recupera la pérdida inicial incluso con riesgo reducido. |
+| **RBAC** | Role-Based Access Control. Control de acceso basado en roles. |
+| **Re-Accumulation** | Price Engine Model para buys: IPDA repricing a fair value array (discount) para proporcionar smart money discount pricing. |
+| **Reclaimed Order Block (Bearish)** | Up candle usado durante buy side curve, reclamado como short en sell side curve. |
+| **Reclaimed Order Block (Bullish)** | Down candle usado durante sell side curve, reclamado como long en buy side curve. |
+| **Redistribution** | Price Engine Model para sells: IPDA repricing a fair value array (premium) para proporcionar smart money premium pricing. |
+| **Rejection Block (Bearish)** | Zona donde un swing high con largas mechas rechaza después de un run de buy stops. |
+| **Rejection Block (Bullish)** | Zona donde un swing low con largas mechas rechaza después de un run de sell stops. |
+| **Retail Candy Land** | Áreas donde el retail es atrapado (falsas rupturas, trendlines, patrones clásicos, divergencias). |
+| **Retail Trap** | Patrones clásicos que el Market Maker diseña para atrapar al retail. |
+| **Revenge Trading** | Tendencia a aumentar el riesgo o hacer trades impulsivos para "recuperar" pérdidas. |
+| **Risk On / Risk Off** | Entorno donde los inversores buscan riesgo (acciones, divisas) o seguridad (bonos, oro). |
+| **Rule-Based Trading** | Trading basado en reglas predefinidas, eliminando decisiones emocionales y subjetivas. |
+| **Runner (Bonds)** | Cuando el movimiento de la AM session se extiende continuamente a través de la PM session. |
+| **Scalping** | Modelo de trading de muy corto plazo para capturar 15-30 pips por operación, con R:R 1:1, duración 1-2 horas y ejecución en M5. |
+| **Scaling In** | Estrategia de añadir posiciones en la dirección de la tendencia (ej. en Down Candles en uptrends). |
+| **Scaling Out** | Estrategia de salida gradual de posiciones en múltiples niveles de take profit. |
+| **Seasonal Average of OI** | Promedio multi-anual de open interest, usado para comparar si el OI actual está por encima o debajo de lo normal. |
+| **Seasonal Tendencies** | Tendencias estacionales basadas en 40+ años de datos históricos. |
+| **Seek and Destroy Profile** | Perfil de rango semanal de baja probabilidad donde el mercado consolida lunes-jueves, corre stops y expande el viernes. |
+| **Sell Hedge (COT)** | Acción de venta agresiva por parte de los comerciales dentro de un programa de compra (buy program). |
+| **Sell Limit Entry** | Técnica de entrada corta: colocar un Sell Limit en el Close de una Up Candle en Daily, con contexto HTF bajista (deep premium). |
+| **Sell Program (COT)** | Condición donde los comerciales mantienen una posición neta corta sostenida (por debajo de la línea cero). |
+| **Sell Side Liquidity** | Conjunto de sell stops por debajo de old lows. |
+| **Sell Side Liquidity Run** | Movimiento a la baja para activar sell stops y recolectar liquidez. |
+| **Sell Side of the Curve** | Fase donde el precio baja después de un máximo (MM Sell Model). |
+| **Sell Stop** | Orden de venta colocada por debajo del precio actual de mercado, que se activa cuando el precio alcanza ese nivel. |
+| **Sell Stop Entry** | Técnica de entrada corta: colocar un Sell Stop en el Open de una Up Candle en Daily, con contexto HTF bajista. |
+| **Setup Failure Protocol** | Protocolo para cuando un setup de swing trading falla: buscar el siguiente PD Array y ejecutar con 50% del tamaño de posición. |
+| **Setup Progression** | Proceso de identificación de un setup de posición trading: Monthly → Weekly → Daily. |
+| **Short-Term High / Low** | Máximo/mínimo reciente que tiene liquidez acumulada por encima (buy stops) o por debajo (sell stops). |
+| **Short-Term Trading** | Trading de corto plazo basado en daily chart. Varias operaciones por semana. **Modo OSOK (One Shot One Kill) como opción premium.** |
+| **SLA** | Service Level Agreement. Acuerdo de Nivel de Servicio. |
+| **Slippage** | Diferencia entre el precio esperado de una orden y el precio real al que se ejecuta. |
+| **Smart Money** | Dinero inteligente. Bancos y grandes instituciones que manejan el flujo de órdenes y fijan los precios en el mercado. |
+| **Smart Money Footprints (OI)** | Combinación de: OI declinando en soporte + COT comercial neto largo + PD Array en discount = huella de smart money comprando. |
+| **SMT Divergence** | Smart Money Technique. Divergencia entre DXY y pares, entre pares correlacionados, o entre instrumentos de deuda (10Y vs 30Y). |
+| **Split Session Rules (Bonds)** | Reglas que dividen el día de trading de bonos en dos sesiones (AM y PM) con características distintas. |
+| **Spread** | Diferencia entre el precio de compra (Ask) y el precio de venta (Bid) en un par de divisas o activo. |
+| **Spread Chart** | Gráfico que plotea la diferencia de precio entre el nearby y el next month out. Revela la magnitud del premium. |
+| **Spread Divergence** | Cuando el precio del nearby y el spread se mueven en direcciones opuestas. Indica acumulación o distribución institucional oculta. |
+| **SRS** | Software Requirements Specification. Especificación de Requisitos de Software. |
+| **Standard Deviation (SD)** | En el contexto del CBDR, el rango del CBDR se replica como una desviación estándar para proyectar high/low del día (1-4 SD). |
+| **Step Ladder Formation** | Formación escalonada: vender rallies en mercados bajistas, comprar dips en mercados alcistas. |
+| **Stochastic as Sentiment Tool** | Uso de indicadores de momentum para medir sentimiento del retail. |
+| **Stock CAN SLIM** | Filtro fundamental para selección de stocks: Current earnings, Annual earnings, New factor, Supply/Demand, Leader/Laggard, Institutional sponsorship. |
+| **Stock Seasonal Calendar** | Calendario de 12 meses con tendencias estacionales para acciones (bullish/bearish/consolidation). |
+| **Stop Entry** | Técnica de entrada que utiliza órdenes Stop (Buy Stop en el Open de Down Candles, Sell Stop en el Open de Up Candles). |
+| **Stop Run** | Movimiento del precio diseñado para activar stops (buy stops o sell stops) y recolectar liquidez. |
+| **Stop Run Above Double Top** | Rompe por encima del double top para activar buy stops. |
+| **Stop Run Below Double Bottom** | Rompe por debajo del double bottom para activar sell stops. |
+| **Strategy Tester** | Herramienta de MetaTrader 5 para probar y optimizar EAs con datos históricos. |
+| **Sweep Above Old High** | Movimiento por encima de old high (señal de venta). |
+| **Sweep Below Old Low** | Movimiento por debajo de old low (señal de compra). |
+| **Swing High Between Two Lows** | El swing high que se encuentra entre dos lows (bullish breaker). |
+| **Swing Low Between Two Highs** | El swing low que se encuentra entre dos highs (bearish breaker). |
+| **Swing Trading** | Trading de mediano plazo basado en weekly/daily chart. Duración: 2 semanas a 1 mes. Objetivos: 200-500 pips. |
+| **Symmetry (Multi-Asset)** | Cuando todas las 4 clases de activos se comportan como deberían según la teoría económica. |
+| **Third Touch Trap** | La tercera vez que el precio toca una trendline es donde el retail entra y el Market Maker revierte. |
+| **Three Candle FVG Formation** | Un FVG se forma con tres velas: izquierda (rango), central (direccional), derecha (confirmación). |
+| **Time & Price Theory** | Análisis de efectos temporales: Quarterly, Monthly, Weekly, Daily y Time of Day. |
+| **Top-Down Approach** | Análisis desde monthly → weekly → daily → hourly para refinar entradas. |
+| **Top-Down Analysis** | Análisis jerárquico: Macro → DXY → IPDA Data Ranges → PD Arrays → Bias → Lower TFs → Ejecución. |
+| **Trailing Stop** | Stop loss dinámico que sigue el precio en la dirección favorable, protegiendo las ganancias. |
+| **Trailing Stop (IPDA)** | Trailing stop basado en IPDA Data Ranges: 40 días al inicio, 20 días al 50% del objetivo, 10-20 días al 75% del objetivo. |
+| **Trendline Phantoms** | Líneas de tendencia diagonales que parecen soporte/resistencia pero son trampas del Market Maker. |
+| **Trigger Level (Rejection Block)** | Nivel de entrada en rejection blocks (highest/lowest body). |
+| **Trigger Point** | Punto de entrada después de un Breaker o Failure Swing (retracement al short-term low/high). |
+| **Turtle Soup** | Patrón de falsa ruptura: el precio viola un mínimo o máximo anterior y revierte agresivamente en dirección contraria. |
+| **Turtle Soup Short** | Falsa ruptura al alza: el precio viola un máximo anterior y revierte agresivamente a la baja. |
+| **Type 1 Bearish Divergence** | Precio higher high, indicador lower high. Trampa del Market Maker. |
+| **Type 1 Bullish Divergence** | Precio lower low, indicador higher low. Trampa del Market Maker. |
+| **Type 2 Hidden Divergence** | Precio higher low, indicador lower low (bullish) o precio lower high, indicador higher high (bearish). Confirmación de continuación. |
+| **Underwater Positions** | Posiciones que están en pérdida (por debajo del precio de entrada). |
+| **Uninformed Money** | Dinero no informado. Traders minoristas (retail) que son utilizados como liquidez por el Smart Money. |
+| **Unwinding** | Proceso de deshacer posiciones previas (ej. cerrar longs mientras se vende). |
+| **USDX SMT Divergence** | Divergencia entre Dólar Index y pares FX. Señal de cambio de tendencia. |
+| **Vacuum Block (Bearish)** | Gap a la baja creado por un evento de volatilidad. |
+| **Vacuum Block (Bullish)** | Gap al alza creado por un evento de volatilidad. |
+| **Visual Interpretation of Data** | Interpretación visual de datos macro (gráficos de bonos) en lugar de leer informes. |
+| **Void of Contrarian Liquidity** | Vacío de liquidez en la dirección contraria al movimiento. |
+| **Volatility Contraction (Inside Bar)** | Rango de precio que se contrae (inside bar) antes de una expansión explosiva. |
+| **Volatility Event** | Evento (NFP, FOMC) que crea un gap. |
+| **Weekly Dividers** | Divisores verticales semanales en el gráfico 4H (Ctrl+Y en MT4/MT5) que ayudan a visualizar el rango de cada semana. |
+| **Weekly Loss Limit** | Límite de pérdida semanal (ej. 5% del equity) para proteger el capital y forzar pausas reflexivas. |
+| **Weekly Range Profiles** | Perfiles de rango semanal que anticipan la formación de máximos y mínimos de la semana. |
+| **Whales** | Grandes fondos con miles de millones en activos. Mueven el mercado. |
+| **Williams %R** | Indicador de sentimiento de mercado (15 periodos) utilizado para medir sobrecompra/sobreventa en swing trading. |
+| **Zero GMT** | Hora de apertura del día de trading (5:00 PM ET / 22:00 GMT). Marca el inicio de la sesión asiática. |
+
+---
+
+### 1.4 Referencias
+
+La siguiente tabla recoge los documentos, estándares y materiales de referencia utilizados para la elaboración del presente documento SRS.
+
+| Referencia | Descripción | Aplicación |
+| :--- | :--- | :--- |
+| **IEEE Std 830-1998** | IEEE Recommended Practice for Software Requirements Specifications. | Guía para la estructura y contenido del SRS. |
+| **ISO/IEC/IEEE 12207:2017** | Systems and software engineering — Software life cycle processes. | Procesos del ciclo de vida del software. |
+| **ISO/IEC 25010:2011** | Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE) — System and software quality models. | Modelo de calidad de producto. |
+| **ISO 27001:2022** | Information security, cybersecurity and privacy protection — Information security management systems. | Seguridad de la información. |
+| **GDPR (EU) 2016/679** | General Data Protection Regulation. | Protección de datos personales. |
+| **OWASP Top 10:2021** | Open Web Application Security Project - Top 10 Security Risks. | Seguridad en aplicaciones web. |
+| **CMMI-DEV v2.0** | Capability Maturity Model Integration for Development. | Modelo de madurez de capacidades. |
+| **MQL5 Documentation** | Documentación oficial de MetaQuotes para MQL5. | Base para el desarrollo del EA en MetaTrader 5. |
+| **ICT Mentorship Core Content - Month 01 (2016)** | Material formativo de la metodología Inner Circle Trader (8 archivos). | Base conceptual: condiciones de mercado, herramientas ICT, sesiones, paradigma Smart Money. |
+| **ICT Mentorship Core Content - Month 02 (2016)** | Material formativo de la metodología Inner Circle Trader (8 archivos). | Ampliación conceptual: gestión de riesgo, mitigación de pérdidas, scaling out, análisis de contexto, false flags y false breakouts. |
+| **ICT Mentorship Core Content - Month 03 (2016)** | Material formativo de la metodología Inner Circle Trader (8 archivos). | Ampliación conceptual: timeframe selection, institutional order flow, sponsorship, institutional market structure, macro to micro, trendline phantoms, head & shoulders traps. |
+| **ICT Mentorship Core Content - Month 04 (2016)** | Material formativo de la metodología Inner Circle Trader (13 archivos). | Ampliación conceptual: liquidity concepts, order blocks avanzados, mitigation blocks, breaker blocks, rejection blocks, reclaimed order blocks, propulsion blocks, vacuum blocks, liquidity voids, liquidity pools, fair value gaps, divergence phantoms, double tops/bottoms. |
+| **ICT Mentorship Core Content - Month 05 (2016)** | Material formativo de la metodología Inner Circle Trader (18 archivos). | Ampliación conceptual: quarterly shifts, IPDA data ranges, open float, liquidity pools, institutional swing points, intermarket analysis, interest rate differentials, seasonal tendencies, money management, PD arrays, stop/limit entry techniques, position trade management. |
+| **ICT Mentorship Core Content - Month 06 (2016)** | Material formativo de la metodología Inner Circle Trader (8 archivos). | Ampliación conceptual: swing trading, market profiles, hallmarks for explosive moves, COT hedging program, open interest filters, volatility contraction, million dollar swing setup, swing trade management, R-multiples, nested PD arrays. |
+| **ICT Mentorship Core Content - Month 07 (2016)** | Material formativo de la metodología Inner Circle Trader (8 archivos). | Ampliación conceptual: short-term trading, one shot one kill (OSOK), weekly range profiles, market maker manipulation templates, low resistance liquidity runs, intra-week reversals, overlapping trading models, commercial hedging program (COT), time + price blending. |
+| **ICT Mentorship Core Content - Month 08 (2016)** | Material formativo de la metodología Inner Circle Trader (8 archivos). | Ampliación conceptual: day trading, IPDA true day, kill zones, central bank dealers range (CBDR), standard deviations, intraday profiles, high probability day trade setups, market reversals. |
+| **ICT Mentorship Core Content - Month 09 (2016)** | Material formativo de la metodología Inner Circle Trader (8 archivos). | Ampliación conceptual: scalping, sentiment effect, filling the numbers, 20 pips per day, trading in consolidations, bread & butter buy/sell setups, price engine models (offset accumulation/distribution, re-accumulation/redistribution), daily routine. |
+| **ICT Mentorship Core Content - Month 10 (2016)** | Material formativo de la metodología Inner Circle Trader (19+ archivos). | Ampliación conceptual: COT advanced, relative strength, commodity seasonals, premium vs carrying charge, open interest secrets, bond trading (basics, split session, consolidation, trending), index trading (basics, AM/PM trends, projected range, setups), stock trading (seasonals, watchlists, CAN SLIM, options), multi-asset analysis. |
+| **ICT Mentorship Core Content - Month 11 (2016)** | Material formativo de la metodología Inner Circle Trader. | Ampliación conceptual: mega trades framework, top-down analysis templates, quarterly shifts advanced, decision trees, scenario planning. |
+| **ICT Mentorship Core Content - Month 12 (2016)** | Material formativo de la metodología Inner Circle Trader. | Ampliación conceptual: trading plan & psychology, daily/weekly/monthly routines, journaling, discipline, loss limits, psychology framework. |
+
+**Nota sobre las referencias ICT:** Los materiales del ICT Mentorship (Meses 1-12) constituyen la base conceptual del sistema HunterIPDA Pro EA. El análisis de los archivos de todos los meses (1-12) ha sido completado, totalizando **~115+ archivos analizados** y **~890+ requisitos funcionales optimizados extraídos**.
+
+---
+
+### 1.5 Visión General del Documento
+
+El presente documento de **Especificación de Requisitos de Software (SRS)** para el sistema **HunterIPDA Pro EA** se organiza en las siguientes secciones principales, siguiendo la estructura recomendada por el estándar **IEEE Std 830-1998**:
+
+---
+
+**Capítulo 1: Introducción**
+- **1.1 Propósito:** Define el objetivo del sistema y el alcance de la documentación.
+- **1.2 Alcance:** Delimita las funcionalidades, activos financieros soportados, plataformas y fases del proyecto.
+- **1.3 Definiciones y Acrónimos:** Glosario de términos técnicos y conceptos específicos de la metodología ICT.
+- **1.4 Referencias:** Estándares y documentos de referencia utilizados.
+- **1.5 Visión General del Documento:** Estructura y organización del SRS (presente sección).
+
+---
+
+**Capítulo 2: Descripción General del Sistema**
+- **2.1 Perspectiva del Producto:** Contexto del sistema y su relación con otros sistemas.
+- **2.2 Funciones del Producto:** Listado de funcionalidades principales de alto nivel.
+- **2.3 Características de los Usuarios:** Actores, perfiles, responsabilidades y niveles de acceso.
+- **2.4 Restricciones:** Limitaciones legales, regulatorias, financieras, tecnológicas y de plazo.
+- **2.5 Suposiciones y Dependencias:** Suposiciones asumidas y dependencias externas.
+
+---
+
+**Capítulo 3: Requisitos Específicos**
+- **3.1 Requisitos de Interfaces Externas:** Interfaces de usuario, MT5, hardware, comunicaciones y APIs.
+- **3.2 Requisitos Funcionales:** Listado detallado de funcionalidades **(~890+ RFs optimizados, RF-001 a RF-975)** .
+- **3.3 Requisitos de Rendimiento:** Tiempos de respuesta, capacidad de procesamiento y escalabilidad.
+- **3.4 Requisitos de Seguridad:** Autenticación, autorización, cifrado y cumplimiento normativo.
+- **3.5 Atributos del Sistema (ISO 25010):** Fiabilidad, usabilidad, mantenibilidad, portabilidad, eficiencia y seguridad.
+- **3.6 Requisitos de Adaptación al Entorno del Broker:** Detección de tipo de cuenta, adaptación de lotes y spread.
+- **3.7 Requisitos de Gestión de Condiciones de Mercado y Broker:** Detección de spread anormal, slippage, conexión perdida.
+
+---
+
+**Capítulo 4: Anexos**
+- **Anexo A:** Glosario Detallado (ampliación de la sección 1.3).
+- **Anexo B:** Diagramas de Casos de Uso.
+- **Anexo C:** Diagramas de Arquitectura (UML / C4).
+- **Anexo D:** Modelo de Datos.
+- **Anexo E:** Plan de Pruebas (IEEE 829).
+- **Anexo F:** Plan de Gestión de la Configuración (CMMI).
+- **Anexo G:** Matriz de Trazabilidad (RF → Clase → Módulo) **🆕 NUEVO**
+
+---
+
+**Nota sobre el Desarrollo del Documento:**
+
+El presente SRS se encuentra en **versión 1.1 (Optimizada)** y constituye la versión final optimizada del documento, con todas las mejoras aplicadas (fusiones de clases, agrupación por dominios, eliminación de RFs duplicados y optimizaciones de rendimiento).
+
+---
+
+## ✅ CAPÍTULO 1 - COMPLETO (VERSIÓN 1.1 - OPTIMIZADA)
+
+| Sección | Estado |
+| :--- | :--- |
+| 1.1 Propósito | ✅ COMPLETO (con objetivos de Meses 10-12) |
+| 1.2 Alcance | ✅ COMPLETO (con nuevos módulos y dominios optimizados) |
+| 1.3 Definiciones y Acrónimos | ✅ COMPLETO (con +70 términos de Meses 10-12) |
+| 1.4 Referencias | ✅ COMPLETO (con referencias de Meses 10-12) |
+| 1.5 Visión General del Documento | ✅ COMPLETO |
+| **CAPÍTULO 1 COMPLETO (v1.1)** | ✅ **LISTO** |
+
+---
+
+### 📊 Resumen de la Evolución del Capítulo 1
+
+| Versión | Meses Completos | Términos en Glosario | Funciones del Producto | RFs Totales |
+|---------|-----------------|----------------------|------------------------|-------------|
+| **v0.1** | Mes 1 | ~50 | 32 | ~50 |
+| **v0.5** | Meses 1-4 | ~100 | 32 | ~180 |
+| **v0.6** | Meses 1-5 | ~130 | 46 | ~328 |
+| **v0.7** | Meses 1-6 | ~155 | ~55 | ~385 |
+| **v0.8** | Meses 1-7 | ~185 | ~70 | ~471 |
+| **v0.9** | Meses 1-9 | ~230 | ~85 | ~681 |
+| **v1.0** | Meses 1-12 | ~300+ | ~100+ | ~900+ |
+| **v1.1** | **Meses 1-12** | **~300+** | **~100+** | **~890+ (optimizados)** |
+
+---
+
+### 📋 Resumen de Nuevos Términos de Meses 10-12 Añadidos al Glosario
+
+| Término | Definición |
+|---------|------------|
+| **Alignment Score** | Puntuación de alineación entre las 4 clases de activos (0-100). |
+| **AM Session (Bonds)** | Sesión de bonos de 8:00 AM a 12:00 PM NY. |
+| **AM Session (Indices)** | Sesión de índices de 9:30 AM a 12:00 PM NY. |
+| **AM Trend (Indices)** | Tendencia o swing de precio en la sesión AM de índices. |
+| **Asset Class** | Una de las 4 clases de activos: Bonos, Commodities, Divisas o Acciones. |
+| **Bond Opening Range** | Rango de precio entre 8:00 AM y 9:00 AM NY en bonos. |
+| **Buy Hedge (COT)** | Acción de compra agresiva dentro de un programa de venta. |
+| **Buy Program (COT)** | Condición donde los comerciales mantienen una posición neta larga sostenida. |
+| **CAN SLIM** | Metodología de selección de stocks: Current earnings, Annual earnings, New factor, Supply/Demand, Leader/Laggard, Institutional sponsorship, Market direction. |
+| **Carrying Charge Market** | Condición donde el nearby cotiza más bajo que el next month out. |
+| **Consolidation Day (Bonds)** | Día de rango estrecho en bonos. |
+| **Contract Rollover** | Proceso de trasladar posiciones al siguiente contrato de futuros. |
+| **Cooldown** | Período de enfriamiento forzado tras pérdidas consecutivas. |
+| **Daily Loss Limit** | Límite de pérdida diaria. |
+| **Decoupling** | Desacoplamiento entre clases de activos. |
+| **Discipline Score** | Puntuación de adherencia a reglas de trading. |
+| **Dogs of the Dow** | Estrategia de selección de stocks basada en los peores del año anterior. |
+| **Float (Stocks)** | Número de acciones disponibles para trading. |
+| **FOMO** | Fear of Missing Out. |
+| **Growth Stocks** | Stocks con alto potencial de crecimiento explosivo. |
+| **Hedging Program (COT)** | Programa de cobertura a corto plazo dentro de un programa mayor. |
+| **High Magnitude Period (Stocks)** | Períodos de alta volatilidad direccional (Feb-May y Oct-Dic). |
+| **Journaling** | Sistema de diario de trading. |
+| **Leadership Asset** | Clase de activo que muestra la mayor fuerza relativa. |
+| **Low Magnitude Period (Stocks)** | Período de consolidación (May-Oct). |
+| **Mega Trade** | Operación de 3-6 meses, R:R ≥ 5:1, 1-3 por año, riesgo 0.3%. |
+| **Multi-Asset Analysis** | Análisis integrado de las 4 clases de activos. |
+| **Nearby Contract** | Contrato de futuros con fecha de entrega más cercana. |
+| **Next Month Out** | Contrato de futuros inmediatamente posterior al nearby. |
+| **Nódulo de Hedging (COT)** | Pico o valle en la línea de posición neta comercial. |
+| **Performance Grade** | Calificación del rendimiento del trader (A-F). |
+| **PM Session (Bonds)** | Sesión de bonos de 12:00 PM a 3:00 PM NY. |
+| **PM Session (Indices)** | Sesión de índices de 1:00 PM a 4:00 PM NY. |
+| **PM Trend (Indices)** | Tendencia o swing de precio en la sesión PM de índices. |
+| **Premium Market (Commodities)** | Condición donde el nearby cotiza más alto que el next month out. |
+| **Revenge Trading** | Tendencia a recuperar pérdidas con riesgo aumentado. |
+| **Risk On / Risk Off** | Entorno de búsqueda de riesgo vs. seguridad. |
+| **Rule-Based Trading** | Trading basado en reglas predefinidas. |
+| **Runner (Bonds)** | Movimiento AM que se extiende a PM. |
+| **Seasonal Average of OI** | Promedio multi-anual de open interest. |
+| **Sell Hedge (COT)** | Acción de venta agresiva dentro de un programa de compra. |
+| **Sell Program (COT)** | Condición donde los comerciales mantienen una posición neta corta sostenida. |
+| **Smart Money Footprints (OI)** | Combinación de OI + COT + PD Array. |
+| **Split Session Rules (Bonds)** | Reglas de AM/PM para bonos. |
+| **Spread Chart** | Gráfico de diferencia entre nearby y next month out. |
+| **Spread Divergence** | Divergencia entre precio y spread. |
+| **Stock CAN SLIM** | Filtro fundamental para selección de stocks. |
+| **Stock Seasonal Calendar** | Calendario estacional de acciones. |
+| **Symmetry (Multi-Asset)** | Cuando las 4 clases actúan como deberían. |
+| **Top-Down Analysis** | Análisis jerárquico: Macro → DXY → IPDA Data Ranges → PD Arrays → Bias → Lower TFs → Ejecución. |
+| **Weekly Loss Limit** | Límite de pérdida semanal. |
+
+---
+
+**El Capítulo 1 está ahora completo en su versión 1.1 optimizada.**
+
+**¿Procedemos con el Capítulo 2 - Descripción General (v1.1 optimizada)?**

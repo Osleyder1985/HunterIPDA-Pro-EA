@@ -1,0 +1,360 @@
+## 📄 CAPÍTULO 2 - DESCRIPCIÓN GENERAL DEL SISTEMA (VERSIÓN 1.1 - OPTIMIZADA)
+
+---
+
+### 2. DESCRIPCIÓN GENERAL DEL SISTEMA
+
+#### 2.1 Perspectiva del Producto
+
+HunterIPDA Pro EA es un **Asesor Experto (Expert Advisor)** diseñado para ejecutarse exclusivamente dentro de la plataforma **MetaTrader 5 (MT5)**. El EA se instala como un archivo `.ex5` en el directorio de MT5 del usuario y se ejecuta en los gráficos de los símbolos seleccionados.
+
+**Contexto del Sistema:**
+
+| Aspecto | Descripción |
+| :--- | :--- |
+| **Plataforma Anfitriona** | MetaTrader 5 (MT5) de MetaQuotes. |
+| **Lenguaje de Desarrollo** | MQL5 (MetaQuotes Language 5). |
+| **Ejecución** | El EA se ejecuta en el entorno de MT5, procesando tick a tick los datos de mercado del símbolo al que está adjunto. |
+| **Independencia** | El EA es auto-contenido. No requiere servidores externos ni infraestructura en la nube para su funcionamiento principal. |
+| **Licenciamiento** | El EA será comercializado como producto de compra única, con licencia por activación (usuario/sistema). |
+| **Arquitectura** | Organizada en 5 dominios funcionales: Core, Analysis, Execution, Models, TradingPlan. |
+
+**Relación con MT5 y el Broker:**
+
+```
+Broker → MT5 Plataforma → HunterIPDA Pro EA
+                              ↓
+                    ┌─────────┴───────────────────────────────────────┐
+                    ↓                                                 ↓
+            Detección de Setups                                Gestión de Riesgo
+            (Dominio Analysis)                                (Dominio Execution)
+            - CDetector                                       - CRiskManager
+            - CContext                                        - CExecutor
+            - CMultiAsset                                     - CEntryManager
+            - CMacroAnalyzer                                  - CMultiSymbol
+            - CSeasonal
+            - CDataRange
+            - CCOTAnalyzer
+            - COIAnalyzer
+            - CRelStrength
+            - CPremiumCarry
+                    ↓                                                 ↓
+            Modelos de Trading                                Trading Plan
+            (Dominio Models)                                  (Dominio TradingPlan)
+            - CSwingFilter                                    - CTradingPlan
+            - CHallmarkAnalyzer                               - CNewsEvent
+            - CSwingManager
+            - CShortTerm
+            - COSOKAnalyzer
+            - CDayTrading
+            - CScalping
+            - CStockTrader
+            - CMegaTrade
+                    ↓                                                 ↓
+            Ejecución de Órdenes ←────────────────────────────────────┘
+            (Dominio Execution)
+            - CExecutor
+                    ↓
+                  Broker
+```
+
+**Integración con el Ecosistema MT5 (Optimizada):**
+
+| Integración | Descripción |
+| :--- | :--- |
+| **Datos de Mercado** | El EA recibe datos de mercado (precios, volumen, spreads) directamente desde MT5 a través de las funciones MQL5 (`SymbolInfo`, `CopyRates`, etc.). |
+| **Datos Macro** | El EA recibe datos de instrumentos macro (DXY, 10-Year Note, 30-Year Treasury, CRB Index, Goldman Sachs Commodity Index) para análisis intermercado y diferenciales de tasas. |
+| **Datos de Futuros** | El EA recibe datos de futuros de divisas (AUD, NZD, CAD, JPY, EUR, GBP, CHF) y materias primas (Gold, Silver, Crude Oil) para análisis de Open Interest y COT. |
+| **Datos COT** | El EA recibe datos COT (Commitment of Traders) para análisis de posicionamiento de grandes comerciales (hedgers) como filtro de swing trading, OSOK, Day Trading y **Stock Trading**. |
+| **Datos de Stocks** | El EA recibe datos de precios y fundamentales de acciones individuales (Dow 30, NASDAQ 100, S&P 500) para análisis de stock trading. |
+| **Ejecución de Órdenes** | El EA envía órdenes de compra/venta a MT5 utilizando las funciones de trading MQL5 (`OrderSend`, `PositionOpen`, etc.). Soporte para Stop Entries, Limit Entries, órdenes híbridas, Day Trading entries, Scalping entries, **Mega Trade entries** y **Stock entries**. |
+| **Gestión de Posiciones** | El EA modifica y cierra posiciones mediante funciones MQL5 (`PositionModify`, `PositionClose`, etc.). Gestión de trailing stop basado en IPDA Data Ranges para posición trading, gestión dinámica para swing trading, gestión OSOK, gestión Day Trading, gestión Scalping, **gestión Mega Trades** y **gestión Stock Trading**. |
+| **Interfaz de Usuario** | El EA se configura a través de los inputs de MT5. La información de estado y estadísticas se muestra en el gráfico o en el "Expert Log". |
+| **Indicadores Personalizados** | El EA puede utilizar indicadores personalizados desarrollados en MQL5 para el análisis de price action y sentimiento (ej. Williams %R, Average Daily Range, CBDR). |
+| **Multi-Símbolo** | El EA puede operar en múltiples símbolos desde un único gráfico (usando `SymbolSelect` y `CopyRates`). |
+| **Optimización** | El EA es compatible con el "Strategy Tester" de MT5 para backtesting y optimización de parámetros. |
+| **Licencia y Activación** | El EA incluye un sistema de licencia que valida la activación del producto, permitiendo diferenciar entre uso personal y comercial. |
+| **Optimizaciones de Rendimiento** | Caching (multi-asset, COT, OI), Batching (journal), Event-based triggers (Mega Trades), Timer-based execution. |
+
+---
+
+#### 2.2 Funciones del Producto
+
+HunterIPDA Pro EA se compone de un conjunto de **funciones de alto nivel** que cubren todo el ciclo de análisis, detección, ejecución, gestión de riesgo, análisis de contexto institucional y macro, y documentación de operaciones basadas en la metodología ICT.
+
+> **Las funciones están organizadas por los 5 dominios arquitectónicos optimizados:**
+
+| ID | Función | Dominio | Descripción | Prioridad |
+| :--- | :--- | :--- | :--- | :--- |
+| **FN-01** | Detección de Order Blocks | Analysis | Identificación automática de Order Blocks alcistas y bajistas en tiempo real, priorizando institutional order flow sobre patrones clásicos. Incluye detección basada en open-to-close y agrupación de velas consecutivas. | Alta |
+| **FN-02** | Detección de FVG | Analysis | Identificación automática de Fair Value Gaps (estructura de 3 velas) en todas las temporalidades configuradas. | Alta |
+| **FN-03** | Cálculo de Equilibrium | Analysis | Cálculo automático del punto de equilibrio (50%) de cualquier rango identificado, con Fibonacci Grading. | Alta |
+| **FN-04** | Zonas de Descuento y Prima | Analysis | Identificación y marcado (en memoria) de zonas de descuento y prima para entradas. | Alta |
+| **FN-05** | Optimal Trade Entry (OTE) | Analysis | Cálculo automático de la zona OTE (62%-79%) para entradas de alta probabilidad. | Alta |
+| **FN-06** | Clasificación de Mercado | Analysis | Clasificación del estado del mercado: Expansión, Retracement, Reversal o Consolidación. | Alta |
+| **FN-07** | Detección de Turtle Soup | Analysis | Identificación de patrones de falsa ruptura (Turtle Soup Long y Short). | Alta |
+| **FN-08** | Detección de Stop Runs / Liquidity Hunts | Analysis | Identificación de corridas de liquidez en tiempo real. | Alta |
+| **FN-09** | Market Protraction | Analysis | Detección de Judas Swings y protracción basada en la hora del día. | Media |
+| **FN-10** | Análisis Multi-Temporal | Analysis | Análisis simultáneo de múltiples temporalidades (Monthly, Weekly, Daily, H4, H1, M15, M5, M1) para confirmación de contexto (Top-Down Analysis). **Soporta modelos de trading configurables.** | Alta |
+| **FN-11** | Ejecución de Órdenes | Execution | Apertura automática de órdenes Market, Limit y Stop con gestión de riesgo integrada. **Soporte para Stop Entries y Limit Entries para posición, swing, short-term, day trading, scalping, Mega Trades y Stock Trading.** | Alta |
+| **FN-12** | Gestión de Riesgo | Execution | Stop Loss, Take Profit, Trailing Stop, Breakeven, tamaño de posición dinámico, drawdown máximo, gestión de Gap Risk. **Trailing stop IPDA (40/20/10 días) para posición trading; gestión dinámica para swing, short-term, day trading, scalping, Mega Trades y Stock Trading.** | Alta |
+| **FN-13** | Multi-Símbolo | Execution | Capacidad de operar en múltiples símbolos simultáneamente desde un solo gráfico. | Media |
+| **FN-14** | Filtros de Contexto | Analysis | Filtros configurables por sesión horaria, día de la semana, volatilidad, Time of Day (London/NY), Kill Zones, **Multi-Asset Alignment**, etc. | Media |
+| **FN-15** | Logging y Estadísticas | Core | Registro detallado de todas las operaciones, condiciones de entrada/salida y estadísticas de rendimiento. **Incluye logging específico de day trading, scalping, Multi-Asset, Stock Trading, Mega Trades y Journal. Optimización: bufferizado para escritura en lotes.** | Alta |
+| **FN-16** | Panel de Control | Core | Visualización en el gráfico del estado del EA, posiciones abiertas, estadísticas y alertas. **NUEVO:** visualización de datos macro, seasonal, progreso del trade, filtros de swing, estado OSOK, estado Day Trading, estado Scalping, **Multi-Asset Dashboard**, **Stock Watchlists**, **Mega Trade Status** y **Trading Plan Dashboard**. | Media |
+| **FN-17** | Configuración Vía Inputs | Core | Todos los parámetros configurables mediante inputs en MT5. | Alta |
+| **FN-18** | Protección de Licencia | Core | Sistema de licenciamiento para uso personal y comercial, con protección contra copia. | Alta |
+| **FN-19** | Mitigación de Pérdidas | Execution | Reducción automática del tamaño de posición tras pérdidas, reentradas con riesgo reducido, y recuperación mediante R2/R3. | Alta |
+| **FN-20** | Scaling Out (Salida Gradual) | Execution | Salida parcial de posiciones en múltiples niveles de take profit (TP1, TP2, TP3), permitiendo que parte de la posición continúe corriendo. | Alta |
+| **FN-21** | Análisis de Contexto (Macro) | Analysis | Análisis macro (inflación/deflación), tasas de interés, COT, sentimiento de mercado, SMT divergencias (DXY vs FX, 10Y vs 30Y), teoría de tiempo y precio, Institutional Market Structure. | Alta |
+| **FN-22** | Detección de False Flags | Analysis | Identificación de Bull Flag/Bear Flag falsos (trampas del Market Maker) en zonas de Premium/Discount. | Alta |
+| **FN-23** | Detección de False Breakouts | Analysis | Identificación de falsas rupturas de consolidaciones (trampas del Market Maker). | Alta |
+| **FN-24** | Alineación de 7 Factores | Analysis | Validación de alineación de perspectivas (Big Picture, Intermediate, Short-Term) para señales de alta calidad. | Alta |
+| **FN-25** | Análisis Macro to Micro | Analysis | Análisis desde macroeconomía (bonos, tasas de interés) hasta ejecución técnica en pares FX, con consideración de Quarterly Shifts. | Alta |
+| **FN-26** | Institutional Market Structure | Analysis | Análisis de estructura de mercado institucional comparando DXY y pares FX, identificando SMT divergencias, acumulación/distribución. | Alta |
+| **FN-27** | Institutional Sponsorship Validation | Analysis | Validación de apoyo institucional mediante Higher Time Frame Displacement, Dynamic/Lethargic Response, Sell Side/Buy Side Liquidity Runs. | Alta |
+| **FN-28** | Detección de Trampas Clásicas | Analysis | Identificación de Trendline Phantoms (líneas de tendencia falsas), False Head & Shoulders (patrones clásicos falsos), Divergence Phantoms y Double Tops/Bottoms. | Alta |
+| **FN-29** | Modelos de Trading Configurables | Models | Configuración de modelos: Position Trading, Swing Trading, Short-Term Trading, Day Trading, Scalping, **Mega Trading** y **Stock Trading**, con temporalidades predefinidas. | Alta |
+| **FN-30** | Detección de Mitigation/Breaker/Rejection Blocks | Analysis | Identificación de Mitigation Blocks, Breaker Blocks, Rejection Blocks, Propulsion Blocks, Vacuum Blocks y Reclaimed Order Blocks. | Alta |
+| **FN-31** | Análisis de Liquidez Avanzado | Analysis | Identificación de External/Internal Range Liquidity, Low/High Resistance Liquidity Runs, Liquidity Pools, Liquidity Voids, Sweeps y Liquidity Raids. | Alta |
+| **FN-32** | Entrada en Gaps y FVG Fills | Execution | Ejecución de entradas en common gaps, vacuum blocks y FVG fills como oportunidades de trading. | Alta |
+| **FN-33** | Detección de Quarterly Shifts | Analysis | Identificación de cambios en la estructura de mercado que ocurren cada 3-4 meses, basados en el análisis de 60, 40 y 20 días hábiles. **Aplicación avanzada para Mega Trades.** | Alta |
+| **FN-34** | Cálculo de IPDA Data Ranges | Analysis | Cálculo automático de rangos de datos de 20, 40 y 60 días hábiles a partir del punto de anclaje (primer día de trading del mes anterior). | Alta |
+| **FN-35** | Look Back y Cast Forward | Analysis | Análisis de los últimos 60, 40 y 20 días hábiles desde el punto de anclaje para identificar IOF, y proyección de 20, 40 y 60 días hacia adelante para anticipar setups. | Alta |
+| **FN-36** | Identificación de Open Float | Analysis | Identificación del Open Float (órdenes abiertas por encima y debajo del precio) en forma de Buy Stops y Sell Stops. | Alta |
+| **FN-37** | Mapeo de Liquidity Pools | Analysis | Identificación de Liquidity Pools en tres horizontes: Near-Term (20 días), Short-Term (40 días), Intermediate-Term (60 días). | Alta |
+| **FN-38** | Detección de Breaker y Failure Swing | Analysis | Identificación de Breaker Swing Points (stop run + reversión) y Failure Swing Points (fracaso en romper un nivel) como señales de reversión. | Alta |
+| **FN-39** | Análisis Intermercado | Analysis | Análisis de la relación entre los cuatro grandes grupos de activos: bonos (10-Year, 30-Year), materias primas (CRB, Gold, Oil), acciones (Dow, Nikkei) y divisas (DXY, pares FX). | Alta |
+| **FN-40** | Análisis de 10-Year Treasury Note | Analysis | Monitoreo del 10-Year Treasury Note como indicador adelantado para el DXY y los pares FX. Detección de "Cracking Correlation". | Alta |
+| **FN-41** | Cálculo de Diferenciales de Tasas | Analysis | Cálculo de diferenciales de tasas de interés de bancos centrales (Fed, ECB, BoJ, BoE, RBA, RBNZ, BoC, SNB) para selección de pares y sesgo direccional. | Alta |
+| **FN-42** | Tendencias Estacionales | Analysis | Identificación de tendencias estacionales (40+ años de datos) para cada par. Incluye "Ideal Seasonal Tendencies" (oposición entre activo y DXY). **Aplicación para stocks.** | Alta |
+| **FN-43** | PD Arrays (Premium/Discount Arrays) | Analysis | Jerarquía de herramientas de análisis organizada por importancia: Old High/Low → Rejection Block → Order Block → FVG → Liquidity Void → Breaker → Mitigation Block. | Alta |
+| **FN-44** | Stop Entries y Limit Entries | Execution | Técnicas de entrada para posición trading: Stop Entries (Buy Stop en Open de Down Candles, Sell Stop en Open de Up Candles) y Limit Entries (Buy Limit en Close de Down Candles, Sell Limit en Close de Up Candles). | Alta |
+| **FN-45** | Position Trade Management | Execution | Gestión de posiciones de largo plazo con trailing stop basado en IPDA Data Ranges (40 días al inicio, 20 días al 50% del objetivo, 10-20 días al 75% del objetivo). Escalado en largo/corto. | Alta |
+| **FN-46** | Money Management para Posición Trading | Execution | Asignación del 30% del equity para posición trading, riesgo del 1% sobre el 30% (0.3% del equity total), límite de drawdown anual del 15%, máximo 2-3 setups por año. | Alta |
+| **FN-47** | Soporte para Swing Trading | Models | Implementación del modelo de swing trading con duraciones de 2 semanas a 1 mes, objetivos de 200-500 pips, ejecución en 4H, y proceso de filtrado en cascada (8 etapas). | Alta |
+| **FN-48** | Filtro de Seasonality para Swing Trading | Models | La tendencia estacional es el primer filtro obligatorio para swing trading. Sin seasonal, no se ejecuta swing trade. | Alta |
+| **FN-49** | Major Market Analysis | Analysis | Verificación de que al menos 2 de las 4 grandes clases de activos (Bonos, Acciones, Materias Primas, Divisas) estén en tendencia para swing trading. | Alta |
+| **FN-50** | COT Hedging Program Filter | Analysis | Uso de datos COT (comerciales, rango 12 meses) como filtro obligatorio para swing trading. | Alta |
+| **FN-51** | Open Interest Filter | Analysis | Verificación de que el OI haya cambiado 10-15%+ en la dirección correcta antes de un swing trade. | Alta |
+| **FN-52** | 8 Hallmarks para Movimientos Explosivos | Models | Identificación de los 8 hallmarks para seleccionar mercados con alta probabilidad de movimiento explosivo en swing trading. | Alta |
+| **FN-53** | Técnicas de Entrada para Swing Trading | Execution | Uso de Stop Entry para Breaker/Mitigation/FVG/Void, y Limit Entry para Order Block/Rejection Block/Old High/Low en swing trading. | Alta |
+| **FN-54** | Gestión de Posiciones de Swing | Execution | Toma de 20-30% de profit al 25% del objetivo con stop a breakeven, reentradas al 50% del objetivo, y trailing stop ajustado al 75% del objetivo. | Alta |
+| **FN-55** | Volatility Contraction Filter | Analysis | Detección de contracciones de volatilidad (inside bars) como filtro de timing para swing trading. | Media |
+| **FN-56** | Williams %R Sentiment Filter | Analysis | Uso de Williams %R (15 periodos) como filtro de sentimiento (sobrecompra/sobreventa) para swing trading. | Media |
+| **FN-57** | Short-Term Trading Model | Models | Implementación del modelo de short-term trading con duración de 1 semana o pocos días, basado en rangos semanales y ejecución en 4H/1H. **Modo OSOK (One Shot One Kill) como opción premium.** | Alta |
+| **FN-58** | One Shot One Kill (OSOK) Model | Models | Modo premium de short-term trading: 1 operación de alta probabilidad por semana, con proyección de high/low semanal, análisis COT obligatorio y seasonal obligatorio. | Alta |
+| **FN-59** | Weekly Range Profiles Detection | Models | Identificación automática de 10+ perfiles de rango semanal (Classic Tuesday Low/High, Wednesday Low/High, Thursday Reversal, Midweek Rally/Decline, Seek & Destroy, Wednesday Weekly Reversal). | Alta |
+| **FN-60** | Market Maker Manipulation Templates | Models | Aplicación de 12+ plantillas de manipulación del Market Maker para anticipar la formación de rangos semanales. | Alta |
+| **FN-61** | Intra-Week Reversal Detection | Models | Detección de reversiones dentro de la semana basadas en velocidad y magnitud del movimiento en lunes y martes. | Alta |
+| **FN-62** | COT Automated Analysis | Analysis | Análisis automatizado de Commitment of Traders con cálculo de rango de 12 meses y nueva línea cero (Commercial Hedging Program). **Optimización: ejecución semanal con caching.** | Alta |
+| **FN-63** | Time + Price Blending | Analysis | Combinación de IPDA Data Ranges (20/40/60 días) con PD Arrays para identificar liquidity runs de baja resistencia. | Alta |
+| **FN-64** | Low Resistance Liquidity Run Detection | Analysis | Identificación de movimientos de baja resistencia entre PD Arrays en consolidación y condiciones de tendencia. | Alta |
+| **FN-65** | OSOK High/Low Weekly Projection | Models | Proyección del high y low de la semana usando Fibonacci (127%, 168%) y convergencia con PD Arrays. Tolerancia configurable. | Alta |
+| **FN-66** | Overlapping Trading Models Detection | Models | Detección de conflictos entre modelos de trading (short-term vs swing vs position) como señal de posibles reversiones. | Alta |
+| **FN-67** | Day Trading Model | Models | Implementación del modelo de day trading para capturar el 65-70% del rango diario, con ejecución en H1/M15, objetivos de 30-100 pips por día, y uso del IPDA True Day como marco temporal. **Fusionado con CIntradayProfile y CMarketReversal.** | Alta |
+| **FN-68** | IPDA True Day Framework | Models | Definición del día de trading interbancario (12:00 AM - 3:00 PM NY) como marco temporal para day trading, con Kill Zones específicas (London 1-5 AM NY, New York 7-10 AM NY, London Close 10 AM-12 PM NY). | Alta |
+| **FN-69** | CBDR (Central Bank Dealers Range) Calculation | Models | Cálculo del CBDR (2:00 PM - 8:00 PM NY) como herramienta para proyectar máximos y mínimos diarios mediante desviaciones estándar (1-4 SD). | Alta |
+| **FN-70** | Intraday Profiles Detection | Models | Identificación de 4 perfiles intraday para la sesión de Londres: Normal Buy, Normal Sell, Delayed Protraction Buy, Delayed Protraction Sell. **(Fusionado en CDayTrading)** | Alta |
+| **FN-71** | High Probability Day Trade Setups | Models | Identificación de 12 setups de alta probabilidad para day trading (Previous Day High/Low, Intra-Week High/Low, NY Session Reversal, London Close Reversal, CME Open Reversal, etc.). | Alta |
+| **FN-72** | Market Reversals Classification (8 Types) | Models | Identificación y clasificación de 8 tipos de reversiones de mercado (Previous Day High/Low, Intra-Week High/Low, Intermediate Term High/Low, NY Session, London Close, CME Open). **(Fusionado en CDayTrading)** | Alta |
+| **FN-73** | Daily Routine Structure | Models | Implementación de la rutina diaria estructurada para day trading: calendario económico → DXY → IPDA Data Ranges → PD Arrays → bias → lower TFs → standard deviations → weekly templates → ejecución. | Alta |
+| **FN-74** | Scalping Model | Models | Implementación del modelo de scalping para capturar 15-30 pips por operación, con R:R 1:1, duración de 1-2 horas, ejecución en M5, y riesgo de 0.5%-1% por operación. **Fusionado con CPriceEngine, CAsianTrade y CADRExit.** | Alta |
+| **FN-75** | Price Engine Models for Scalping | Models | Implementación de los Price Engine Models: Offset Accumulation (buys), Re-Accumulation (buys), Offset Distribution (sells), Redistribution (sells). **(Fusionado en CScalping)** | Alta |
+| **FN-76** | 20 Pips Per Day Strategy | Models | Implementación de la estrategia de scalping "20 Pips Per Day": Asian Turtle Soup (6-8 PM NY) y New York Expansion. | Alta |
+| **FN-77** | ADR Exit Rule for Scalping | Models | Implementación de la regla de salida ADR: cerrar posición si el precio está a 15 pips del ADR (Average Daily Range de 5 días). **(Fusionado en CScalping)** | Alta |
+| **FN-78** | Sentiment Effect Analysis | Models | Análisis del sentimiento del retail a través de la caída del precio en soporte o subida en resistencia, como confirmación de entrada en scalping. | Media |
+| **FN-79** | Bread & Butter Setups for Scalping | Models | Identificación de "Bread & Butter" setups en temporadas de consolidación: Buy Setup y Sell Setup en condiciones de baja volatilidad. | Media |
+| **FN-80** | News Catalyst Timing for Day Trading | TradingPlan | Integración de eventos de mercado (FOMC, NFP, CPI) como filtros de timing para day trading, con gestión de riesgo ajustada. | Alta |
+| **FN-81** | Multi-Asset Analysis | Analysis | Análisis integrado de las 4 clases de activos (Bonos, Commodities, Divisas, Acciones) para detectar entornos Risk On/Off, simetría/decoupling, e identificar la clase líder. **Optimización: ejecución diaria con caching.** | Alta |
+| **FN-82** | Risk On/Off Detection | Analysis | Clasificación del entorno de mercado como Risk On o Risk Off basado en el análisis de las 4 clases de activos. | Alta |
+| **FN-83** | Multi-Asset Alignment Score | Analysis | Cálculo de un score de alineación (0-100) basado en cuántas clases de activos confirman la misma dirección. | Alta |
+| **FN-84** | Mega Trades Framework | Models | Implementación del modelo de Mega Trades para operaciones de 3-6 meses con R:R ≥ 5:1, 1-3 por año, riesgo 0.3%, basado en Quarterly Shifts y Top-Down Analysis. **Fusionado con CQuarterlyShift, CTopDown, CDecisionTree y CScenarioPlan. Optimización: ejecución semanal con event-based triggers.** | Alta |
+| **FN-85** | Top-Down Analysis | Models | Análisis jerárquico para Mega Trades: Macro → DXY → IPDA Data Ranges → PD Arrays → Bias → Lower TFs → Ejecución. **(Fusionado en CMegaTrade)** | Alta |
+| **FN-86** | Mega Trade Decision Tree | Models | Árbol de decisión que filtra oportunidades de Mega Trades basado en Multi-Asset Alignment, Quarterly Shifts, PD Arrays HTF y R:R ≥ 5:1. **(Fusionado en CMegaTrade)** | Alta |
+| **FN-87** | Stock Trading Model | Models | Implementación del modelo de Stock Trading con selección basada en CAN SLIM, SMT Divergence, Seasonals, y watchlists Buy/Sell. **Fusionado con CStockWatch, CCANSLIM, CStockOption y CStockSeason.** | Alta |
+| **FN-88** | CAN SLIM Stock Filter | Models | Filtro fundamental para selección de stocks: Current earnings, Annual earnings, New factor, Supply/Demand, Leader/Laggard, Institutional sponsorship, Market direction. **(Fusionado en CStockTrader)** | Alta |
+| **FN-89** | Stock Buy/Sell Watchlists | Models | Construcción automática de watchlists de stocks para compra (higher low + SMT divergence) y venta (lower high + SMT divergence). **(Fusionado en CStockTrader)** | Alta |
+| **FN-90** | Stock Options Selection | Models | Selección de opciones (calls/puts) para stocks en watchlists basado en timing y estructura de mercado. **(Fusionado en CStockTrader)** | Media |
+| **FN-91** | Trading Plan & Psychology | TradingPlan | Implementación de un plan de trading con límites de pérdida diarios/semanales/mensuales, control de disciplina, journaling y gestión psicológica. **Fusionado con CDiscipline, CLossManager, CPsychology y CJournal. Optimización: bufferizado para escritura en lotes.** | Alta |
+| **FN-92** | Daily/Weekly/Monthly Routines | TradingPlan | Rutinas estructuradas para el trader: pre-market → ejecución → post-market (diario), revisión semanal, revisión mensual. | Media |
+| **FN-93** | Discipline & Rule Adherence | TradingPlan | Control de disciplina: adherencia a reglas, score de disciplina, detección y registro de violaciones de reglas. **(Fusionado en CTradingPlan)** | Alta |
+| **FN-94** | Loss Limits Management | TradingPlan | Gestión de límites de pérdida: diario (2%), semanal (5%), mensual (10%), cooldown tras pérdidas consecutivas. **(Fusionado en CTradingPlan)** | Alta |
+| **FN-95** | Journaling System | TradingPlan | Sistema de diario de trading para registrar operaciones, emociones, errores, lecciones y métricas de consistencia. **(Fusionado en CTradingPlan)** | Media |
+| **FN-96** | Psychology Management | TradingPlan | Gestión psicológica: detección de FOMO, revenge trading, overconfidence, analysis paralysis. **(Fusionado en CTradingPlan)** | Media |
+
+---
+
+#### 2.3 Características de los Usuarios
+
+HunterIPDA Pro EA está diseñado para atender a diferentes perfiles de usuarios, cada uno con responsabilidades, niveles de acceso y necesidades específicas.
+
+**Actores del Sistema:**
+
+| Actor | Descripción | Responsabilidades | Nivel de Acceso |
+| :--- | :--- | :--- | :--- |
+| **Trader Personal** | Usuario final que adquiere el EA para su operativa personal. | Configuración del EA según su estrategia, monitoreo de operaciones, interpretación de estadísticas. | Completo (licencia personal) |
+| **Gestor de Fondos / Institucional** | Usuario que adquiere licencias comerciales para operar cuentas de clientes o fondos. | Configuración avanzada, gestión de múltiples cuentas, cumplimiento normativo. | Completo (licencia comercial) |
+| **Desarrollador / Configurador** | Usuario técnico que configura el EA en entornos de prueba o producción. | Instalación, configuración de parámetros, pruebas en demo. | Completo (licencia técnica) |
+| **Trader Intradía / Scalper** | Usuario que enfoca su operativa en day trading o scalping. | Configuración de parámetros específicos de day trading/scalping, monitoreo de sesiones horarias. | Completo (licencia personal) |
+| **Trader de Acciones** | Usuario que enfoca su operativa en stock trading. | Configuración de watchlists, análisis fundamental CAN SLIM, selección de opciones. | Completo (licencia personal) |
+| **Trader de Mega Trades** | Usuario que busca operaciones de largo plazo (3-6 meses). | Configuración de parámetros de Mega Trades, análisis Top-Down. | Completo (licencia personal/comercial) |
+
+---
+
+#### 2.4 Restricciones
+
+El desarrollo, implementación y operación del sistema **HunterIPDA Pro EA** está sujeto a las siguientes restricciones de diversa índole:
+
+**2.4.1 Restricciones Técnicas y Tecnológicas**
+
+| ID | Restricción | Descripción |
+| :--- | :--- | :--- |
+| **R-01** | Plataforma MT5 | El EA solo es compatible con MetaTrader 5. No es compatible con MT4. |
+| **R-02** | Lenguaje MQL5 | El EA debe ser desarrollado íntegramente en MQL5. |
+| **R-03** | Broker | El EA opera con cualquier broker que ofrezca MT5 y permita trading automatizado. La compatibilidad depende de las especificaciones del broker (ej. ejecución de órdenes, símbolos disponibles, spreads). |
+| **R-04** | Sistema Operativo | MT5 y el EA requieren Windows 10+ o Wine/Parallels en macOS/Linux. |
+| **R-05** | Conectividad | El EA requiere conexión a internet estable para recibir datos de mercado y ejecutar órdenes. |
+| **R-06** | Hardware del Usuario | Se recomienda ejecutar el EA en un VPS (Virtual Private Server) para operativa 24/5 sin interrupciones. **Para day trading y scalping, se recomienda VPS con latencia < 50 ms.** |
+| **R-07** | Datos Macro | El análisis de contexto macro (bonos, tasas, DXY, CRB, futuros) requiere acceso a datos de instrumentos adicionales. |
+| **R-08** | Datos COT | El análisis de COT (Commitment of Traders) requiere acceso a datos de futuros de divisas y materias primas. El EA debe automatizar la obtención y procesamiento de estos datos. |
+| **R-09** | Datos de ADR | El cálculo del Average Daily Range para day trading y scalping requiere datos históricos de al menos 5 días hábiles. |
+| **R-10** | Datos de Stocks | El análisis de stocks requiere acceso a datos de precios y fundamentales de acciones individuales. |
+| **R-11** | Datos Estacionales de Stocks | El análisis estacional de stocks requiere datos históricos de 40+ años para el Dow Jones Industrial Average. |
+
+**2.4.2 Restricciones de Licenciamiento**
+
+| ID | Restricción | Descripción |
+| :--- | :--- | :--- |
+| **R-12** | Licenciamiento | El EA requiere activación de licencia para su uso en modo real (puede operar en demo sin licencia o con licencia de prueba). |
+| **R-13** | Uso Comercial | Las licencias comerciales requieren un acuerdo de licencia específico y pueden tener condiciones adicionales. |
+| **R-14** | Protección de Código | El código debe estar ofuscado y protegido contra ingeniería inversa (compilación con protección en MQL5). |
+
+**2.4.3 Restricciones de Seguridad**
+
+| ID | Restricción | Descripción |
+| :--- | :--- | :--- |
+| **R-15** | Protección de Datos | El EA no debe almacenar ni transmitir datos sensibles (contraseñas, números de cuenta) sin cifrado adecuado. |
+| **R-16** | Registro de Auditoría | El EA debe registrar todas las acciones críticas (activación, desactivación, errores de licencia) en un log de auditoría. |
+
+---
+
+#### 2.5 Suposiciones y Dependencias
+
+El presente documento y el desarrollo del sistema **HunterIPDA Pro EA** se basan en un conjunto de suposiciones y dependencias externas que deben ser validadas y gestionadas a lo largo del proyecto.
+
+**2.5.1 Suposiciones del Proyecto**
+
+| ID | Suposición | Descripción | Impacto si no se cumple |
+| :--- | :--- | :--- | :--- |
+| **S-01** | Conexión al Broker | Se asume que el broker conectado proporciona datos de mercado en tiempo real y permite la ejecución automatizada de órdenes. | El EA no podría operar sin conexión al broker. |
+| **S-02** | Símbolos Disponibles | Se asume que los símbolos configurados están disponibles en el broker con el historial de datos suficiente para el análisis multi-temporal. | El EA no podría analizar símbolos no disponibles. |
+| **S-03** | Spread y Slippage | Se asume que el EA gestionará el spread y slippage mediante filtros configurables (máximo spread permitido, etc.). **Para day trading y scalping, se asume spread < 1 pip.** | La rentabilidad podría verse afectada por costes no controlados. |
+| **S-04** | Condiciones de Mercado | Se asume que el EA operará en condiciones normales de mercado. No se garantiza su rendimiento en condiciones de alta volatilidad extrema o falta de liquidez. | El rendimiento podría degradarse en condiciones extremas. |
+| **S-05** | Hardware del Usuario | Se asume que el usuario dispone de un ordenador con MT5 ejecutándose 24/5 (o VPS) para la operativa automatizada continua. **Para scalping, se asume VPS con baja latencia.** | El EA no podría operar sin una plataforma activa. |
+| **S-06** | Conocimiento del Usuario | Se asume que los usuarios tienen conocimientos básicos de trading y configuración de EAs en MT5. | Usuarios sin conocimiento básico requerirían mayor inversión en soporte. |
+| **S-07** | Aceptación de la Metodología ICT | Se asume que los usuarios objetivo están familiarizados o dispuestos a aprender la metodología ICT. | Usuarios no familiarizados requerirían un proceso de onboarding más extenso. |
+| **S-08** | Datos Macro | Se asume que los datos de instrumentos macro (DXY, 10-Year, 30-Year, CRB, futuros) estarán disponibles para análisis de contexto. | El análisis macro no podría realizarse sin estos datos. |
+| **S-09** | Datos de Tendencias Estacionales | Se asume que los datos históricos de 40+ años para tendencias estacionales estarán disponibles para el EA (incorporados en el código). | Las tendencias estacionales no podrían aplicarse sin estos datos. |
+| **S-10** | Datos COT | Se asume que los datos COT (Commitment of Traders) estarán disponibles para el análisis de swing trading, OSOK, Day Trading y **Stock Trading**. | Los filtros COT no podrían aplicarse sin estos datos. |
+| **S-11** | Datos de Futuros | Se asume que los datos de futuros de divisas y materias primas estarán disponibles para el análisis de Open Interest. | El filtro de Open Interest no podría aplicarse sin estos datos. |
+| **S-12** | COT Data Source | Se asume que el EA podrá obtener datos COT de una fuente externa (archivo CSV descargado, API web) de forma automatizada. | El análisis COT requeriría intervención manual del usuario. |
+| **S-13** | Datos de ADR | Se asume que los datos de precio de los últimos 5 días hábiles estarán disponibles para calcular el Average Daily Range. | La regla de salida ADR para scalping no podría aplicarse. |
+| **S-14** | Eventos de Mercado | Se asume que el usuario ingresará manualmente los eventos de mercado (NFP, FOMC, CPI) o que el EA tendrá acceso a un calendario económico. | La gestión de riesgo en day trading sería menos precisa. |
+| **S-15** | **Datos de Stocks** | Se asume que los datos de precios y fundamentales de acciones individuales estarán disponibles para el análisis de stock trading. | El análisis de stocks no podría realizarse sin estos datos. |
+| **S-16** | **Datos Estacionales de Stocks** | Se asume que los datos históricos de 40+ años para el Dow Jones Industrial Average estarán disponibles para análisis estacional de stocks. | El análisis estacional de stocks no podría realizarse sin estos datos. |
+
+**2.5.2 Dependencias Externas**
+
+| ID | Dependencia | Descripción | Responsable | Riesgo Asociado |
+| :--- | :--- | :--- | :--- | :--- |
+| **D-01** | Plataforma MT5 | El EA depende de la estabilidad y correcto funcionamiento de la plataforma MetaTrader 5. | MetaQuotes | Caídas o bugs en MT5 afectarían al EA. |
+| **D-02** | Broker | El EA depende de la calidad de la ejecución y los datos proporcionados por el broker conectado. | Broker del Usuario | Problemas de ejecución o datos afectarían al EA. |
+| **D-03** | Servicio de Licencias | El sistema de activación de licencias depende de un servidor externo (para validación). | Equipo de Desarrollo | Caída del servidor de licencias podría impedir activaciones. |
+| **D-04** | Bibliotecas MQL5 | El EA depende de las bibliotecas estándar de MQL5 proporcionadas por MetaQuotes. | MetaQuotes | Cambios en MQL5 podrían requerir actualizaciones del EA. |
+| **D-05** | Datos Macro | El EA depende de la disponibilidad de datos de DXY, bonos, notas, CRB y futuros para análisis macro. | Proveedores de Datos / Broker | Falta de datos macro limitaría el análisis de contexto. |
+| **D-06** | Datos de Tasas de Interés | El EA depende de la disponibilidad de datos actualizados de tasas de interés de bancos centrales. | Proveedores de Datos / Broker | Datos desactualizados podrían afectar la selección de pares. |
+| **D-07** | Datos COT y Futuros | El EA depende de la disponibilidad de datos COT y de futuros para los filtros de swing trading, OSOK, Day Trading y **Stock Trading**. | Proveedores de Datos / Broker | Falta de datos COT/futuros limitaría el análisis. |
+| **D-08** | Calendario Económico | El EA depende de datos de calendario económico para ajustar la operativa de day trading en eventos de alto impacto. | Proveedores de Datos / Entrada Manual | Falta de datos de eventos podría afectar la gestión de riesgo en day trading. |
+| **D-09** | **Datos de Stocks** | El EA depende de la disponibilidad de datos de precios y fundamentales de acciones individuales. | Proveedores de Datos / Broker | Falta de datos de stocks limitaría el análisis de stock trading. |
+
+**2.5.3 Plan de Mitigación de Riesgos**
+
+| Riesgo | Estrategia de Mitigación |
+| :--- | :--- |
+| **Caída de MT5 o Broker** | Implementar sistemas de alerta y reconexión automática en el EA. |
+| **Cambio en APIs de terceros** | Diseñar capas de abstracción que aíslen la lógica del negocio de las dependencias externas. |
+| **Servidor de Licencias** | Implementar sistema de licencias con modo offline y caché de validación. |
+| **Implementación incorrecta de conceptos ICT** | Validar la implementación con expertos en la metodología ICT y realizar pruebas exhaustivas. |
+| **Falta de datos macro** | Implementar fuentes alternativas de datos macro o permitir desactivar filtros macro. |
+| **Datos de tasas de interés desactualizados** | Implementar un sistema de actualización periódica de tasas de interés o permitir entrada manual del usuario. |
+| **Falta de datos COT/futuros** | Permitir desactivar los filtros COT y Open Interest, o implementar fuentes alternativas de datos. |
+| **Falta de datos de ADR** | Calcular ADR a partir de datos históricos disponibles en MT5. |
+| **Falta de calendario económico** | Permitir entrada manual de eventos de mercado o integrar API de calendario económico. |
+| **Falta de datos de stocks** | Permitir desactivar módulo de stock trading o implementar fuentes alternativas de datos. |
+
+---
+
+## ✅ CAPÍTULO 2 - COMPLETO (VERSIÓN 1.1 - OPTIMIZADA)
+
+| Sección | Estado |
+| :--- | :--- |
+| 2.1 Perspectiva del Producto | ✅ COMPLETO (actualizado con dominios y optimizaciones) |
+| 2.2 Funciones del Producto | ✅ COMPLETO (**96 FUNCIONES**, organizadas por dominios) |
+| 2.3 Características de los Usuarios | ✅ COMPLETO (+2 nuevos actores) |
+| 2.4 Restricciones | ✅ COMPLETO (actualizado con datos de stocks y estacionales) |
+| 2.5 Suposiciones y Dependencias | ✅ COMPLETO (actualizado con nuevas dependencias) |
+| **CAPÍTULO 2 COMPLETO (v1.1)** | ✅ **LISTO** |
+
+---
+
+### 📊 Resumen de la Evolución del Capítulo 2
+
+| Versión | Meses Completos | Funciones del Producto | Nuevas Funciones |
+|---------|-----------------|------------------------|------------------|
+| **v0.5** | Meses 1-4 | 32 | - |
+| **v0.6** | Meses 1-5 | 46 | +14 |
+| **v0.7** | Meses 1-6 | 56 | +10 |
+| **v0.8** | Meses 1-7 | 66 | +10 |
+| **v0.9** | Meses 1-9 | 80 | +14 |
+| **v1.0** | Meses 1-12 | 96 | +16 |
+| **v1.1** | **Meses 1-12** | **96 (optimizadas)** | **Organizadas por dominios** |
+
+---
+
+### 📋 Nuevas Funciones de Meses 10-12 Añadidas (FN-81 a FN-96) - Optimizadas por Dominios
+
+| ID | Función | Dominio | Descripción Breve |
+| :--- | :--- | :--- | :--- |
+| **FN-81** | Multi-Asset Analysis | Analysis | Análisis integrado de 4 clases de activos (Bonos, Commodities, Divisas, Acciones). |
+| **FN-82** | Risk On/Off Detection | Analysis | Clasificación del entorno de mercado como Risk On o Risk Off. |
+| **FN-83** | Multi-Asset Alignment Score | Analysis | Score de alineación (0-100) de las 4 clases de activos. |
+| **FN-84** | Mega Trades Framework | Models | Operaciones de 3-6 meses, R:R ≥ 5:1, 1-3 por año, riesgo 0.3%. **(Fusionado)** |
+| **FN-85** | Top-Down Analysis | Models | Análisis jerárquico: Macro → DXY → IPDA Data Ranges → PD Arrays → Bias → Lower TFs → Ejecución. **(Fusionado en CMegaTrade)** |
+| **FN-86** | Mega Trade Decision Tree | Models | Árbol de decisión para Mega Trades. **(Fusionado en CMegaTrade)** |
+| **FN-87** | Stock Trading Model | Models | Selección de stocks con CAN SLIM, SMT Divergence, Seasonals. **(Fusionado)** |
+| **FN-88** | CAN SLIM Stock Filter | Models | Filtro fundamental: Current earnings, Annual earnings, New factor, Supply/Demand, Leader/Laggard, Institutional sponsorship. **(Fusionado en CStockTrader)** |
+| **FN-89** | Stock Buy/Sell Watchlists | Models | Watchlists automáticas para compra y venta de stocks. **(Fusionado en CStockTrader)** |
+| **FN-90** | Stock Options Selection | Models | Selección de opciones (calls/puts) para stocks. **(Fusionado en CStockTrader)** |
+| **FN-91** | Trading Plan & Psychology | TradingPlan | Plan de trading con límites de pérdida, disciplina, journaling. **(Fusionado)** |
+| **FN-92** | Daily/Weekly/Monthly Routines | TradingPlan | Rutinas estructuradas para el trader. |
+| **FN-93** | Discipline & Rule Adherence | TradingPlan | Control de disciplina y adherencia a reglas. **(Fusionado en CTradingPlan)** |
+| **FN-94** | Loss Limits Management | TradingPlan | Límites de pérdida diarios/semanales/mensuales y cooldown. **(Fusionado en CTradingPlan)** |
+| **FN-95** | Journaling System | TradingPlan | Diario de trading para registrar operaciones, emociones, errores. **(Fusionado en CTradingPlan)** |
+| **FN-96** | Psychology Management | TradingPlan | Detección de FOMO, revenge trading, overconfidence, analysis paralysis. **(Fusionado en CTradingPlan)** |
+
+---
+
+### 📊 Resumen de Optimizaciones Aplicadas al Capítulo 2
+
+| Optimización | Estado | Beneficio |
+| :--- | :--- | :--- |
+| **Organización por Dominios** | ✅ APLICADA | 96 funciones agrupadas en 5 dominios |
+| **Fusiones de Funcionalidades** | ✅ APLICADA | Funciones duplicadas fusionadas (FN-70 con FN-67, FN-72 con FN-67, FN-75/77 con FN-74, FN-85/86 con FN-84, FN-88/89/90 con FN-87, FN-93/94/95/96 con FN-91) |
+| **Optimizaciones de Rendimiento** | ✅ APLICADA | Caching, batching, event-based triggers, timer-based execution |
+
+---
+
+**El Capítulo 2 está ahora completo en su versión 1.1 optimizada.**
+
+**¿Procedemos con el Capítulo 3 - Requisitos Específicos (v1.1 optimizada)?**
