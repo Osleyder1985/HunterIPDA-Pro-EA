@@ -16,8 +16,8 @@
 //| Dependencias:                                                    |
 //|   - Ninguna (módulo base)                                        |
 //|                                                                  |
-//| Versión: 1.0                                                     |
-//| Fecha: 21/07/2026                                                |
+//| Versión: 1.3                                                     |
+//| Fecha: 22/07/2026                                                |
 //+------------------------------------------------------------------+
 //+------------------------------------------------------------------+
 //| CHANGELOG                                                        |
@@ -25,12 +25,18 @@
 //| Versión | Fecha       | Cambio                                   |
 //|---------|-------------|------------------------------------------|
 //| 1.0     | 21/07/2026  | Versión inicial del módulo               |
-//| 1.1     | 21/07/2026  | Añadidas estructuras de datos: Signal,   |
-//|         |             | MacroData, SeasonalData, COTData,        |
-//|         |             | OIData, MultiAssetData, StockData,       |
-//|         |             | MegaTradeData, JournalEntry              |
+//| 1.1     | 21/07/2026  | Añadidas estructuras: Signal, MacroData, |
+//|         |             | SeasonalData, COTData, OIData,           |
+//|         |             | MultiAssetData, StockData, MegaTradeData,|
+//|         |             | JournalEntry                             |
 //| 1.2     | 21/07/2026  | Añadido ENUM_LICENSE_TYPE y constantes   |
 //|         |             | de licencia (LICENSE_*)                  |
+//| 1.3     | 22/07/2026  | Añadidas estructuras: AssetClassState,   |
+//|         |             | AssetRotationData                        |
+//|         |             | Ampliada MultiAssetData con              |
+//|         |             | intermarketCorrelationMatrix[4][4]       |
+//| 1.4     | 22/07/2026  | Ampliada MultiAssetData con campos       |
+//|         |             | bonds, commodities, currencies, stocks   |
 //+------------------------------------------------------------------+
 
 #ifndef __CCONSTANTS_MQH__
@@ -489,6 +495,31 @@ enum ENUM_LOG_LEVEL {
 //| ESTRUCTURAS DE DATOS                                             |
 //+------------------------------------------------------------------+
 
+//--- RF-851: Estado de una clase de activo (Multi-Asset - Mes 10) 🆕
+struct AssetClassState {
+    string           className;           // "Bonds", "Commodities", "Currencies", "Stocks"
+    ENUM_BIAS        bias;                // Bullish/Bearish/Neutral
+    double           trendStrength;       // 0-100
+    double           momentum;            // -100 a 100
+    bool             isTrending;
+    bool             isConsolidating;
+    bool             isReversing;
+    double           correlationWithRisk;
+    double           priceChange;         // % cambio en 20 días
+    double           volatility;          // ATR / Precio * 100
+    datetime         lastUpdate;
+};
+
+//--- RF-869: Rotación de Activos (Multi-Asset - Mes 10) 🆕
+struct AssetRotationData {
+    string           fromAsset;
+    string           toAsset;
+    double           rotationStrength;
+    datetime         rotationStart;
+    datetime         rotationEnd;
+    bool             isActive;
+};
+
 //--- Estructura para señales
 struct Signal {
     string             symbol;
@@ -563,17 +594,22 @@ struct OIData {
     datetime         lastUpdate;
 };
  
-//--- Estructura para datos Multi-Asset
+//--- RF-850/857: Estructura para datos Multi-Asset (AMPLIADA) 🆕
 struct MultiAssetData {
-    ENUM_RISK_ENVIRONMENT riskEnvironment;
-    bool                  isRiskOn;
-    bool                  isRiskOff;
-    bool                  isSymmetrical;
-    bool                  isDecoupled;
-    string                leadershipAsset;
-    int                   alignmentScore;
-    double                riskScore;
-    datetime              lastUpdate;
+    AssetClassState       bonds;                               // Estado de Bonos
+    AssetClassState       commodities;                         // Estado de Materias Primas
+    AssetClassState       currencies;                          // Estado de Divisas
+    AssetClassState       stocks;                              // Estado de Acciones
+    ENUM_RISK_ENVIRONMENT riskEnvironment;                     // Entorno de riesgo
+    bool                  isRiskOn;                            // Flag Risk On
+    bool                  isRiskOff;                           // Flag Risk Off
+    bool                  isSymmetrical;                       // Simetría detectada
+    bool                  isDecoupled;                         // Desacoplamiento detectado
+    string                leadershipAsset;                     // Clase líder
+    int                   alignmentScore;                      // Score de alineación 0-100
+    double                riskScore;                           // Score de riesgo 0-100
+    double                intermarketCorrelationMatrix[4][4];  // Matriz de correlación 4x4
+    datetime              lastUpdate;                          // Última actualización
 };
  
 //--- Estructura para datos de Stock

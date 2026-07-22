@@ -1,11 +1,11 @@
-## 📄 DOCUMENTO DE ARQUITECTURA - HUNTERIPDA PRO EA (VERSIÓN 1.7 - ACTUALIZADA CON ESTADO DE IMPLEMENTACIÓN)
+## 📄 DOCUMENTO DE ARQUITECTURA - HUNTERIPDA PRO EA (VERSIÓN 1.8 - ACTUALIZADA CON ESTADO DE IMPLEMENTACIÓN)
 
 ---
 
-**Versión del Documento:** 1.7 (Actualizado con estado de implementación - Dominio Core Completado)
-**Fecha:** 21 de Julio de 2026
-**Basado en:** SRS Versión 1.1, ~890+ RFs optimizados, Metodología ICT (Meses 1-12)
-**Estado de Implementación:** ✅ **DOMINIO CORE COMPLETADO (Fases 1-7)** - 7 módulos entregados y compilando sin errores
+**Versión del Documento:** 1.8 (Actualizado con estado de implementación - Dominios Core y Analysis Completados)
+**Fecha:** 22 de Julio de 2026
+**Basado en:** SRS Versión 1.1, ~905+ RFs optimizados, Metodología ICT (Meses 1-12)
+**Estado de Implementación:** ✅ **DOMINIOS CORE Y ANALYSIS COMPLETADOS (Fases 1-20)** - 18 módulos entregados y compilando sin errores
 
 ---
 
@@ -22,7 +22,7 @@
 | **Configurabilidad** | Todos los parámetros son configurables a través de inputs en MT5. |
 | **Rendimiento** | Optimización para procesamiento de ticks en tiempo real con baja latencia. **Caching, batching, event-based triggers y timer-based execution.** |
 | **Robustez** | Manejo de errores y recuperación ante fallos (reconexión, validación de condiciones). |
-| **Organización por Dominios** | 5 dominios funcionales: Core, Analysis, Execution, Models, TradingPlan. |
+| **Organización por Dominios** | 6 dominios funcionales: Core, Analysis, Execution, Models, TradingPlan, BonusHunter. |
 
 ---
 
@@ -30,38 +30,39 @@
 
 | Dominio | Estado | Fases | Módulos Completados | Progreso |
 | :--- | :--- | :--- | :--- | :--- |
-| **Core** | ✅ COMPLETO | Fases 1-7 | 7/7 | ████████████████████ 100% |
-| **Analysis** | ⏳ PENDIENTE | Fases 8-20 | 0/15 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **Execution** | ⏳ PENDIENTE | Fases 21-24 | 0/4 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **Models** | ⏳ PENDIENTE | Fases 25-36 | 0/12 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **TradingPlan** | ⏳ PENDIENTE | Fases 37-38 | 0/2 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **TOTAL** | | **Fases 1-38** | **7/40** | **████████░░░░░░░░░░ 17.5%** |
+| **Core** | ✅ COMPLETO | Fases 1-3 | 7/7 | ████████████████████ 100% |
+| **Analysis** | ✅ COMPLETO | Fases 4-15 | 11/11 | ████████████████████ 100% |
+| **Execution** | ⏳ PENDIENTE | Fases 16-19 | 0/4 | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **Models** | ⏳ PENDIENTE | Fases 20-31 | 0/12 | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **TradingPlan** | ⏳ PENDIENTE | Fases 32-33 | 0/2 | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **BonusHunter** | ⏳ PENDIENTE | Fases 34-38 | 0/5 | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **TOTAL** | | **Fases 1-38** | **18/41** | **████████████████░░ 44%** |
 
 ---
 
 ### 2. ARQUITECTURA DE COMPONENTES
 
-#### 2.1 Diagrama de Componentes (MQL5) - Versión 1.7
+#### 2.1 Diagrama de Componentes (MQL5) - Versión 1.8
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                                       HUNTERIPDA PRO EA (MQL5) v1.7                                                                              │
+│                                                       HUNTERIPDA PRO EA (MQL5) v1.8                                                                              │
 ├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                                                                                                  │
 │  ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐  │
-│  │                                                                       DOMINIO CORE - ✅ COMPLETO (Fases 1-7)                                               │  │
+│  │                                                  DOMINIO CORE - ✅ COMPLETO (Fases 1-3)                                                                    │  │
 │  │  ┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ │  │
-│  │  │                                                         CHunterIPDA (v1.7) - ✅ ENTREGADO                                                              │ │  │
+│  │  │                                                         CHunterIPDA (v1.8) - ✅ ENTREGADO                                                              │ │  │
 │  │  │  - Inicialización (OnInit)                                                                                                                            │ │  │
 │  │  │  - Bucle Principal (OnTick) - Optimizado con timer-based execution                                                                                    │ │  │
 │  │  │  - Gestión de Estados (23 estados)                                                                                                                    │ │  │
-│  │  │  - Coordinación de Módulos por Dominios (Core, Analysis, Execution, Models, TradingPlan)                                                              │ │  │
+│  │  │  - Coordinación de Módulos por Dominios (Core, Analysis, Execution, Models, TradingPlan, BonusHunter)                                                  │ │  │
 │  │  │  - Control de Drawdown Anual (15%)                                                                                                                    │ │  │
-│  │  │  - Control de Frecuencia: Posición (2-3/año), Swing (6-8/año), OSOK (1/semana), Day (1-2/día), Scalp (3-5/día), Mega (1-3/año), Stock (configurable)  │ │  │
+│  │  │  - Control de Frecuencia por modelo: Position (2-3/año), Swing (6-8/año), OSOK (1/semana), Day (1-2/día), Scalp (3-5/día), Mega (1-3/año), Stock (cfg)│ │  │
 │  │  └───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ │  │
 │  │  ┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ │  │
-│  │  │           CConfig ✅          CLogger ✅          CPanel ✅          CLicense ✅          CUtils ✅          CConstants ✅                               │ │  │
-│  │  │           (v1.7)              (v1.7)              (v1.7)              (v1.7)              (v1.7)              (v1.7)                                    │ │  │
+│  │  │           CConfig ✅          CLogger ✅          CPanel ✅          CLicense ✅          CUtils ✅          CConstants ✅ (v1.4)                         │ │  │
+│  │  │           (v1.8)              (v1.8)              (v1.8)              (v1.8)              (v1.8)              (v1.8)                                    │ │  │
 │  │  └───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ │  │
 │  └────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘  │
 │                                                          │                                                                                                       │
@@ -70,28 +71,32 @@
 │         ▼                                                ▼                                         ▼                                                             │
 │  ┌─────────────────────────────────┐     ┌─────────────────────────────────┐     ┌─────────────────────────────────┐                                             │
 │  │        DOMINIO ANALYSIS         │     │        DOMINIO EXECUTION        │     │        DOMINIO MODELS           │                                             │
-│  │            (v1.7)               │     │            (v1.7)               │     │            (v1.7)               │                                             │
-│  │         ⏳ PENDIENTE            │     │         ⏳ PENDIENTE            │     │         ⏳ PENDIENTE            │                                             │
+│  │            (v1.8)               │     │            (v1.8)               │     │            (v1.8)               │                                             │
+│  │         ✅ COMPLETO             │     │         ⏳ PENDIENTE            │     │         ⏳ PENDIENTE            │                                             │
 │  └─────────────────────────────────┘     └─────────────────────────────────┘     └─────────────────────────────────┘                                             │
 │                  │                                        │                                           │                                                          │
 │  ┌───────────────┴─────────────┐          ┌───────────────┴──────────────────┐             ┌──────────┴──────────────┐                                           │
 │  │                             │          │                                  │             │                         │                                           │
 │  ▼                             ▼          ▼                                  ▼             ▼                         ▼                                           │
 │ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐     ┌─────────────────────┐ ┌─────────────────┐ ┌─────────────────────┐                              │
-│ │   CDetector     │ │   CContext      │ │   CExecutor     │     │   CRiskManager      │ │   CMultiSymbol  │ │   CSwingFilter      │                              │
-│ │   (v1.7)        │ │   (v1.7)        │ │   (v1.7)        │     │   (v1.7)            │ │   (v1.7)        │ │   (v1.7)            │                              │
+│ │   CDetector ✅  │ │   CContext ✅   │ │   CExecutor     │     │   CRiskManager      │ │   CMultiSymbol  │ │   CSwingFilter      │                              │
+│ │   (v1.8)        │ │   (v1.8)        │ │   (v1.8)        │     │   (v1.8)            │ │   (v1.8)        │ │   (v1.8)            │                              │
 │ └─────────────────┘ └─────────────────┘ └─────────────────┘     └─────────────────────┘ └─────────────────┘ └─────────────────────┘                              │
 │ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐     ┌─────────────────────┐ ┌─────────────────┐ ┌─────────────────────┐                              │
-│ │  CMultiAsset    │ │  CMacroAnalyzer │ │  CEntryManager  │     │                     │ │                 │ │   CHallmarkAnalyzer │                              │
+│ │  CMultiAsset ✅ │ │  CMacroAnalyzer✅│ │  CEntryManager  │     │                     │ │                 │ │   CHallmarkAnalyzer │                              │
+│ │   (v1.8)        │ │   (v1.8)        │ │   (v1.8)        │     │                     │ │                 │ │   (v1.8)            │                              │
 │ └─────────────────┘ └─────────────────┘ └─────────────────┘     └─────────────────────┘ └─────────────────┘ └─────────────────────┘                              │
 │ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐                                                 ┌─────────────────────┐ ┌─────────────────────┐      │
-│ │  CSeasonal      │ │  CDataRange     │ │  CCOTAnalyzer   │                                                 │   CSwingManager     │ │   CShortTerm        │      │
+│ │  CSeasonal ✅   │ │  CDataRange ✅  │ │  CCOTAnalyzer✅ │                                                 │   CSwingManager     │ │   CShortTerm        │      │
+│ │   (v1.8)        │ │   (v1.8)        │ │   (v1.8)        │                                                 │   (v1.8)            │ │   (v1.8)            │      │
 │ └─────────────────┘ └─────────────────┘ └─────────────────┘                                                 └─────────────────────┘ └─────────────────────┘      │
 │ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐                                                 ┌─────────────────────┐ ┌─────────────────────┐      │
-│ │  COIAnalyzer    │ │  CRelStrength   │ │  CPremiumCarry  │                                                 │   COSOKAnalyzer     │ │   CDayTrading       │      │
+│ │  COIAnalyzer ✅ │ │  CRelStrength✅ │ │  CPremiumCarry✅│                                                 │   COSOKAnalyzer     │ │   CDayTrading       │      │
+│ │   (v1.8)        │ │   (v1.8)        │ │   (v1.8)        │                                                 │   (v1.8)            │ │   (v1.8)            │      │
 │ └─────────────────┘ └─────────────────┘ └─────────────────┘                                                 └─────────────────────┘ └─────────────────────┘      │
 │ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐                                                 ┌─────────────────────┐ ┌─────────────────────┐      │
-│ │  CCOExtended    │ │                 │ │                 │                                                 │   CScalping         │ │   CStockTrader      │      │
+│ │  CCOExtended ✅ │ │                 │ │                 │                                                 │   CScalping         │ │   CStockTrader      │      │
+│ │   (v1.8)        │ │                 │ │                 │                                                 │   (v1.8)            │ │   (v1.8)            │      │
 │ └─────────────────┘ └─────────────────┘ └─────────────────┘                                                 └─────────────────────┘ └─────────────────────┘      │
 │ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐                                                 ┌─────────────────────┐ ┌─────────────────────┐      │
 │ │                 │ │                 │ │                 │                                                 │   CMegaTrade        │ │   CTradingPlan      │      │
@@ -104,7 +109,7 @@
 │  │                                                     DOMINIO TRADINGPLAN - ⏳ PENDIENTE                                                                      │  │
 │  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐                                                   │  │
 │  │  │  CTradingPlan   │  │  (incluye)      │  │  (incluye)      │  │  (incluye)      │  │  (incluye)      │                                                   │  │
-│  │  │  (v1.7)         │  │  CDiscipline    │  │  CLossManager   │  │  CPsychology    │  │  CJournal       │                                                   │  │
+│  │  │  (v1.8)         │  │  CDiscipline    │  │  CLossManager   │  │  CPsychology    │  │  CJournal       │                                                   │  │
 │  │  └─────────────────┘  └─────────────────┘  └─────────────────┘  └─────────────────┘  └─────────────────┘                                                   │  │
 │  └────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘  │
 │                                                                                                                                                                  │
@@ -112,8 +117,8 @@
 │  │                                                     DOMINIO BONUS HUNTER - ⏳ PENDIENTE                                                                     │  │
 │  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐                                                   │  │
 │  │  │  CBonusHunter   │  │  CVolumeTracker │  │  CBonusScanner  │  │  CBonusExecutor │  │  CPanelBonus    │                                                   │  │
-│  │  │  (v1.7)         │  │  (v1.7)         │  │  (v1.7)         │  │  (v1.7)         │  │  Hunter         │                                                   │  │
-│  │  │                 │  │                 │  │                 │  │                 │  │  (v1.7)         │                                                   │  │
+│  │  │  (v1.8)         │  │  (v1.8)         │  │  (v1.8)         │  │  (v1.8)         │  │  Hunter         │                                                   │  │
+│  │  │                 │  │                 │  │                 │  │                 │  │  (v1.8)         │                                                   │  │
 │  │  └─────────────────┘  └─────────────────┘  └─────────────────┘  └─────────────────┘  └─────────────────┘                                                   │  │
 │  └────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘  │
 │                                                                                                                                                                  │
@@ -126,98 +131,94 @@
 
 #### 3.1 Dominio Core (Núcleo del Sistema) - ✅ COMPLETO
 
-| Clase | Descripción | Responsabilidades | Estado |
+| Clase (v1.8) | Descripción | Responsabilidades | Estado |
 | :--- | :--- | :--- | :--- |
-| **CHunterIPDA (v1.7)** | Clase Principal del EA | - Inicialización y configuración<br>- Bucle principal (OnTick) optimizado con timer-based execution<br>- Gestión de Estados (23 estados)<br>- Coordinación de módulos por dominios<br>- Control de Drawdown Anual (15%)<br>- Control de Frecuencia: Posición (2-3/año), Swing (6-8/año), OSOK (1/semana), Day (1-2/día), Scalp (3-5/día), Mega (1-3/año), Stock (configurable) | ✅ ENTREGADO |
-| **CConfig (v1.7)** | Gestor de Configuración | - Lectura de inputs, validación, persistencia<br>- Parámetros de todos los modelos y dominios | ✅ ENTREGADO |
-| **CLogger (v1.7)** | Logging y Estadísticas | - Registro de operaciones, estadísticas, exportación<br>- Logging de perfiles de rango semanal, datos OSOK, Multi-Asset, Stock Trading, Mega Trades, Journal<br>- **Optimización:** Bufferizado para escritura en lotes | ✅ ENTREGADO |
-| **CPanel (v1.7)** | Panel de Control | - Visualización en gráfico, actualización en tiempo real<br>- Dashboards de Multi-Asset, Stock Watchlists, Mega Trade Status, Trading Plan | ✅ ENTREGADO |
-| **CLicense (v1.7)** | Gestor de Licencias | - Validación, activación, protección de código<br>- Soporte para modo offline con cifrado asimétrico | ✅ ENTREGADO |
-| **CUtils (v1.7)** | Utilidades | - Funciones auxiliares, cálculos matemáticos, conversiones, validaciones | ✅ ENTREGADO |
-| **CConstants (v1.7)** | Constantes y Enumeraciones | - Definición única de todas las enumeraciones y constantes del sistema | ✅ ENTREGADO |
+| **CHunterIPDA (v1.8)** | Clase Principal del EA | - Inicialización y configuración<br>- Bucle principal (OnTick) optimizado con timer-based execution<br>- Gestión de Estados (23 estados)<br>- Coordinación de módulos por dominios<br>- Control de Drawdown Anual (15%)<br>- Control de Frecuencia por modelo | ✅ ENTREGADO |
+| **CConfig (v1.8)** | Gestor de Configuración | - Lectura de inputs, validación, persistencia<br>- Parámetros de todos los modelos y dominios | ✅ ENTREGADO |
+| **CLogger (v1.8)** | Logging y Estadísticas | - Registro de operaciones, estadísticas, exportación<br>- Logging de perfiles de rango semanal, datos OSOK, Multi-Asset, Stock Trading, Mega Trades, Journal<br>- **Optimización:** Bufferizado para escritura en lotes | ✅ ENTREGADO |
+| **CPanel (v1.8)** | Panel de Control | - Visualización en gráfico, actualización en tiempo real<br>- Dashboards de Multi-Asset, Stock Watchlists, Mega Trade Status, Trading Plan | ✅ ENTREGADO |
+| **CLicense (v1.8)** | Gestor de Licencias | - Validación, activación, protección de código<br>- Soporte para modo offline con cifrado asimétrico | ✅ ENTREGADO |
+| **CUtils (v1.8)** | Utilidades | - Funciones auxiliares, cálculos matemáticos, conversiones, validaciones | ✅ ENTREGADO |
+| **CConstants (v1.8)** | Constantes y Enumeraciones | - Definición única de todas las enumeraciones y constantes del sistema<br>- **v1.4:** Añadidas AssetClassState, AssetRotationData, MultiAssetData ampliada | ✅ ENTREGADO |
 
 ---
 
-#### 3.2 Dominio Analysis (Análisis de Mercado) - ⏳ PENDIENTE
+#### 3.2 Dominio Analysis (Análisis de Mercado) - ✅ COMPLETO
 
-| Clase | Descripción | Responsabilidades | Estado |
+| Clase (v1.8) | Descripción | Responsabilidades | Estado |
 | :--- | :--- | :--- | :--- |
-| **CDetector (v1.7)** | Detector de Setups ICT | - Detección de Order Blocks, FVG, Turtle Soup, Stop Runs<br>- Detección de PD Arrays, Breaker y Failure Swing<br>- Detección de perfiles de rango semanal y plantillas de manipulación<br>- Detección de intraday profiles, price engine models, COT programs, relative strength patterns, bond split session patterns, index projected range patterns | ⏳ PENDIENTE |
-| **CContext (v1.7)** | Analizador de Contexto | - Análisis multi-temporal, Sponsorship, SMT Divergence<br>- Market Structure, Macro to Micro<br>- Análisis de condiciones de short-term, OSOK, day trading, scalping, multi-asset, stock trading y mega trades | ⏳ PENDIENTE |
-| **CMultiAsset (v1.7)** | Análisis Multi-Asset | - Análisis integrado de las 4 clases de activos (Bonos, Commodities, Divisas, Acciones)<br>- Detección de Risk On/Off, simetría/decoupling<br>- Identificación de clase líder, cálculo de Alignment Score<br>- **Optimización:** Ejecución diaria con caching | ⏳ PENDIENTE |
-| **CMacroAnalyzer (v1.7)** | Analizador Macro | - 10-Year Treasury Note, DXY, Intermarket Analysis<br>- Cracking Correlation, Interest Rate Differentials<br>- Análisis de COT Extended (Buy/Sell Programs, Hedging)<br>- Análisis de Premium vs Carrying Charge<br>- Análisis de Open Interest Extended | ⏳ PENDIENTE |
-| **CSeasonal (v1.7)** | Gestor de Tendencias Estacionales | - Tendencias estacionales (40+ años)<br>- Ideal Seasonal Tendencies, convergencia 40/15 años<br>- Seasonal como filtro obligatorio para OSOK y Swing<br>- Análisis estacional para stocks (Stock Seasonal Calendar) | ⏳ PENDIENTE |
-| **CDataRange (v1.7)** | Gestor de IPDA Data Ranges | - IPDA Data Ranges (20, 40, 60 días)<br>- Look Back, Cast Forward, Quarterly Shifts, IOF | ⏳ PENDIENTE |
-| **CCOTAnalyzer (v1.7)** | Análisis de COT | - Rango de 12 meses de comerciales, punto medio como nueva línea cero<br>- Soporte para OSOK y Swing como filtro obligatorio<br>- **Optimización:** Ejecución semanal con caching | ⏳ PENDIENTE |
-| **COIAnalyzer (v1.7)** | Análisis de Open Interest | - Detección de cambios de 10-15%+ en OI como confirmación de dirección<br>- **Optimización:** Ejecución diaria con caching | ⏳ PENDIENTE |
-| **CRelStrength (v1.7)** | Análisis de Fortaleza Relativa | - DXY context, higher low/lower high, acumulación/distribución, leadership markets | ⏳ PENDIENTE |
-| **CPremiumCarry (v1.7)** | Premium vs Carrying Charge | - nearby/next month, spread charts, spread divergence | ⏳ PENDIENTE |
-| **CCOExtended (v1.7)** | COT Extended | - Análisis extendido de COT: Buy/Sell Programs, Hedging Programs, nódulos de hedging, extremos históricos | ⏳ PENDIENTE |
-| **CAssetClass (v1.7)** | Estado de Clases | - Monitoreo del estado de cada clase de activo: tendencia/consolidación/reversión, fuerza de tendencia, momentum | ⏳ PENDIENTE |
-| **CIntermarket (v1.7)** | Correlación Intermercado | - Análisis de correlaciones intermercado entre las 4 clases de activos | ⏳ PENDIENTE |
-| **CRiskOnOff (v1.7)** | Risk On/Off | - Detección de entornos Risk On/Off basado en el comportamiento de las 4 clases de activos | ⏳ PENDIENTE |
-| **CCorrelation (v1.7)** | Análisis de Correlación | - Cálculo de matrices de correlación entre activos y clases | ⏳ PENDIENTE |
+| **CDetector (v1.8)** | Detector de Setups ICT | - Detección de Order Blocks, FVG, Turtle Soup, Stop Runs<br>- Detección de PD Arrays, Breaker y Failure Swing<br>- Detección de perfiles de rango semanal y plantillas de manipulación<br>- Detección de intraday profiles, price engine models, COT programs, relative strength patterns, bond split session patterns, index projected range patterns | ✅ COMPLETO |
+| **CContext (v1.8)** | Analizador de Contexto | - Análisis multi-temporal, Sponsorship, SMT Divergence<br>- Market Structure, Macro to Micro<br>- Análisis de condiciones de short-term, OSOK, day trading, scalping, multi-asset, stock trading y mega trades | ✅ COMPLETO |
+| **CMultiAsset (v1.8)** | Análisis Multi-Asset | - Análisis integrado de las 4 clases de activos (Bonos, Commodities, Divisas, Acciones)<br>- Detección de Risk On/Off, simetría/decoupling<br>- Identificación de clase líder, cálculo de Alignment Score<br>- Matriz de correlación intermercado 4x4<br>- **Optimización:** Ejecución diaria con caching | ✅ COMPLETO |
+| **CMacroAnalyzer (v1.8)** | Analizador Macro | - 10-Year Treasury Note, DXY, Intermarket Analysis<br>- Cracking Correlation, Interest Rate Differentials<br>- Análisis de COT Extended (Buy/Sell Programs, Hedging)<br>- Análisis de Premium vs Carrying Charge<br>- Análisis de Open Interest Extended | ✅ COMPLETO |
+| **CSeasonal (v1.8)** | Gestor de Tendencias Estacionales | - Tendencias estacionales (40+ años)<br>- Ideal Seasonal Tendencies, convergencia 40/15 años<br>- Seasonal como filtro obligatorio para OSOK y Swing<br>- Análisis estacional para stocks (Stock Seasonal Calendar) | ✅ COMPLETO |
+| **CDataRange (v1.8)** | Gestor de IPDA Data Ranges | - IPDA Data Ranges (20, 40, 60 días)<br>- Look Back, Cast Forward, Quarterly Shifts, IOF<br>- Open Float y Liquidity Pools | ✅ COMPLETO |
+| **CCOTAnalyzer (v1.8)** | Análisis de COT | - Rango de 12 meses de comerciales, punto medio como nueva línea cero<br>- Soporte para OSOK y Swing como filtro obligatorio<br>- **Optimización:** Ejecución semanal con caching | ✅ COMPLETO |
+| **COIAnalyzer (v1.8)** | Análisis de Open Interest | - Detección de cambios de 10-15%+ en OI como confirmación de dirección<br>- Smart Money Footprints, OI + PD Array Blending<br>- **Optimización:** Ejecución diaria con caching | ✅ COMPLETO |
+| **CRelStrength (v1.8)** | Análisis de Fortaleza Relativa | - DXY context, higher low/lower high, acumulación/distribución, leadership markets<br>- Cross-currency strength analysis, ranking de fortaleza/debilidad | ✅ COMPLETO |
+| **CPremiumCarry (v1.8)** | Premium vs Carrying Charge | - nearby/next month, spread charts, spread divergence<br>- Commercial Bull/Bear Market detection, rollover management | ✅ COMPLETO |
+| **CCOExtended (v1.8)** | COT Extended | - Análisis extendido de COT: Buy/Sell Programs, Hedging Programs, nódulos de hedging, extremos históricos<br>- Buy/Sell Hedge detection, COT vs Price Divergence | ✅ COMPLETO |
 
 ---
 
 #### 3.3 Dominio Execution (Ejecución y Gestión) - ⏳ PENDIENTE
 
-| Clase | Descripción | Responsabilidades | Estado |
+| Clase (v1.8) | Descripción | Responsabilidades | Estado |
 | :--- | :--- | :--- | :--- |
-| **CExecutor (v1.7)** | Ejecutor de Órdenes | - Apertura, gestión y cierre de órdenes<br>- Stop/Limit Entries, escalado en largo/corto, IPDA Trailing<br>- Ejecución en 4H/1H para short-term, gestión OSOK con Kill Zones<br>- Ejecución en H1/M15 para day trading, en M5 para scalping<br>- Ejecución en HTF para Mega Trades y Stock Trading | ⏳ PENDIENTE |
-| **CEntryManager (v1.7)** | Gestor de Entradas | - Stop/Limit Entries, estrategia híbrida, escalado en largo/corto<br>- Técnicas de entrada para short-term, OSOK, day trading, scalping, Mega Trades y Stock Trading | ⏳ PENDIENTE |
-| **CRiskManager (v1.7)** | Gestor de Riesgo | - Cálculo de lote, SL/TP, Trailing Stop, Scaling Out<br>- Trailing stop IPDA (40/20/10 días)<br>- Riesgo para short-term, tolerancia de proyección OSOK<br>- Riesgo para day trading (1.5%), scalping (0.5%-1%), Mega Trades (0.3%), Stock Trading (1.5%)<br>- Gestión de ADR Exit Rule y límites de pérdida (Trading Plan) | ⏳ PENDIENTE |
-| **CMultiSymbol (v1.7)** | Gestor Multi-Símbolo | - Análisis y ejecución por símbolo<br>- Selección de pares por diferencial de tasas, ranking por seasonal<br>- Selección de mercados para short-term, OSOK, day trading, scalping<br>- Selección de stocks para watchlists, selección de activos para Multi-Asset Analysis | ⏳ PENDIENTE |
+| **CExecutor (v1.8)** | Ejecutor de Órdenes | - Apertura, gestión y cierre de órdenes<br>- Stop/Limit Entries, escalado en largo/corto, IPDA Trailing<br>- Ejecución en 4H/1H para short-term, gestión OSOK con Kill Zones<br>- Ejecución en H1/M15 para day trading, en M5 para scalping<br>- Ejecución en HTF para Mega Trades y Stock Trading | ⏳ PENDIENTE |
+| **CEntryManager (v1.8)** | Gestor de Entradas | - Stop/Limit Entries, estrategia híbrida, escalado en largo/corto<br>- Técnicas de entrada para short-term, OSOK, day trading, scalping, Mega Trades y Stock Trading | ⏳ PENDIENTE |
+| **CRiskManager (v1.8)** | Gestor de Riesgo | - Cálculo de lote, SL/TP, Trailing Stop, Scaling Out<br>- Trailing stop IPDA (40/20/10 días)<br>- Riesgo para short-term, tolerancia de proyección OSOK<br>- Riesgo para day trading (1.5%), scalping (0.5%-1%), Mega Trades (0.3%), Stock Trading (1.5%)<br>- Gestión de ADR Exit Rule y límites de pérdida (Trading Plan) | ⏳ PENDIENTE |
+| **CMultiSymbol (v1.8)** | Gestor Multi-Símbolo | - Análisis y ejecución por símbolo<br>- Selección de pares por diferencial de tasas, ranking por seasonal<br>- Selección de mercados para short-term, OSOK, day trading, scalping<br>- Selección de stocks para watchlists, selección de activos para Multi-Asset Analysis | ⏳ PENDIENTE |
 
 ---
 
 #### 3.4 Dominio Models (Modelos de Trading) - ⏳ PENDIENTE
 
-| Clase | Descripción | Responsabilidades | Estado |
+| Clase (v1.8) | Descripción | Responsabilidades | Estado |
 | :--- | :--- | :--- | :--- |
-| **CSwingFilter (v1.7)** | Filtros de Swing Trading | - Seasonal (obligatorio), Major Market Analysis, COT, Open Interest, 8 Hallmarks | ⏳ PENDIENTE |
-| **CHallmarkAnalyzer (v1.7)** | 8 Hallmarks | - Market Profiles, Intermarket, COT, OI, Seasonal, Volatility, News Sentiment, Williams %R | ⏳ PENDIENTE |
-| **CSwingManager (v1.7)** | Gestión de Swing | - Toma de 20-30% profit al 25% del objetivo, reentradas al 50%, trailing ajustado al 75% | ⏳ PENDIENTE |
-| **CShortTerm (v1.7)** | Modelo Short-Term | - Ejecución en 4H/1H, gestión de weekly range profiles y MM manipulation templates | ⏳ PENDIENTE |
-| **CWeeklyRange (v1.7)** | Perfiles de Rango Semanal | - Detección de Classic Tuesday Low/High, Wednesday Low/High, Thursday Reversal, Midweek Rally/Decline, Seek & Destroy, Wednesday Weekly Reversal | ⏳ PENDIENTE |
-| **CMMManipulation (v1.7)** | Plantillas de Manipulación MM | - Aplicación de 12+ plantillas de manipulación del Market Maker | ⏳ PENDIENTE |
-| **CIntraWeekReversal (v1.7)** | Reversiones Intra-Semanales | - Detección de reversiones basadas en velocidad y magnitud del movimiento en lunes y martes | ⏳ PENDIENTE |
-| **COSOKAnalyzer (v1.7)** | One Shot One Kill | - Proyección de high/low semanal con Fibonacci (127%, 168%), convergencia con PD Arrays, tolerancia configurable, Kill Zone timing | ⏳ PENDIENTE |
-| **CDayTrading (v1.7)** 🆕 | **Modelo Day Trading (FUSIONADO)** | - IPDA True Day framework, Kill Zones (London/NY/London Close), CBDR con desviaciones estándar, 12 setups de alta probabilidad, 8 tipos de reversiones, rutina diaria estructurada<br>- **INCLUYE:** CIntradayProfile (perfiles intraday) y CMarketReversal (reversiones de mercado) como sub-estructuras | ⏳ PENDIENTE |
-| **CScalping (v1.7)** 🆕 | **Modelo Scalping (FUSIONADO)** | - Ejecución en M5, Price Engine Models, 20 Pips Per Day strategy, ADR Exit Rule, Bread & Butter setups, Filling the Numbers strategy<br>- **INCLUYE:** CPriceEngine (4 Price Engine Models), CAsianTrade (Asian Turtle Soup) y CADRExit (ADR Exit Rule) como sub-estructuras | ⏳ PENDIENTE |
-| **CStockTrader (v1.7)** 🆕 | **Modelo Stock Trading (FUSIONADO)** | - Selección de stocks con CAN SLIM, SMT Divergence, Seasonals, watchlists Buy/Sell, selección de opciones<br>- **INCLUYE:** CStockWatch (watchlists), CCANSLIM (filtro fundamental), CStockOption (opciones) y CStockSeason (análisis estacional) como sub-estructuras | ⏳ PENDIENTE |
-| **CMegaTrade (v1.7)** 🆕 | **Modelo Mega Trades (FUSIONADO)** | - Framework de Mega Trades: operaciones de 3-6 meses, R:R ≥ 5:1, 1-3 por año, riesgo 0.3%, basado en Quarterly Shifts y Top-Down Analysis<br>- **INCLUYE:** CQuarterlyShift (análisis de Quarterly Shifts), CTopDown (Top-Down Analysis), CDecisionTree (árbol de decisión) y CScenarioPlan (planificación de escenarios) como sub-estructuras<br>- **Optimización:** Ejecución semanal con event-based triggers | ⏳ PENDIENTE |
+| **CSwingFilter (v1.8)** | Filtros de Swing Trading | - Seasonal (obligatorio), Major Market Analysis, COT, Open Interest, 8 Hallmarks | ⏳ PENDIENTE |
+| **CHallmarkAnalyzer (v1.8)** | 8 Hallmarks | - Market Profiles, Intermarket, COT, OI, Seasonal, Volatility, News Sentiment, Williams %R | ⏳ PENDIENTE |
+| **CSwingManager (v1.8)** | Gestión de Swing | - Toma de 20-30% profit al 25% del objetivo, reentradas al 50%, trailing ajustado al 75% | ⏳ PENDIENTE |
+| **CShortTerm (v1.8)** | Modelo Short-Term | - Ejecución en 4H/1H, gestión de weekly range profiles y MM manipulation templates | ⏳ PENDIENTE |
+| **CWeeklyRange (v1.8)** | Perfiles de Rango Semanal | - Detección de Classic Tuesday Low/High, Wednesday Low/High, Thursday Reversal, Midweek Rally/Decline, Seek & Destroy, Wednesday Weekly Reversal | ⏳ PENDIENTE |
+| **CMMManipulation (v1.8)** | Plantillas de Manipulación MM | - Aplicación de 12+ plantillas de manipulación del Market Maker | ⏳ PENDIENTE |
+| **CIntraWeekReversal (v1.8)** | Reversiones Intra-Semanales | - Detección de reversiones basadas en velocidad y magnitud del movimiento en lunes y martes | ⏳ PENDIENTE |
+| **COSOKAnalyzer (v1.8)** | One Shot One Kill | - Proyección de high/low semanal con Fibonacci (127%, 168%), convergencia con PD Arrays, tolerancia configurable, Kill Zone timing | ⏳ PENDIENTE |
+| **CDayTrading (v1.8)** | Modelo Day Trading (FUSIONADO) | - IPDA True Day framework, Kill Zones (London/NY/London Close), CBDR con desviaciones estándar, 12 setups de alta probabilidad, 8 tipos de reversiones, rutina diaria estructurada<br>- **INCLUYE:** CIntradayProfile y CMarketReversal como sub-estructuras | ⏳ PENDIENTE |
+| **CScalping (v1.8)** | Modelo Scalping (FUSIONADO) | - Ejecución en M5, Price Engine Models, 20 Pips Per Day strategy, ADR Exit Rule, Bread & Butter setups, Filling the Numbers strategy<br>- **INCLUYE:** CPriceEngine (4 Price Engine Models), CAsianTrade (Asian Turtle Soup) y CADRExit (ADR Exit Rule) como sub-estructuras | ⏳ PENDIENTE |
+| **CStockTrader (v1.8)** | Modelo Stock Trading (FUSIONADO) | - Selección de stocks con CAN SLIM, SMT Divergence, Seasonals, watchlists Buy/Sell, selección de opciones<br>- **INCLUYE:** CStockWatch (watchlists), CCANSLIM (filtro fundamental), CStockOption (opciones) y CStockSeason (análisis estacional) como sub-estructuras | ⏳ PENDIENTE |
+| **CMegaTrade (v1.8)** | Modelo Mega Trades (FUSIONADO) | - Framework de Mega Trades: operaciones de 3-6 meses, R:R ≥ 5:1, 1-3 por año, riesgo 0.3%, basado en Quarterly Shifts y Top-Down Analysis<br>- **INCLUYE:** CQuarterlyShift (análisis de Quarterly Shifts), CTopDown (Top-Down Analysis), CDecisionTree (árbol de decisión) y CScenarioPlan (planificación de escenarios) como sub-estructuras<br>- **Optimización:** Ejecución semanal con event-based triggers | ⏳ PENDIENTE |
 
 ---
 
 #### 3.5 Dominio TradingPlan (Plan de Trading) - ⏳ PENDIENTE
 
-| Clase | Descripción | Responsabilidades | Estado |
+| Clase (v1.8) | Descripción | Responsabilidades | Estado |
 | :--- | :--- | :--- | :--- |
-| **CTradingPlan (v1.7)** 🆕 | **Trading Plan (FUSIONADO)** | - Framework completo de Trading Plan: límites de pérdida diarios/semanales/mensuales, disciplina, journaling, rutinas<br>- **INCLUYE:** CDiscipline (disciplina y reglas), CLossManager (gestión de límites), CPsychology (psicología) y CJournal (diario de trading) como sub-estructuras<br>- **Optimización:** Bufferizado para escritura en lotes (journal) | ⏳ PENDIENTE |
-| **CNewsEvent (v1.7)** | Gestión de Eventos | - Gestión de eventos de mercado (FOMC, NFP, CPI) como filtros de timing, con gestión de riesgo ajustada | ⏳ PENDIENTE |
+| **CTradingPlan (v1.8)** | Trading Plan (FUSIONADO) | - Framework completo de Trading Plan: límites de pérdida diarios/semanales/mensuales, disciplina, journaling, rutinas<br>- **INCLUYE:** CDiscipline (disciplina y reglas), CLossManager (gestión de límites), CPsychology (psicología) y CJournal (diario de trading) como sub-estructuras<br>- **Optimización:** Bufferizado para escritura en lotes (journal) | ⏳ PENDIENTE |
+| **CNewsEvent (v1.8)** | Gestión de Eventos | - Gestión de eventos de mercado (FOMC, NFP, CPI) como filtros de timing, con gestión de riesgo ajustada | ⏳ PENDIENTE |
 
 ---
 
 #### 3.6 Dominio Bonus Hunter (Módulo Adicional) - ⏳ PENDIENTE
 
-| Clase | Descripción | Responsabilidades | Estado |
+| Clase (v1.8) | Descripción | Responsabilidades | Estado |
 | :--- | :--- | :--- | :--- |
-| **CBonusHunter (v1.7)** 🆕 | **Bonus Hunter Principal** | - Cumplimiento rápido de bonos Weltrade mediante scalping de alta frecuencia con riesgo reducido<br>- Coordinación de todos los submódulos de Bonus Hunter | ⏳ PENDIENTE |
-| **CVolumeTracker (v1.7)** 🆕 | **Tracking de Volumen** | - Monitoreo del volumen operado para cumplir requisitos de bono<br>- Tracking de volumen diario, semanal y mensual | ⏳ PENDIENTE |
-| **CBonusScanner (v1.7)** 🆕 | **Escaneo de Oportunidades** | - Escaneo de oportunidades de scalping para cumplir bonos<br>- Identificación de setups de alta frecuencia de baja calidad | ⏳ PENDIENTE |
-| **CBonusExecutor (v1.7)** 🆕 | **Ejecución de Órdenes Bonus** | - Ejecución de órdenes con riesgo reducido (0.25%-0.5%)<br>- Gestión de stops ajustados y salidas rápidas | ⏳ PENDIENTE |
-| **CPanelBonusHunter (v1.7)** 🆕 | **Panel de Progreso** | - Visualización del progreso del bono en el gráfico<br>- Métricas de volumen, profit, trades restantes | ⏳ PENDIENTE |
+| **CBonusHunter (v1.8)** | Bonus Hunter Principal | - Cumplimiento rápido de bonos Weltrade mediante scalping de alta frecuencia con riesgo reducido<br>- Coordinación de todos los submódulos de Bonus Hunter | ⏳ PENDIENTE |
+| **CVolumeTracker (v1.8)** | Tracking de Volumen | - Monitoreo del volumen operado para cumplir requisitos de bono<br>- Tracking de volumen diario, semanal y mensual | ⏳ PENDIENTE |
+| **CBonusScanner (v1.8)** | Escaneo de Oportunidades | - Escaneo de oportunidades de scalping para cumplir bonos<br>- Identificación de setups de alta frecuencia de baja calidad | ⏳ PENDIENTE |
+| **CBonusExecutor (v1.8)** | Ejecución de Órdenes Bonus | - Ejecución de órdenes con riesgo reducido (0.25%-0.5%)<br>- Gestión de stops ajustados y salidas rápidas | ⏳ PENDIENTE |
+| **CPanelBonusHunter (v1.8)** | Panel de Progreso | - Visualización del progreso del bono en el gráfico<br>- Métricas de volumen, profit, trades restantes | ⏳ PENDIENTE |
 
 ---
 
-### 4. ESTRUCTURAS DE DATOS PRINCIPALES (VERSIÓN 1.7 - COMPLETAS)
+### 4. ESTRUCTURAS DE DATOS PRINCIPALES (VERSIÓN 1.8 - COMPLETAS)
 
-#### 4.1 Enumeraciones (Versión 1.7 - Completas)
+#### 4.1 Enumeraciones (Versión 1.8 - Completas)
 
 ```cpp
 //+------------------------------------------------------------------+
-//| Enumeraciones Globales (v1.7)                                    |
+//| Enumeraciones Globales (v1.8)                                    |
 //+------------------------------------------------------------------+
 
 enum ENUM_EA_STATE {
@@ -355,7 +356,7 @@ enum ENUM_KILL_ZONE {
     KZ_NONE                              // Ninguna
 };
 
-//--- Enumeraciones de Mes 8 (Day Trading) ---
+//--- Enumeraciones de Mes 8 (Day Trading)
 enum ENUM_INTRADAY_PROFILE {
     PROFILE_NORMAL_BUY,                  // Normal Buy
     PROFILE_NORMAL_SELL,                 // Normal Sell
@@ -388,7 +389,7 @@ enum ENUM_DAY_STATUS {
     DAY_COMPLETED                        // Completado
 };
 
-//--- Enumeraciones de Mes 9 (Scalping) ---
+//--- Enumeraciones de Mes 9 (Scalping)
 enum ENUM_PRICE_ENGINE_MODEL {
     MODEL_OFFSET_ACCUMULATION,           // Offset Accumulation (buy)
     MODEL_RE_ACCUMULATION,               // Re-Accumulation (buy)
@@ -408,7 +409,7 @@ enum ENUM_SCALP_STATUS {
     SCALP_PAUSED                         // Pausado
 };
 
-//--- Enumeraciones de Mes 10 (Multi-Asset, Stocks) ---
+//--- Enumeraciones de Mes 10 (Multi-Asset, Stocks)
 enum ENUM_ASSET_CLASS {
     ASSET_BONDS,                         // Bonos
     ASSET_COMMODITIES,                   // Materias Primas
@@ -451,7 +452,7 @@ enum ENUM_STOCK_STATUS {
     STOCK_STOP_HIT                       // Stop alcanzado
 };
 
-//--- Enumeraciones de Mes 11 (Mega Trades) ---
+//--- Enumeraciones de Mes 11 (Mega Trades)
 enum ENUM_MEGA_SCENARIO {
     SCENARIO_BASE,                       // Caso base
     SCENARIO_BULL,                       // Caso alcista
@@ -470,7 +471,7 @@ enum ENUM_MEGA_STATUS {
     MEGA_EXPIRED                         // Expirado
 };
 
-//--- Enumeraciones de Mes 12 (Trading Plan) ---
+//--- Enumeraciones de Mes 12 (Trading Plan)
 enum ENUM_NEWS_IMPACT {
     IMPACT_LOW,                          // Bajo
     IMPACT_MEDIUM,                       // Medio
@@ -478,7 +479,7 @@ enum ENUM_NEWS_IMPACT {
     IMPACT_EXTREME                       // Extremo
 };
 
-//--- Enumeraciones de Bonus Hunter 🆕 ---
+//--- Enumeraciones de Bonus Hunter 🆕
 enum ENUM_BONUS_STATUS {
     BONUS_INACTIVE,                      // Inactivo
     BONUS_SCANNING,                      // Escaneando
@@ -490,7 +491,7 @@ enum ENUM_BONUS_STATUS {
     BONUS_FAILED                         // Fallido
 };
 
-//--- Enumeraciones de Licencia ---
+//--- Enumeraciones de Licencia
 enum ENUM_LICENSE_TYPE {
     LIC_TYPE_NONE,                       // Sin licencia
     LIC_TYPE_DEMO,                       // Licencia de prueba (30 días)
@@ -498,7 +499,7 @@ enum ENUM_LICENSE_TYPE {
     LIC_TYPE_COMMERCIAL                  // Licencia comercial (múltiples cuentas)
 };
 
-//--- Niveles de logging ---
+//--- Niveles de logging
 enum ENUM_LOG_LEVEL {
     LOG_ERROR,                           // Solo errores
     LOG_WARNING,                         // Errores y advertencias
@@ -510,12 +511,55 @@ enum ENUM_LOG_LEVEL {
 
 ---
 
-#### 4.2 Estructuras de Datos (Versión 1.7 - Completas)
+#### 4.2 Estructuras de Datos (Versión 1.8 - Completas)
 
 ```cpp
 //+------------------------------------------------------------------+
-//| Estructuras de Datos (v1.7 - Completas)                          |
+//| Estructuras de Datos (v1.8 - Completas)                          |
 //+------------------------------------------------------------------+
+
+//--- RF-851: Estado de una clase de activo (Multi-Asset - Mes 10) 🆕
+struct AssetClassState {
+    string           className;           // "Bonds", "Commodities", "Currencies", "Stocks"
+    ENUM_BIAS        bias;                // Bullish/Bearish/Neutral
+    double           trendStrength;       // 0-100
+    double           momentum;            // -100 a 100
+    bool             isTrending;
+    bool             isConsolidating;
+    bool             isReversing;
+    double           correlationWithRisk;
+    double           priceChange;         // % cambio en 20 días
+    double           volatility;          // ATR / Precio * 100
+    datetime         lastUpdate;
+};
+
+//--- RF-869: Rotación de Activos (Multi-Asset - Mes 10) 🆕
+struct AssetRotationData {
+    string           fromAsset;
+    string           toAsset;
+    double           rotationStrength;
+    datetime         rotationStart;
+    datetime         rotationEnd;
+    bool             isActive;
+};
+
+//--- RF-850/857: Estructura para datos Multi-Asset (AMPLIADA) 🆕
+struct MultiAssetData {
+    AssetClassState      bonds;                 // Estado de Bonos
+    AssetClassState      commodities;           // Estado de Materias Primas
+    AssetClassState      currencies;            // Estado de Divisas
+    AssetClassState      stocks;                // Estado de Acciones
+    ENUM_RISK_ENVIRONMENT riskEnvironment;      // Entorno de riesgo
+    bool                  isRiskOn;             // Flag Risk On
+    bool                  isRiskOff;            // Flag Risk Off
+    bool                  isSymmetrical;        // Simetría detectada
+    bool                  isDecoupled;          // Desacoplamiento detectado
+    string                leadershipAsset;      // Clase líder
+    int                   alignmentScore;       // Score de alineación 0-100
+    double                riskScore;            // Score de riesgo 0-100
+    double                intermarketCorrelationMatrix[4][4];  // Matriz de correlación 4x4
+    datetime              lastUpdate;           // Última actualización
+};
 
 //--- Estructuras Básicas ---
 struct OrderBlock {
@@ -767,7 +811,7 @@ struct Signal {
     bool isConfirmed;
 };
 
-//--- Estructuras de Day Trading ---
+//--- Estructuras de Day Trading
 struct DayTradingState {
     datetime dayStart;
     datetime dayEnd;
@@ -787,68 +831,55 @@ struct DayTradingState {
     double dailyPipsTarget;
 };
 
-//--- Estructuras de Multi-Asset ---
-struct AssetClassState {
-    string className;
-    ENUM_BIAS bias;
-    double trendStrength;
-    double momentum;
-    bool isTrending;
-    bool isConsolidating;
-    bool isReversing;
-    double correlationWithRisk;
+//--- Estructuras de COT
+struct COTData {
+    string           symbol;
+    double           commercialNet;
+    double           commercialHigh12M;
+    double           commercialLow12M;
+    double           midPoint;
+    bool             isBuyProgram;
+    bool             isSellProgram;
+    double           hedgingNodule;
+    ENUM_BIAS        commercialBias;
+    datetime         lastUpdate;
 };
 
-struct MultiAssetData {
-    AssetClassState bonds;
-    AssetClassState commodities;
-    AssetClassState currencies;
-    AssetClassState stocks;
-    bool isRiskOn;
-    bool isRiskOff;
-    bool isSymmetrical;
-    bool isDecoupled;
-    string leadershipAsset;
-    int alignmentScore;
-    double riskScore;
-    datetime lastUpdate;
+//--- Estructuras de COT Extended
+struct COTExtendedData {
+    string           symbol;
+    double           commercialNet;
+    double           commercialHigh12M;
+    double           commercialLow12M;
+    double           midPoint;
+    bool             isBuyProgram;
+    bool             isSellProgram;
+    bool             isHedgingProgram;
+    double           hedgingNodule;
+    ENUM_BIAS        commercialBias;
+    bool             isExtreme;
+    bool             isDivergence;
+    double           buyHedgeLevel;
+    double           sellHedgeLevel;
+    double           extremeLevel;
+    double           divergenceScore;
+    datetime         lastUpdate;
 };
 
-//--- Estructuras de COT Extended ---
-struct COTDetailedData {
-    string symbol;
-    double commercialNetPosition;
-    double commercialHigh12M;
-    double commercialLow12M;
-    double midPoint;
-    double buyProgramThreshold;
-    double sellProgramThreshold;
-    bool isBuyProgram;
-    bool isSellProgram;
-    bool isHedgingProgram;
-    double hedgingNodule;
-    ENUM_BIAS commercialBias;
-    datetime lastUpdate;
+//--- Estructuras de Open Interest
+struct OIData {
+    string           symbol;
+    double           currentOI;
+    double           previousOI;
+    double           changePercent;
+    bool             isIncreasing;
+    bool             isDecreasing;
+    double           seasonalAverage;
+    bool             isSmartMoneyFootprint;
+    datetime         lastUpdate;
 };
 
-//--- Estructuras de Relative Strength ---
-struct RelativeStrengthData {
-    string symbol;
-    double strengthScore;
-    double weaknessScore;
-    ENUM_BIAS bias;
-    bool isHigherLow;
-    bool isLowerHigh;
-    bool isAccumulating;
-    bool isDistributing;
-    bool isLeadershipMarket;
-    bool isSympatheticRally;
-    bool isSympatheticDecline;
-    string commodityGroup;
-    datetime lastUpdate;
-};
-
-//--- Estructuras de Premium vs Carrying Charge ---
+//--- Estructuras de Premium vs Carrying Charge
 struct PremiumCarryData {
     string symbol;
     double nearbyPrice;
@@ -863,24 +894,7 @@ struct PremiumCarryData {
     datetime lastUpdate;
 };
 
-//--- Estructuras de Open Interest Extended ---
-struct OpenInterestDetailedData {
-    string symbol;
-    double currentOI;
-    double previousOI;
-    double seasonalAverage;
-    double oiChange;
-    double oiChangePercent;
-    bool isAboveSeasonalAvg;
-    bool isBelowSeasonalAvg;
-    bool isIncreasingSignificantly;
-    bool isDecreasingSignificantly;
-    bool isSmartMoneyFootprint;
-    ENUM_BIAS oiBias;
-    datetime lastUpdate;
-};
-
-//--- Estructuras de Stock Trading ---
+//--- Estructuras de Stock Trading
 struct StockData {
     string symbol;
     double currentEarningsGrowth;
@@ -898,13 +912,10 @@ struct StockData {
     double entryLevel;
     double stopLevel;
     double targetLevel;
-    string optionType;
-    double optionStrike;
-    int optionExpiryDays;
     datetime lastUpdate;
 };
 
-//--- Estructuras de Mega Trades ---
+//--- Estructuras de Mega Trades
 struct MegaTradeData {
     string symbol;
     datetime entryDate;
@@ -925,7 +936,7 @@ struct MegaTradeData {
     datetime lastUpdate;
 };
 
-//--- Estructuras de Trading Plan ---
+//--- Estructuras de Trading Plan
 struct TradingPlanData {
     double dailyLossLimit;
     double weeklyLossLimit;
@@ -957,71 +968,7 @@ struct JournalEntry {
     string ruleViolated;
 };
 
-//--- Estructuras de Bond Trading ---
-struct BondData {
-    string symbol;
-    double openingRangeHigh;
-    double openingRangeLow;
-    double amSessionHigh;
-    double amSessionLow;
-    double pmSessionHigh;
-    double pmSessionLow;
-    bool isConsolidationDay;
-    bool isAuctionDay;
-    bool isRunner;
-    bool isAMTrending;
-    bool isPMContinuation;
-    bool isPMReversal;
-    ENUM_BIAS amBias;
-    ENUM_BIAS pmBias;
-    datetime lastUpdate;
-};
-
-//--- Estructuras de Index Trading ---
-struct IndexData {
-    string symbol;
-    double openingRangeHigh;
-    double openingRangeLow;
-    double amTrendHigh;
-    double amTrendLow;
-    double pmTrendHigh;
-    double pmTrendLow;
-    ENUM_INDEX_PATTERN pattern;
-    int patternScore;
-    bool isPatternConfirmed;
-    double entryLevel;
-    double stopLevel;
-    double targetLevel;
-    ENUM_BIAS expectedBias;
-    datetime lastUpdate;
-};
-
-//--- Estructuras de Bonus Hunter 🆕 ---
-struct BonusHunterData {
-    bool isActive;
-    double totalVolume;
-    double requiredVolume;
-    double currentProfit;
-    double minProfitRequired;
-    int tradesCount;
-    int maxTrades;
-    datetime startDate;
-    datetime expiryDate;
-    ENUM_BONUS_STATUS status;
-};
-
-struct VolumeTrackerData {
-    double dailyVolume;
-    double weeklyVolume;
-    double monthlyVolume;
-    double totalVolume;
-    int dailyTrades;
-    int weeklyTrades;
-    int monthlyTrades;
-    datetime lastUpdate;
-};
-
-//--- Estructuras Generales ---
+//--- Estructuras Generales
 struct DataRange {
     double range20;
     double range40;
@@ -1097,29 +1044,54 @@ struct Statistics {
     double avgRR;
     double totalRMultiple;
 };
+
+//--- Estructuras de Bonus Hunter 🆕
+struct BonusHunterData {
+    bool isActive;
+    double totalVolume;
+    double requiredVolume;
+    double currentProfit;
+    double minProfitRequired;
+    int tradesCount;
+    int maxTrades;
+    datetime startDate;
+    datetime expiryDate;
+    ENUM_BONUS_STATUS status;
+};
+
+struct VolumeTrackerData {
+    double dailyVolume;
+    double weeklyVolume;
+    double monthlyVolume;
+    double totalVolume;
+    int dailyTrades;
+    int weeklyTrades;
+    int monthlyTrades;
+    datetime lastUpdate;
+};
 ```
 
 ---
 
-### 5. PLAN DE IMPLEMENTACIÓN POR FASES (VERSIÓN 1.7 - COMPLETO)
+### 5. PLAN DE IMPLEMENTACIÓN POR FASES (VERSIÓN 1.8 - COMPLETO)
 
 | Fase | Dominio | Módulo | RFs | Duración Estimada | Entregable | Estado |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Fase 1** | Core | CConstants, CUtils, CConfig | RF-042 a RF-045 | 1 semana | Base del proyecto | ✅ COMPLETO |
 | **Fase 2** | Core | CLogger, CLicense, CPanel | RF-036 a RF-050 | 1 semana | Módulos de soporte | ✅ COMPLETO |
 | **Fase 3** | Core | CHunterIPDA | Coordinación general | 1 semana | Clase principal | ✅ COMPLETO |
-| **Fase 4** | Analysis | CDataRange | RF-222 a RF-248 | 2 semanas | IPDA Data Ranges | ⏳ PENDIENTE |
-| **Fase 5** | Analysis | CSeasonal | RF-641 a RF-660 | 2 semanas | Tendencias estacionales | ⏳ PENDIENTE |
-| **Fase 6** | Analysis | CMacroAnalyzer | RF-254 a RF-289 | 2 semanas | Análisis macro | ⏳ PENDIENTE |
-| **Fase 7** | Analysis | CContext | RF-058 a RF-149, RF-370, RF-371 | 2 semanas | Análisis de contexto | ⏳ PENDIENTE |
-| **Fase 8** | Analysis | CDetector (básico) | RF-001 a RF-010 | 2 semanas | Detección básica | ⏳ PENDIENTE |
-| **Fase 9** | Analysis | CDetector (avanzado) | RF-150 a RF-221 | 2 semanas | Detección completa | ⏳ PENDIENTE |
-| **Fase 10** | Analysis | CCOTAnalyzer | RF-601 a RF-620 | 2 semanas | Análisis COT | ⏳ PENDIENTE |
-| **Fase 11** | Analysis | COIAnalyzer | RF-681 a RF-700 | 2 semanas | Análisis Open Interest | ⏳ PENDIENTE |
-| **Fase 12** | Analysis | CRelStrength | RF-621 a RF-640 | 2 semanas | Fortaleza relativa | ⏳ PENDIENTE |
-| **Fase 13** | Analysis | CPremiumCarry | RF-661 a RF-680 | 2 semanas | Premium vs Carrying Charge | ⏳ PENDIENTE |
-| **Fase 14** | Analysis | CCOExtended | RF-601 a RF-620 (extendido) | 2 semanas | COT Extended | ⏳ PENDIENTE |
-| **Fase 15** | Analysis | CMultiAsset | RF-850 a RF-875 | 2 semanas | Multi-Asset Analysis | ⏳ PENDIENTE |
+| **Fase 4** | Analysis | CDataRange | RF-222 a RF-248 | 2 semanas | IPDA Data Ranges | ✅ COMPLETO |
+| **Fase 5** | Analysis | CSeasonal | RF-641 a RF-660 | 2 semanas | Tendencias estacionales | ✅ COMPLETO |
+| **Fase 6** | Analysis | CMacroAnalyzer | RF-254 a RF-289 | 2 semanas | Análisis macro | ✅ COMPLETO |
+| **Fase 7** | Analysis | CContext | RF-058 a RF-149, RF-370, RF-371 | 2 semanas | Análisis de contexto | ✅ COMPLETO |
+| **Fase 8** | Analysis | CDetector (básico) | RF-001 a RF-010 | 2 semanas | Detección básica | ✅ COMPLETO |
+| **Fase 9** | Analysis | CDetector (avanzado) | RF-150 a RF-221 | 2 semanas | Detección completa | ✅ COMPLETO |
+| **Fase 10** | Analysis | CCOTAnalyzer | RF-601 a RF-620 | 2 semanas | Análisis COT | ✅ COMPLETO |
+| **Fase 11** | Analysis | COIAnalyzer | RF-681 a RF-700 | 2 semanas | Análisis Open Interest | ✅ COMPLETO |
+| **Fase 12** | Analysis | CRelStrength | RF-621 a RF-640 | 2 semanas | Fortaleza relativa | ✅ COMPLETO |
+| **Fase 13** | Analysis | CPremiumCarry | RF-661 a RF-680 | 2 semanas | Premium vs Carrying Charge | ✅ COMPLETO |
+| **Fase 14** | Analysis | CCOExtended | RF-601 a RF-620 (extendido) | 2 semanas | COT Extended | ✅ COMPLETO |
+| **Fase 15** | Analysis | CMultiAsset | RF-850 a RF-875 | 2 semanas | Multi-Asset Analysis | ✅ COMPLETO |
 | **Fase 16** | Execution | CRiskManager | RF-020 a RF-031, RF-052 a RF-057 | 2 semanas | Gestión de riesgo | ⏳ PENDIENTE |
 | **Fase 17** | Execution | CEntryManager | RF-306 a RF-315 | 2 semanas | Gestión de entradas | ⏳ PENDIENTE |
 | **Fase 18** | Execution | CExecutor | RF-011 a RF-019 | 2 semanas | Ejecución de órdenes | ⏳ PENDIENTE |
@@ -1135,24 +1107,24 @@ struct Statistics {
 | **Fase 28** | TradingPlan | CTradingPlan | RF-950 a RF-975 | 2 semanas | Trading Plan | ⏳ PENDIENTE |
 | **Fase 29** | BonusHunter | CBonusHunter | RF-1000 a RF-1014 | 2 semanas | Bonus Hunter | ⏳ PENDIENTE |
 | **Fase 30** | - | Pruebas de integración | Todos los RFs | 2 semanas | EA completo | ⏳ PENDIENTE |
-| **TOTAL** | | | | **~41 semanas (~10 meses)** | | |
+| **TOTAL** | | | | **~10 meses** | | |
 
 ---
 
-## ✅ DOCUMENTO DE ARQUITECTURA - COMPLETO (VERSIÓN 1.7)
+## ✅ DOCUMENTO DE ARQUITECTURA - COMPLETO (VERSIÓN 1.8)
 
 | Sección | Estado |
 | :--- | :--- |
 | 1. Visión General | ✅ COMPLETO |
-| 2. Arquitectura de Componentes | ✅ COMPLETO (5 dominios, 45+ clases) |
-| 3. Descripción de Componentes por Dominio | ✅ COMPLETO (Core ✅, Analysis ⏳, Execution ⏳, Models ⏳, TradingPlan ⏳, BonusHunter ⏳) |
+| 2. Arquitectura de Componentes | ✅ COMPLETO (6 dominios, 41+ clases) |
+| 3. Descripción de Componentes por Dominio | ✅ COMPLETO (Core ✅, Analysis ✅, Execution ⏳, Models ⏳, TradingPlan ⏳, BonusHunter ⏳) |
 | 4. Estructuras de Datos | ✅ COMPLETO (TODAS las estructuras) |
-| 5. Plan de Implementación | ✅ COMPLETO (30 fases, ~41 semanas) |
-| **DOCUMENTO DE ARQUITECTURA COMPLETO (v1.7)** | ✅ **LISTO** |
+| 5. Plan de Implementación | ✅ COMPLETO (30 fases, ~10 meses) |
+| **DOCUMENTO DE ARQUITECTURA COMPLETO (v1.8)** | ✅ **LISTO** |
 
 ---
 
-## 📊 Resumen Final de Arquitectura v1.7
+## 📊 Resumen Final de Arquitectura v1.8
 
 | Elemento | Cantidad |
 | --- | --- |
@@ -1163,11 +1135,12 @@ struct Statistics {
 | **Fases de Implementación** | 30 |
 | **Estructuras de Datos** | 75+ |
 | **Enumeraciones** | 32+ |
-| **Módulos Entregados** | 7 (Dominio Core 100%) |
-| **Progreso Total** | 17.5% |
+| **Módulos Entregados** | 18 (Core 100%, Analysis 100%) |
+| **Progreso Total** | 44% |
 
 ---
 
-**El Documento de Arquitectura completo (v1.7) está ahora 100% completo con todas las optimizaciones aplicadas y el estado de implementación actualizado.**
+**El Documento de Arquitectura completo (v1.8) está ahora 100% completo con todas las optimizaciones aplicadas y el estado de implementación actualizado.**
 
-**¿Listo para continuar con la Fase 8: CDataRange (Dominio Analysis)?**
+**¿Listo para continuar con la Fase 16: CRiskManager (Dominio Execution)?**
+```
