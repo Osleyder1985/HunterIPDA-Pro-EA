@@ -659,12 +659,31 @@ struct JournalEntry {
     datetime           timestamp;
     string             symbol;
     ENUM_TRADING_MODEL model;
-    string             tradeType;     // "Entry", "Exit", "Emotion", "Error", "Lesson"
+    string             tradeType;     // "Entry", "Exit", "Emotion", "Error", "Lesson", "WIN", "LOSS"
     string             description;
     double             pnl;
-    string             emotion;       // "Calm", "FOMO", "Fear", "Greed", "Frustration"
+    string             emotion;       // "Calm", "FOMO", "Fear", "Greed", "Frustration", "REVENGE", "OVERCONFIDENCE", "ANALYSIS_PARALYSIS"
     bool               ruleViolation;
     string             ruleViolated;
+    double             entryPrice;    // 🆕 Precio de entrada
+    double             exitPrice;     // 🆕 Precio de salida
+    double             lot;           // 🆕 Tamaño de lote
+    string             setupType;     // 🆕 Tipo de setup
+    int                qualityScore;  // 🆕 Score de calidad
+};
+
+struct EntryRecord {
+    datetime            timestamp;
+    string              symbol;
+    ENUM_TRADING_MODEL  model;
+    ENUM_ENTRY_TYPE     entryType;
+    double              price;
+    double              stopLoss;
+    double              takeProfit;
+    double              lot;
+    bool                isExecuted;
+    bool                isCancelled;
+    string              reason;
 };
 
 #endif // __CCONSTANTS_MQH__

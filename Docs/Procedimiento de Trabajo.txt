@@ -2,8 +2,8 @@
 
 ---
 
-**Versión del Documento:** 1.0.2
-**Fecha:** 21 de Julio de 2026
+**Versión del Documento:** 1.0.4
+**Fecha:** 23 de Julio de 2026
 **Estado:** ✅ APROBADO Y VIGENTE
 **Aplicable a:** Todo el desarrollo del código MQL5 del HunterIPDA Pro EA
 **Regla de Apertura de Chat:** En CADA nuevo chat que se abra, el desarrollador DEBE solicitar este documento y confirmar que lo tiene presente antes de realizar cualquier modificación al proyecto.
@@ -12,16 +12,25 @@
 
 ## 📋 ÍNDICE
 
-1. [PRINCIPIOS FUNDAMENTALES](#1-principios-fundamentales)
-2. [FLUJO DE TRABAJO ESTÁNDAR](#2-flujo-de-trabajo-estándar)
-3. [ESTÁNDAR DE CODIFICACIÓN MQL5](#3-estándar-de-codificación-mql5)
-4. [REGLAS DE ENTREGA](#4-reglas-de-entrega)
-5. [PLAN DE IMPLEMENTACIÓN POR FASES](#5-plan-de-implementación-por-fases)
-6. [MECANISMO DE VALIDACIÓN](#6-mecanismo-de-validación)
-7. [GESTIÓN DE DEPENDENCIAS](#7-gestión-de-dependencias)
-8. [MANEJO DE ERRORES Y LOGGING](#8-manejo-de-errores-y-logging)
-9. [ESTADO DE AVANCE Y DOCUMENTACIÓN](#9-estado-de-avance-y-documentación)
-10. [ANEXOS](#10-anexos)
+1. PRINCIPIOS FUNDAMENTALES
+2. FLUJO DE TRABAJO ESTÁNDAR
+3. ESTÁNDAR DE CODIFICACIÓN MQL5
+   3.1 Estructura de Archivo
+   3.2 Reglas de Nomenclatura
+   3.3 Reglas de Comentarios
+   3.3.1 Estructura de Comentarios para Métodos (OBLIGATORIO)
+   3.3.2 Palabras Reservadas de MQL5 (NO USAR COMO NOMBRES DE PARÁMETROS)
+   3.3.3 Constantes Obsoletas de MQL5 (NO USAR)
+   3.4 Cabecera de Archivo con Changelog
+   3.5 Manejo de Errores
+   3.6 Estructura de Archivos del Proyecto
+4. REGLAS DE ENTREGA
+5. PLAN DE IMPLEMENTACIÓN POR FASES
+6. MECANISMO DE VALIDACIÓN
+7. GESTIÓN DE DEPENDENCIAS
+8. MANEJO DE ERRORES Y LOGGING
+9. ESTADO DE AVANCE Y DOCUMENTACIÓN
+10. ANEXOS
 
 ---
 
@@ -31,37 +40,36 @@
 
 | Principio | Descripción | Aplicación |
 | :--- | :--- | :--- |
-| **Incrementalidad** | Desarrollamos funcionalidad por funcionalidad, nunca todo a la vez. Cada entrega es un módulo completo y funcional. | Una clase o grupo de clases relacionadas por entrega |
-| **Validación Continua** | Cada módulo se valida antes de pasar al siguiente. No acumulamos deuda técnica. | Revisión de RFs, compilación, verificación de dependencias |
-| **Documentación Integrada** | Cada archivo .mqh incluye su propia documentación (encabezado, descripción de métodos, ejemplos). | Documentación inline, comentarios de método |
-| **Trazabilidad** | Cada línea de código debe ser trazable a un RF específico del SRS. | Comentarios con RFs al inicio de cada método |
-| **Optimización por Diseño** | La eficiencia se diseña desde el principio, no se parchea después. | Caching, batching, timer-based execution en el diseño |
-| **Bajo Acoplamiento** | Las clases se comunican a través de interfaces bien definidas, minimizando dependencias directas. | Uso de referencias, no herencia innecesaria |
-| **Alta Cohesión** | Cada clase tiene una única responsabilidad (Single Responsibility Principle). | Una clase = una responsabilidad principal |
+| Incrementalidad | Desarrollamos funcionalidad por funcionalidad, nunca todo a la vez. Cada entrega es un módulo completo y funcional. | Una clase o grupo de clases relacionadas por entrega |
+| Validación Continua | Cada módulo se valida antes de pasar al siguiente. No acumulamos deuda técnica. | Revisión de RFs, compilación, verificación de dependencias |
+| Documentación Integrada | Cada archivo .mqh incluye su propia documentación (encabezado, descripción de métodos, ejemplos). | Documentación inline, comentarios de método |
+| Trazabilidad | Cada línea de código debe ser trazable a un RF específico del SRS. | Comentarios con RFs al inicio de cada método |
+| Optimización por Diseño | La eficiencia se diseña desde el principio, no se parchea después. | Caching, batching, timer-based execution en el diseño |
+| Bajo Acoplamiento | Las clases se comunican a través de interfaces bien definidas, minimizando dependencias directas. | Uso de referencias, no herencia innecesaria |
+| Alta Cohesión | Cada clase tiene una única responsabilidad (Single Responsibility Principle). | Una clase = una responsabilidad principal |
 
 ### 1.2 Principios de Comunicación
 
 | Principio | Descripción |
 | :--- | :--- |
-| **Entregas Claras** | Cada entrega incluye: código fuente, RFs cubiertos, dependencias, instrucciones de integración, próximos pasos |
-| **Actualización Constante** | El estado del proyecto se actualiza después de cada entrega |
-| **Preguntas Abiertas** | Se formulan preguntas claras cuando hay ambigüedad |
-| **Validación Cruzada** | Se valida contra SRS, Arquitectura y Contexto |
+| Entregas Claras | Cada entrega incluye: código fuente, RFs cubiertos, dependencias, instrucciones de integración, próximos pasos |
+| Actualización Constante | El estado del proyecto se actualiza después de cada entrega |
+| Preguntas Abiertas | Se formulan preguntas claras cuando hay ambigüedad |
+| Validación Cruzada | Se valida contra SRS, Arquitectura y Contexto |
 
 ### 1.3 Regla de Apertura de Chat
 
 | Regla | Descripción |
 | :--- | :--- |
-| **Solicitud Obligatoria** | En CADA nuevo chat que se abra, el desarrollador DEBE solicitar el Documento de Procedimiento de Trabajo. |
-| **Confirmación** | El desarrollador debe confirmar que tiene el documento presente y que lo aplicará en todas las modificaciones. |
-| **Sin Excepción** | Esta regla aplica a TODOS los nuevos chats, sin excepción. |
+| Solicitud Obligatoria | En CADA nuevo chat que se abra, el desarrollador DEBE solicitar el Documento de Procedimiento de Trabajo. |
+| Confirmación | El desarrollador debe confirmar que tiene el documento presente y que lo aplicará en todas las modificaciones. |
+| Sin Excepción | Esta regla aplica a TODOS los nuevos chats, sin excepción. |
 
 **Mensaje estándar de apertura de chat:**
 
-```
 📋 **PROCEDIMIENTO DE TRABAJO - HUNTERIPDA PRO EA**
 
-Antes de comenzar cualquier modificación al proyecto, confirmo que tengo presente el Documento de Procedimiento de Trabajo (v1.0.2) y que aplicaré todas sus reglas:
+Antes de comenzar cualquier modificación al proyecto, confirmo que tengo presente el Documento de Procedimiento de Trabajo (v1.0.4) y que aplicaré todas sus reglas:
 
 ✅ Principios Fundamentales (Incrementalidad, Validación Continua, Documentación Integrada, Trazabilidad, Optimización por Diseño, Bajo Acoplamiento, Alta Cohesión)
 ✅ Flujo de Trabajo Estándar (7 pasos)
@@ -76,7 +84,6 @@ Antes de comenzar cualquier modificación al proyecto, confirmo que tengo presen
 [Se actualizará según el progreso]
 
 **¿Cómo deseas proceder?**
-```
 
 ---
 
@@ -84,84 +91,51 @@ Antes de comenzar cualquier modificación al proyecto, confirmo que tengo presen
 
 ### 2.1 Diagrama de Flujo
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    PROCEDIMIENTO ESTÁNDAR POR FASE                              │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │ 1. REVISIÓN DE REQUISITOS                                                 │  │
-│  ├───────────────────────────────────────────────────────────────────────────┤  │
-│  │ • Identificar los RFs específicos de la fase                              │  │
-│  │ • Verificar dependencias con módulos anteriores                           │  │
-│  │ • Confirmar que los RFs están completos y sin ambigüedades                │  │
-│  │ • Extraer estructura de datos necesaria del SRS                           │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                      │                                          │
-│                                      ▼                                          │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │ 2. DISEÑO DE CLASE/MÓDULO                                                 │  │
-│  ├───────────────────────────────────────────────────────────────────────────┤  │
-│  │ • Definir interfaz pública (métodos que otros módulos usarán)             │  │
-│  │ • Definir estructura interna (miembros privados)                          │  │
-│  │ • Definir estructuras de datos específicas                                │  │
-│  │ • Documentar en el propio archivo .mqh                                    │  │
-│  │ • Esquematizar dependencias con otras clases                              │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                      │                                          │
-│                                      ▼                                          │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │ 3. VERIFICACIÓN CON DOCUMENTACIÓN OFICIAL MQL5                            │  │
-│  ├───────────────────────────────────────────────────────────────────────────┤  │
-│  │ • Consultar https://www.mql5.com/en/docs                                  │  │
-│  │ • Verificar sintaxis correcta (sin ->, enums antes de structs)            │  │
-│  │ • Confirmar que el enfoque es el correcto                                 │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                      │                                          │
-│                                      ▼                                          │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │ 4. PREGUNTAR ANTES DE IMPLEMENTAR                                         │  │
-│  ├───────────────────────────────────────────────────────────────────────────┤  │
-│  │ • Preguntar si se desea crear el archivo/método/funcionalidad             │  │
-│  │ • Esperar confirmación explícita                                          │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                      │                                          │
-│                                      ▼                                          │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │ 5. IMPLEMENTACIÓN DEL CÓDIGO                                              │  │
-│  ├───────────────────────────────────────────────────────────────────────────┤  │
-│  │ • Escribir el código siguiendo el estándar de codificación                │  │
-│  │ • Incluir comentarios explicativos para lógica compleja                   │  │
-│  │ • Asegurar que cada método hace UNA cosa (SRP)                            │  │
-│  │ • Máximo 200 líneas por método (si excede, refactorizar)                  │  │
-│  │ • Incluir manejo de errores en cada método                                │  │
-│  │ • Incluir entrada en CHANGELOG                                            │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                      │                                          │
-│                                      ▼                                          │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │ 6. REVISIÓN Y VALIDACIÓN                                                  │  │
-│  ├───────────────────────────────────────────────────────────────────────────┤  │
-│  │ • Validar que el código compila en MQL5                                   │  │
-│  │ • Verificar que todos los RFs de la fase están cubiertos                  │  │
-│  │ • Verificar que no hay dependencias circulares                            │  │
-│  │ • Verificar manejo de errores                                             │  │
-│  │ • Verificar consistencia con la arquitectura definida                     │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                      │                                          │
-│                                      ▼                                          │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │ 7. ENTREGA Y ACTUALIZACIÓN DE DOCUMENTACIÓN                               │  │
-│  ├───────────────────────────────────────────────────────────────────────────┤  │
-│  │ • Entregar código fuente (solo si se solicita)                            │  │
-│  │ • Actualizar el Contexto de la Conversación                               │  │
-│  │ • Marcar los RFs completados                                              │  │
-│  │ • Resumir lo entregado y lo pendiente                                     │  │
-│  │ • Sugerir próximos pasos                                                  │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+PROCEDIMIENTO ESTÁNDAR POR FASE
+
+Paso 1: REVISIÓN DE REQUISITOS
+- Identificar los RFs específicos de la fase
+- Verificar dependencias con módulos anteriores
+- Confirmar que los RFs están completos y sin ambigüedades
+- Extraer estructura de datos necesaria del SRS
+
+Paso 2: DISEÑO DE CLASE/MÓDULO
+- Definir interfaz pública (métodos que otros módulos usarán)
+- Definir estructura interna (miembros privados)
+- Definir estructuras de datos específicas
+- Documentar en el propio archivo .mqh
+- Esquematizar dependencias con otras clases
+
+Paso 3: VERIFICACIÓN CON DOCUMENTACIÓN OFICIAL MQL5
+- Consultar https://www.mql5.com/en/docs
+- Verificar sintaxis correcta (sin ->, enums antes de structs)
+- Confirmar que el enfoque es el correcto
+
+Paso 4: PREGUNTAR ANTES DE IMPLEMENTAR
+- Preguntar si se desea crear el archivo/método/funcionalidad
+- Esperar confirmación explícita
+
+Paso 5: IMPLEMENTACIÓN DEL CÓDIGO
+- Escribir el código siguiendo el estándar de codificación
+- Incluir comentarios explicativos para lógica compleja
+- Asegurar que cada método hace UNA cosa (SRP)
+- Máximo 200 líneas por método (si excede, refactorizar)
+- Incluir manejo de errores en cada método
+- Incluir entrada en CHANGELOG
+
+Paso 6: REVISIÓN Y VALIDACIÓN
+- Validar que el código compila en MQL5
+- Verificar que todos los RFs de la fase están cubiertos
+- Verificar que no hay dependencias circulares
+- Verificar manejo de errores
+- Verificar consistencia con la arquitectura definida
+
+Paso 7: ENTREGA Y ACTUALIZACIÓN DE DOCUMENTACIÓN
+- Entregar código fuente (solo si se solicita)
+- Actualizar el Contexto de la Conversación
+- Marcar los RFs completados
+- Resumir lo entregado y lo pendiente
+- Sugerir próximos pasos
 
 ### 2.2 Descripción Detallada de Cada Paso
 
@@ -197,28 +171,28 @@ Antes de comenzar cualquier modificación al proyecto, confirmo que tengo presen
 
 | Fuente | Descripción |
 | :--- | :--- |
-| **Documentación oficial MQL5** | https://www.mql5.com/en/docs |
-| **Reglas críticas de sintaxis** | No usar `->` para acceder a miembros; usar `.` |
-| **Estructura de archivos** | Usar `#ifndef`, `#define`, `#endif` como guards |
-| **Orden de includes** | Sistema → Librería → DataTypes → Utils → Componentes |
-| **Manejo de errores** | Verificar `GetLastError()` y retornos de funciones |
+| Documentación oficial MQL5 | https://www.mql5.com/en/docs |
+| Reglas críticas de sintaxis | No usar -> para acceder a miembros; usar . |
+| Estructura de archivos | Usar #ifndef, #define, #endif como guards |
+| Orden de includes | Sistema → Librería → DataTypes → Utils → Componentes |
+| Manejo de errores | Verificar GetLastError() y retornos de funciones |
 
 **Reglas críticas de MQL5 a respetar:**
 
 | Regla | Descripción | Ejemplo |
 | :--- | :--- | :--- |
-| **NO usar `->`** | Nunca usar puntero sintaxis `->`; siempre usar `.` | `m_utils.Log()` en lugar de `m_utils->Log()` |
-| **Referencias solo para arrays** | No usar referencias para variables locales simples | `void Function(int &arr[])` OK; `void Function(int &value)` NO |
-| **Enums antes de estructuras** | Definir enums ANTES de las estructuras que los usan | `enum ENUM_EXIT_REASON` antes de `struct ManagedPosition` |
-| **Objetos: declarar con `*`, acceder con `.`** | Los punteros se declaran con `*` pero se accede con `.` | `CConfig* m_config; m_config.Init();` |
-| **Verificar `NULL` antes de usar** | Siempre validar punteros antes de usarlos | `if(m_utils != NULL) m_utils.Log(...)` |
+| NO usar -> | Nunca usar puntero sintaxis ->; siempre usar . | m_utils.Log() en lugar de m_utils->Log() |
+| Referencias solo para arrays | No usar referencias para variables locales simples | void Function(int &arr[]) OK; void Function(int &value) NO |
+| Enums antes de estructuras | Definir enums ANTES de las estructuras que los usan | enum ENUM_EXIT_REASON antes de struct ManagedPosition |
+| Objetos: declarar con *, acceder con . | Los punteros se declaran con * pero se accede con . | CConfig* m_config; m_config.Init(); |
+| Verificar NULL antes de usar | Siempre validar punteros antes de usarlos | if(m_utils != NULL) m_utils.Log(...) |
 
 #### Paso 4: Preguntar Antes de Implementar
 
 **Objetivo:** Asegurar que el usuario está alineado con la implementación.
 
 **Preguntas obligatorias:**
-1. ¿Desea crear el archivo `[Nombre].mqh`?
+1. ¿Desea crear el archivo [Nombre].mqh?
 2. ¿Quiere ver el resumen de la entrega o el código completo?
 3. ¿Alguna preferencia específica para la estructura?
 
@@ -414,40 +388,171 @@ void CNombre::ResetState() {
 
 | Elemento | Regla | Ejemplo |
 | :--- | :--- | :--- |
-| **Clases** | Prefijo `C` + PascalCase | `CConfig`, `CDetector`, `CBonusHunter` |
-| **Métodos** | PascalCase | `CalculateLotSize()`, `DetectFVG()` |
-| **Variables miembro** | Prefijo `m_` + camelCase | `m_config`, `m_isInitialized` |
-| **Variables locales** | camelCase | `lotSize`, `stopDistance` |
-| **Constantes** | MAYÚSCULAS + guión bajo | `MAX_SPREAD_SCALPING`, `RISK_POSITION_DEFAULT` |
-| **Enumeraciones** | Prefijo `ENUM_` + MAYÚSCULAS | `ENUM_BIAS`, `ENUM_EA_STATE` |
-| **Estructuras** | PascalCase | `OrderBlock`, `Signal`, `MegaTradeData` |
-| **Archivos** | Misma que la clase | `CConfig.mqh`, `CDetector.mqh` |
+| Clases | Prefijo C + PascalCase | CConfig, CDetector, CBonusHunter |
+| Métodos | PascalCase | CalculateLotSize(), DetectFVG() |
+| Variables miembro | Prefijo m_ + camelCase | m_config, m_isInitialized |
+| Variables locales | camelCase | lotSize, stopDistance |
+| Constantes | MAYÚSCULAS + guión bajo | MAX_SPREAD_SCALPING, RISK_POSITION_DEFAULT |
+| Enumeraciones | Prefijo ENUM_ + MAYÚSCULAS | ENUM_BIAS, ENUM_EA_STATE |
+| Estructuras | PascalCase | OrderBlock, Signal, MegaTradeData |
+| Archivos | Misma que la clase | CConfig.mqh, CDetector.mqh |
 
 ### 3.3 Reglas de Comentarios
 
 | Tipo | Formato | Ejemplo |
 | :--- | :--- | :--- |
-| **Línea** | `//--- Texto` | `//--- Calcular tamaño de lote` |
-| **Bloque** | `/* ... */` | `/* Lógica compleja de Fibonacci */` |
-| **Documentación de método** | `//--- Descripción` + `//--- Parámetros:` + `//--- Retorno:` | Ver ejemplo abajo |
-| **RF Trazabilidad** | `//--- RF-XXX: Descripción` | `//--- RF-027: Drawdown máximo` |
+| Línea | //--- Texto | //--- Calcular tamaño de lote |
+| Bloque | /* ... */ | /* Lógica compleja de Fibonacci */ |
+| Documentación de método | Ver sección 3.3.1 | Ver sección 3.3.1 |
+| RF Trazabilidad | //--- RF-XXX: Descripción | //--- RF-027: Drawdown máximo |
 
-**Ejemplo de documentación de método:**
+### 3.3.1 Estructura de Comentarios para Métodos (OBLIGATORIO)
+
+#### IMPORTANTE: Esta sección es de cumplimiento OBLIGATORIO para TODOS los métodos públicos y críticos.
+
+Todos los métodos públicos y críticos **DEBEN** tener comentarios estructurados que expliquen:
+
+| Elemento | Descripción | Obligatorio |
+| :--- | :--- | :--- |
+| **RF** | Número de RF asociado al método | ✅ SÍ |
+| **DESCRIPCIÓN** | Qué hace el método (no cómo lo hace) | ✅ SÍ |
+| **CONTEXTO ICT** | Concepto de la metodología ICT que aplica | ✅ SÍ |
+| **SEÑAL** | Significado del valor de retorno | ✅ SÍ |
+| **USO PRÁCTICO** | Cuándo y cómo usar el método | ✅ SÍ |
+
+#### Estructura Obligatoria:
 
 ```cpp
-//--- RF-020: Stop Loss Dinámico
-//--- Calcula el stop loss basado en la estructura de mercado
-//--- Parámetros:
-//---   - signal: Señal de trading con la estructura de entrada
-//---   - symbol: Símbolo a operar
-//--- Retorno:
-//---   - double: Precio del stop loss (0.0 si error)
-double CalculateDynamicStopLoss(Signal &signal, string symbol);
+//+------------------------------------------------------------------+
+//| RF-XXX: [Nombre del Requisito]                                   |
+//+------------------------------------------------------------------+
+//| DESCRIPCIÓN:                                                      |
+//| [Explicación clara de qué hace el método]                        |
+//|                                                                  |
+//| CONTEXTO ICT:                                                    |
+//| [Concepto específico de la metodología ICT que aplica]           |
+//|                                                                  |
+//| SEÑAL:                                                           |
+//| - [Valor1]: [Significado del valor 1]                           |
+//| - [Valor2]: [Significado del valor 2]                           |
+//|                                                                  |
+//| USO PRÁCTICO:                                                    |
+//| [Cuándo y cómo usar este método en el EA]                       |
+//+------------------------------------------------------------------+
+```
+
+#### Ejemplo de Comentario CORRECTO:
+
+```cpp
+//+------------------------------------------------------------------+
+//| RF-608: Buy Hedge (COT) Detection                                |
+//+------------------------------------------------------------------+
+//| DESCRIPCIÓN:                                                      |
+//| Detecta cuando los comerciales (smart money) compran             |
+//| agresivamente dentro de un programa de venta (Sell Program).     |
+//|                                                                  |
+//| CONTEXTO ICT:                                                    |
+//| En la metodología ICT, cuando el mercado está en tendencia       |
+//| bajista (Sell Program), los comerciales aprovechan para          |
+//| acumular posiciones largas. Esto es una "Buy Hedge".            |
+//|                                                                  |
+//| SEÑAL:                                                           |
+//| - True: Los comerciales están acumulando en un mercado bajista  |
+//| - False: No hay señal de acumulación                            |
+//|                                                                  |
+//| USO PRÁCTICO:                                                    |
+//| Confirmar entradas largas cuando el precio está en zonas de     |
+//| descuento y los comerciales están comprando (Buy Hedge).        |
+//+------------------------------------------------------------------+
+bool IsBuyHedge() const { return m_isBuyHedge; }
+```
+
+#### Ejemplo de Comentario INCORRECTO (NO PERMITIDO):
+
+```cpp
+//--- RF-608: Buy Hedge (COT) Detection   // ❌ NO EXPLICA NADA
+bool IsBuyHedge() const { return m_isBuyHedge; }
+```
+
+#### Ejemplo de Comentario INCORRECTO (NO PERMITIDO):
+
+```cpp
+//--- Cargar datos COT Extended   // ❌ SOLO REPITE EL NOMBRE
+bool LoadCOTExtendedData(string symbol) { ... }
+```
+
+#### Reglas de Comentarios:
+
+| Regla | Descripción |
+| :--- | :--- |
+| **RF obligatorio** | Todo método debe tener su RF asociado |
+| **Descripción clara** | Explicar qué hace, no cómo lo hace |
+| **Contexto ICT** | Explicar el concepto de la metodología |
+| **Señal** | Explicar qué significa cada valor de retorno |
+| **Uso práctico** | Explicar cuándo y cómo usar el método |
+| **No código** | No explicar la implementación, solo el propósito |
+
+#### Checklist de Validación de Comentarios:
+
+- [ ] ¿Tiene el RF correspondiente?
+- [ ] ¿Tiene DESCRIPCIÓN clara?
+- [ ] ¿Tiene CONTEXTO ICT?
+- [ ] ¿Tiene SEÑAL con significados?
+- [ ] ¿Tiene USO PRÁCTICO?
+- [ ] ¿El comentario NO explica la implementación?
+
+### 3.3.2 Palabras Reservadas de MQL5 (NO USAR COMO NOMBRES DE PARÁMETROS)
+
+MQL5 tiene palabras reservadas que **NO** pueden ser utilizadas como nombres de parámetros, variables o identificadores. El uso de estas palabras causa errores de compilación.
+
+| Palabra | Uso en MQL5 | Ejemplo INCORRECTO | Ejemplo CORRECTO |
+| :--- | :--- | :--- | :--- |
+| **final** | Para clases que no pueden ser heredadas | `void SetLevels(int final);` | `void SetLevels(int finalLevel);` |
+| **virtual** | Para métodos virtuales | `void Process(string virtual);` | `void Process(string virtualData);` |
+| **override** | Para sobrescribir métodos | `void Check(int override);` | `void Check(int overrideValue);` |
+| **new** | Para ocultar métodos | `void Create(double new);` | `void Create(double newValue);` |
+| **delete** | Para eliminar objetos | `void Cleanup(int delete);` | `void Cleanup(int deleteCount);` |
+| **template** | Para plantillas | `void Build(string template);` | `void Build(string templateStr);` |
+
+**Regla:** Nunca usar estas palabras como nombres de parámetros, variables locales o miembros de clase. Siempre agregar un sufijo descriptivo (ej: `finalLevel`, `virtualData`, `overrideValue`, `newValue`, `deleteCount`, `templateStr`).
+
+**Consecuencia del error:** Si se usa una palabra reservada como nombre de parámetro, el compilador mostrará:
+
+```
+unexpected token    [archivo.mqh]   [línea]   [columna]
+```
+
+### 3.3.3 Constantes Obsoletas de MQL5 (NO USAR)
+
+MQL5 ha actualizado algunas constantes. Las versiones antiguas están obsoletas y deben ser reemplazadas por las nuevas para evitar errores de compilación y advertencias.
+
+| Constante Obsoleta | Constante Correcta | Descripción |
+| :--- | :--- | :--- |
+| `ACCOUNT_FREEMARGIN` | `ACCOUNT_MARGIN_FREE` | Margen libre de la cuenta |
+| `ACCOUNT_STOPOUT_MODE` | `ACCOUNT_MARGIN_SO_MODE` | Modo de stop out |
+| `ACCOUNT_STOPOUT_LEVEL` | `ACCOUNT_MARGIN_SO_SO` | Nivel de stop out |
+| `ACCOUNT_TRADE_MODE` | `ACCOUNT_TRADE_MODE` | **Sigue igual (sin cambios)** |
+
+**Regla:** Siempre usar las constantes **CORRECTAS** en lugar de las obsoletas.
+
+**Ejemplo INCORRECTO:**
+```cpp
+double freeMargin = AccountInfoDouble(ACCOUNT_FREEMARGIN);  // ❌ DEPRECADO
+```
+
+**Ejemplo CORRECTO:**
+```cpp
+double freeMargin = AccountInfoDouble(ACCOUNT_MARGIN_FREE); // ✅ CORRECTO
+```
+
+**Consecuencia del error:** El compilador mostrará un mensaje de advertencia:
+```
+'ACCOUNT_FREEMARGIN' is deprecated, use 'ACCOUNT_MARGIN_FREE' instead
 ```
 
 ### 3.4 Cabecera de Archivo con Changelog
 
-Todo archivo `.mqh` debe incluir una sección de **Changelog** en su cabecera para mantener un historial claro de todas las modificaciones.
+Todo archivo .mqh debe incluir una sección de Changelog en su cabecera para mantener un historial claro de todas las modificaciones.
 
 **Formato de Cabecera Completa:**
 
@@ -485,12 +590,12 @@ Todo archivo `.mqh` debe incluir una sección de **Changelog** en su cabecera pa
 
 **Reglas del Changelog:**
 
-| Regla             | Descripción                                           |
-| :---              | :---                                                  |
-| **Versión**       | Formato `X.Y` (incrementar según magnitud del cambio) |
-| **Fecha**         | Formato `DD/MM/YYYY`                                  |
-| **Cambio**        | Descripción clara y concisa del cambio realizado      |
-| **Nueva versión** | Cada modificación debe añadir una nueva línea         |
+| Regla | Descripción |
+| :--- | :--- |
+| Versión | Formato X.Y (incrementar según magnitud del cambio) |
+| Fecha | Formato DD/MM/YYYY |
+| Cambio | Descripción clara y concisa del cambio realizado |
+| Nueva versión | Cada modificación debe añadir una nueva línea |
 
 ### 3.5 Manejo de Errores
 
@@ -655,26 +760,26 @@ void LogInfo(string message) {
 
 **Antes de cada entrega, verificar:**
 
-- [ ] **Compilación:** El código compila sin errores ni advertencias en MQL5.
-- [ ] **RFs Cubiertos:** Todos los RFs de la fase están implementados y documentados.
-- [ ] **Dependencias:** Se han resuelto todas las dependencias con módulos anteriores.
-- [ ] **Documentación:** Cada método tiene su documentación completa.
-- [ ] **Manejo de Errores:** Todas las condiciones de error están manejadas.
-- [ ] **Logging:** El módulo registra sus acciones importantes (entradas, salidas, errores).
-- [ ] **Estructura:** El código sigue el estándar de codificación definido.
-- [ ] **Trazabilidad:** Cada RF tiene su implementación identificable.
-- [ ] **Changelog:** El archivo tiene una entrada en CHANGELOG.
+- [ ] Compilación: El código compila sin errores ni advertencias en MQL5.
+- [ ] RFs Cubiertos: Todos los RFs de la fase están implementados y documentados.
+- [ ] Dependencias: Se han resuelto todas las dependencias con módulos anteriores.
+- [ ] Documentación: Cada método tiene su documentación completa (Sección 3.3.1).
+- [ ] Manejo de Errores: Todas las condiciones de error están manejadas.
+- [ ] Logging: El módulo registra sus acciones importantes (entradas, salidas, errores).
+- [ ] Estructura: El código sigue el estándar de codificación definido.
+- [ ] Trazabilidad: Cada RF tiene su implementación identificable.
+- [ ] Changelog: El archivo tiene una entrada en CHANGELOG.
 
 ### 4.2 Reglas de Entrega de Archivos
 
 | Regla | Descripción |
 | :--- | :--- |
-| **Preguntar Antes de Crear** | Antes de crear cualquier archivo nuevo, el desarrollador debe preguntar explícitamente si el usuario desea que se cree. |
-| **Archivos Nuevos en .txt** | Cuando se crea un archivo nuevo, se debe entregar en formato .txt (no .mqh) para evitar que el sistema lo interprete como código ejecutable. |
-| **Modificaciones en Diff** | Cuando se modifica un archivo existente, se debe entregar el código en formato diff con los signos + (verde) y - (rojo). |
-| **No Mostrar Archivos sin Solicitud** | El desarrollador no mostrará el contenido de archivos completos a menos que el usuario lo solicite específicamente. |
-| **Formato Diff para Modificaciones** | Para modificaciones, se usará el formato diff de Git con signos + (verde) y - (rojo) en TODA la línea. |
-| **Referencia de Líneas** | Cada modificación debe incluir el número de línea donde comienza el cambio. |
+| Preguntar Antes de Crear | Antes de crear cualquier archivo nuevo, el desarrollador debe preguntar explícitamente si el usuario desea que se cree. |
+| Archivos Nuevos en .txt | Cuando se crea un archivo nuevo, se debe entregar en formato .txt (no .mqh) para evitar que el sistema lo interprete como código ejecutable. |
+| Modificaciones en Diff | Cuando se modifica un archivo existente, se debe entregar el código en formato diff con los signos + (verde) y - (rojo). |
+| No Mostrar Archivos sin Solicitud | El desarrollador no mostrará el contenido de archivos completos a menos que el usuario lo solicite específicamente. |
+| Formato Diff para Modificaciones | Para modificaciones, se usará el formato diff de Git con signos + (verde) y - (rojo) en TODA la línea. |
+| Referencia de Líneas | Cada modificación debe incluir el número de línea donde comienza el cambio. |
 
 ### 4.3 Formato Diff para Modificaciones
 
@@ -682,7 +787,7 @@ void LogInfo(string message) {
 
 **Ejemplo correcto:**
 
-```diff
+```
   //--- Líneas sin cambios (blanco)
 + //--- TODA esta línea es verde (línea añadida)
 + //--- TODA esta línea también es verde
@@ -693,14 +798,14 @@ void LogInfo(string message) {
 
 **Estructura de la entrega:**
 
-```
-📁 **Ubicación:** `Include/[Dominio]/[Nombre].mqh`
+📁 **Ubicación:** Include/[Dominio]/[Nombre].mqh
 📄 **Estado:** MODIFICADO
 🔢 **Línea de inicio:** [Número de línea donde comienza el cambio]
 📝 **Cambio:** [Breve descripción]
 
 **Código MODIFICADO:**
-```diff
+
+```
   //--- Líneas sin cambios (blanco)
 + //--- Línea añadida (verde)
 + //--- Otra línea añadida (verde)
@@ -708,18 +813,15 @@ void LogInfo(string message) {
 - //--- Otra línea eliminada (rojo)
   //--- Líneas sin cambios (blanco)
 ```
-```
 
 ### 4.4 Formato de Entrega de Archivos Nuevos
 
 **Para ARCHIVOS NUEVOS (primera implementación):**
 
-```
-📁 **Ubicación:** `Include/[Dominio]/[Nombre].mqh`
+📁 **Ubicación:** Include/[Dominio]/[Nombre].mqh
 📄 **Estado:** NUEVO ARCHIVO (PRE-APROBACIÓN)
 📝 **Descripción:** [Breve descripción del módulo]
 ⚠️ **Pendiente de aprobación para crear el archivo**
-```
 
 ### 4.5 Contenido de la Entrega
 
@@ -731,26 +833,21 @@ Cada entrega debe incluir:
 
 #### 4.5.2 Lista de RFs Cubiertos
 
-```
 | ID del RF | Descripción | Estado | Observaciones |
 | :--- | :--- | :--- | :--- |
 | RF-XXX | Descripción | ✅ COMPLETO | - |
 | RF-YYY | Descripción | ✅ COMPLETO | - |
-```
 
 #### 4.5.3 Dependencias
 
-```
 | Módulo | Requerido por | Estado | Observaciones |
 | :--- | :--- | :--- | :--- |
 | CConstants | Todas las clases | ✅ COMPLETO | - |
 | CUtils | Esta clase | ✅ COMPLETO | - |
 | CConfig | Esta clase | ⏳ PENDIENTE | Se implementará en siguiente fase |
-```
 
 #### 4.5.4 Instrucciones de Integración
 
-```
 1. Incluir el archivo en el módulo principal:
    #include "Include/[Dominio]/[Nombre].mqh"
 
@@ -763,27 +860,24 @@ Cada entrega debe incluir:
 
 4. En CHunterIPDA::DeinitializeModules():
    if(m_[nombre] != NULL) { delete m_[nombre]; m_[nombre] = NULL; }
-```
 
 #### 4.5.5 Próximos Pasos Sugeridos
 
-```
 Siguiente fase recomendada: [Nombre de la Fase]
 Módulos a implementar: [Lista de módulos]
 RFs a cubrir: [Lista de RFs]
 Razón: [Explicación de por qué este es el siguiente paso lógico]
-```
 
 ### 4.6 Procedimiento de Implementación
 
 | Paso | Acción | Descripción |
 | :--- | :--- | :--- |
-| **1** | **Consultar** | Antes de implementar, consultar documentación oficial MQL5 |
-| **2** | **Preguntar** | Preguntar al usuario si desea crear el archivo/método/funcionalidad |
-| **3** | **Esperar aprobación** | No implementar sin confirmación explícita |
-| **4** | **Implementar** | Escribir el código siguiendo estándares y reglas MQL5 |
-| **5** | **Incluir Changelog** | Añadir entrada en el Changelog del archivo |
-| **6** | **Entregar** | Entregar el código con formato diff si es modificación |
+| 1 | Consultar | Antes de implementar, consultar documentación oficial MQL5 |
+| 2 | Preguntar | Preguntar al usuario si desea crear el archivo/método/funcionalidad |
+| 3 | Esperar aprobación | No implementar sin confirmación explícita |
+| 4 | Implementar | Escribir el código siguiendo estándares y reglas MQL5 |
+| 5 | Incluir Changelog | Añadir entrada en el Changelog del archivo |
+| 6 | Entregar | Entregar el código con formato diff si es modificación |
 
 ---
 
@@ -793,80 +887,80 @@ Razón: [Explicación de por qué este es el siguiente paso lógico]
 
 | Fase | Módulo | RFs | Prioridad | Dependencias | Estado |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Fase 1** | CConstants | Todas las enumeraciones y constantes | 🔴 Alta | - | ✅ ENTREGADO |
-| **Fase 2** | CUtils | Funciones auxiliares | 🔴 Alta | CConstants | ✅ ENTREGADO |
-| **Fase 3** | CConfig | RF-042 a RF-045 | 🔴 Alta | CUtils | ⏳ PENDIENTE |
-| **Fase 4** | CLogger | RF-036 a RF-041, RF-323, RF-041.1 | 🔴 Alta | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 5** | CLicense | RF-046 a RF-050 | 🟡 Media | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 6** | CPanel | RF-042 a RF-045 (visualización) | 🟡 Media | Todos los módulos | ⏳ PENDIENTE |
-| **Fase 7** | CHunterIPDA | Clase principal | 🔴 Alta | Todos los módulos | ⏳ PENDIENTE |
+| Fase 1 | CConstants | Todas las enumeraciones y constantes | 🔴 Alta | - | ✅ ENTREGADO |
+| Fase 2 | CUtils | Funciones auxiliares | 🔴 Alta | CConstants | ✅ ENTREGADO |
+| Fase 3 | CConfig | RF-042 a RF-045 | 🔴 Alta | CUtils | ✅ ENTREGADO |
+| Fase 4 | CLogger | RF-036 a RF-041, RF-323, RF-041.1 | 🔴 Alta | CConfig, CUtils | ✅ ENTREGADO |
+| Fase 5 | CLicense | RF-046 a RF-050 | 🟡 Media | CConfig, CUtils | ✅ ENTREGADO |
+| Fase 6 | CPanel | RF-042 a RF-045 (visualización) | 🟡 Media | Todos los módulos | ✅ ENTREGADO |
+| Fase 7 | CHunterIPDA | Clase principal | 🔴 Alta | Todos los módulos | ✅ ENTREGADO |
 
 ### 5.2 Dominio Analysis (Análisis)
 
 | Fase | Módulo | RFs | Prioridad | Dependencias | Estado |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Fase 8** | CDataRange | RF-222 a RF-248 | 🔴 Alta | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 9** | CSeasonal | RF-641 a RF-660 | 🔴 Alta | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 10** | CMacroAnalyzer | RF-254 a RF-289 | 🔴 Alta | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 11** | CContext | RF-058 a RF-149, RF-370, RF-371 | 🔴 Alta | CConfig, CUtils, CMacroAnalyzer, CSeasonal, CDataRange | ⏳ PENDIENTE |
-| **Fase 12** | CDetector (básico) | RF-001 a RF-010 | 🔴 Alta | CConfig, CUtils, CContext | ⏳ PENDIENTE |
-| **Fase 13** | CDetector (avanzado) | RF-150 a RF-221 | 🔴 Alta | CDetector (básico) | ⏳ PENDIENTE |
-| **Fase 14** | CCOTAnalyzer | RF-601 a RF-620 | 🔴 Alta | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 15** | COIAnalyzer | RF-681 a RF-700 | 🔴 Alta | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 16** | CRelStrength | RF-621 a RF-640 | 🟡 Media | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 17** | CPremiumCarry | RF-661 a RF-680 | 🟡 Media | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 18** | CCOExtended | RF-601 a RF-620 (extendido) | 🟡 Media | CCOTAnalyzer | ⏳ PENDIENTE |
-| **Fase 19** | Multi-Asset | RF-850 a RF-875 | 🔴 Alta | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 20** | CMultiAsset | RF-850 a RF-875 (integración) | 🔴 Alta | Todos los análisis | ⏳ PENDIENTE |
+| Fase 8 | CDataRange | RF-222 a RF-248 | 🔴 Alta | CConfig, CUtils | ✅ ENTREGADO |
+| Fase 9 | CSeasonal | RF-641 a RF-660 | 🔴 Alta | CConfig, CUtils | ✅ ENTREGADO |
+| Fase 10 | CMacroAnalyzer | RF-254 a RF-289 | 🔴 Alta | CConfig, CUtils | ✅ ENTREGADO |
+| Fase 11 | CContext | RF-058 a RF-149, RF-370, RF-371 | 🔴 Alta | CConfig, CUtils, CMacroAnalyzer, CSeasonal, CDataRange | ✅ ENTREGADO |
+| Fase 12 | CDetector (básico) | RF-001 a RF-010 | 🔴 Alta | CConfig, CUtils, CContext | ✅ ENTREGADO |
+| Fase 13 | CDetector (avanzado) | RF-150 a RF-221 | 🔴 Alta | CDetector (básico) | ✅ ENTREGADO |
+| Fase 14 | CCOTAnalyzer | RF-601 a RF-620 | 🔴 Alta | CConfig, CUtils | ✅ ENTREGADO |
+| Fase 15 | COIAnalyzer | RF-681 a RF-700 | 🔴 Alta | CConfig, CUtils | ✅ ENTREGADO |
+| Fase 16 | CRelStrength | RF-621 a RF-640 | 🟡 Media | CConfig, CUtils | ✅ ENTREGADO |
+| Fase 17 | CPremiumCarry | RF-661 a RF-680 | 🟡 Media | CConfig, CUtils | ✅ ENTREGADO |
+| Fase 18 | CCOExtended | RF-601 a RF-620 (extendido) | 🟡 Media | CCOTAnalyzer | ✅ ENTREGADO |
+| Fase 19 | Multi-Asset Base | RF-850 a RF-875 | 🔴 Alta | CConfig, CUtils | ✅ ENTREGADO |
+| Fase 20 | CMultiAsset | RF-850 a RF-875 (integración) | 🔴 Alta | Todos los análisis | ✅ ENTREGADO |
 
 ### 5.3 Dominio Execution (Ejecución)
 
 | Fase | Módulo | RFs | Prioridad | Dependencias | Estado |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Fase 21** | CRiskManager | RF-020 a RF-031, RF-052 a RF-057, RF-119, RF-154, RF-156, RF-320, RF-362, RF-366, RF-367, RF-920, RF-921 | 🔴 Alta | CConfig, CUtils, CDataRange, CTradingPlan | ⏳ PENDIENTE |
-| **Fase 22** | CEntryManager | RF-306 a RF-315 | 🔴 Alta | CConfig, CUtils, CRiskManager | ⏳ PENDIENTE |
-| **Fase 23** | CExecutor | RF-011 a RF-019 | 🔴 Alta | CConfig, CUtils, CRiskManager, CEntryManager | ⏳ PENDIENTE |
-| **Fase 24** | CMultiSymbol | RF-032 a RF-035 | 🔴 Alta | CConfig, CUtils, CDetector, CExecutor | ⏳ PENDIENTE |
+| Fase 21 | CRiskManager | RF-020 a RF-031, RF-052 a RF-057, RF-119, RF-154, RF-156, RF-320, RF-362, RF-366, RF-367, RF-920, RF-921 | 🔴 Alta | CConfig, CUtils, CDataRange, CTradingPlan | ✅ ENTREGADO |
+| Fase 22 | CEntryManager | RF-306 a RF-315 | 🔴 Alta | CConfig, CUtils, CRiskManager | ✅ ENTREGADO |
+| Fase 23 | CExecutor | RF-011 a RF-019 | 🔴 Alta | CConfig, CUtils, CRiskManager, CEntryManager | ✅ ENTREGADO |
+| Fase 24 | CMultiSymbol | RF-032 a RF-035 | 🔴 Alta | CConfig, CUtils, CDetector, CExecutor | ✅ ENTREGADO |
 
 ### 5.4 Dominio Models (Modelos)
 
 | Fase | Módulo | RFs | Prioridad | Dependencias | Estado |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Fase 25** | CSwingFilter | RF-324 a RF-385 | 🔴 Alta | CConfig, CUtils, CSeasonal, CCOTAnalyzer, COIAnalyzer | ⏳ PENDIENTE |
-| **Fase 26** | CHallmarkAnalyzer | RF-375 | 🔴 Alta | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 27** | CSwingManager | RF-382 a RF-385 | 🔴 Alta | CConfig, CUtils, CExecutor, CRiskManager | ⏳ PENDIENTE |
-| **Fase 28** | CWeeklyRange | RF-386 a RF-404 | 🔴 Alta | CConfig, CUtils, CDataRange | ⏳ PENDIENTE |
-| **Fase 29** | CMMManipulation | RF-409 a RF-412 | 🔴 Alta | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 30** | CIntraWeekReversal | RF-451 a RF-460 | 🟡 Media | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 31** | COSOKAnalyzer | RF-472 a RF-477 | 🔴 Alta | CConfig, CUtils, CSeasonal, CCOTAnalyzer | ⏳ PENDIENTE |
-| **Fase 32** | CShortTerm | RF-386 a RF-471 | 🔴 Alta | CConfig, CUtils, CWeeklyRange, CMMManipulation | ⏳ PENDIENTE |
-| **Fase 33** | CDayTrading | RF-500 a RF-519 | 🔴 Alta | CConfig, CUtils, CDataRange, CNewsEvent | ⏳ PENDIENTE |
-| **Fase 34** | CScalping | RF-520 a RF-544 | 🔴 Alta | CConfig, CUtils, CDataRange | ⏳ PENDIENTE |
-| **Fase 35** | CStockTrader | RF-800 a RF-845 | 🔴 Alta | CConfig, CUtils, CMultiAsset, CSeasonal | ⏳ PENDIENTE |
-| **Fase 36** | CMegaTrade | RF-900 a RF-940 | 🔴 Alta | CConfig, CUtils, CMultiAsset, CDataRange | ⏳ PENDIENTE |
+| Fase 25 | CSwingFilter | RF-324 a RF-385 | 🔴 Alta | CConfig, CUtils, CSeasonal, CCOTAnalyzer, COIAnalyzer | ⏳ PENDIENTE |
+| Fase 26 | CHallmarkAnalyzer | RF-375 | 🔴 Alta | CConfig, CUtils | ⏳ PENDIENTE |
+| Fase 27 | CSwingManager | RF-382 a RF-385 | 🔴 Alta | CConfig, CUtils, CExecutor, CRiskManager | ⏳ PENDIENTE |
+| Fase 28 | CWeeklyRange | RF-386 a RF-404 | 🔴 Alta | CConfig, CUtils, CDataRange | ⏳ PENDIENTE |
+| Fase 29 | CMMManipulation | RF-409 a RF-412 | 🔴 Alta | CConfig, CUtils | ⏳ PENDIENTE |
+| Fase 30 | CIntraWeekReversal | RF-451 a RF-460 | 🟡 Media | CConfig, CUtils | ⏳ PENDIENTE |
+| Fase 31 | COSOKAnalyzer | RF-472 a RF-477 | 🔴 Alta | CConfig, CUtils, CSeasonal, CCOTAnalyzer | ⏳ PENDIENTE |
+| Fase 32 | CShortTerm | RF-386 a RF-471 | 🔴 Alta | CConfig, CUtils, CWeeklyRange, CMMManipulation | ⏳ PENDIENTE |
+| Fase 33 | CDayTrading | RF-500 a RF-519 | 🔴 Alta | CConfig, CUtils, CDataRange, CNewsEvent | ⏳ PENDIENTE |
+| Fase 34 | CScalping | RF-520 a RF-544 | 🔴 Alta | CConfig, CUtils, CDataRange | ⏳ PENDIENTE |
+| Fase 35 | CStockTrader | RF-800 a RF-845 | 🔴 Alta | CConfig, CUtils, CMultiAsset, CSeasonal | ⏳ PENDIENTE |
+| Fase 36 | CMegaTrade | RF-900 a RF-940 | 🔴 Alta | CConfig, CUtils, CMultiAsset, CDataRange | ⏳ PENDIENTE |
 
 ### 5.5 Dominio TradingPlan (Plan de Trading)
 
 | Fase | Módulo | RFs | Prioridad | Dependencias | Estado |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Fase 37** | CNewsEvent | RF-509 | 🔴 Alta | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 38** | CTradingPlan | RF-950 a RF-975 | 🔴 Alta | CConfig, CUtils, CLogger | ⏳ PENDIENTE |
+| Fase 37 | CNewsEvent | RF-509 | 🔴 Alta | CConfig, CUtils | ✅ ENTREGADO |
+| Fase 38 | CTradingPlan | RF-950 a RF-975 | 🔴 Alta | CConfig, CUtils, CLogger | ✅ ENTREGADO |
 
 ### 5.6 Módulo Bonus Hunter
 
 | Fase | Módulo | RFs | Prioridad | Dependencias | Estado |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Fase 39** | CVolumeTracker | RF-1000, RF-1001 | 🟡 Media | CConfig, CUtils | ⏳ PENDIENTE |
-| **Fase 40** | CBonusScanner | RF-1002 a RF-1005 | 🟡 Media | CConfig, CUtils, CVolumeTracker | ⏳ PENDIENTE |
-| **Fase 41** | CBonusExecutor | RF-1006 a RF-1009 | 🟡 Media | CConfig, CUtils, CRiskManager, CExecutor | ⏳ PENDIENTE |
-| **Fase 42** | CPanelBonusHunter | RF-1010 a RF-1012 | 🟡 Media | CConfig, CUtils, CBonusHunter | ⏳ PENDIENTE |
-| **Fase 43** | CBonusHunter | RF-1013, RF-1014 | 🟡 Media | Todos los módulos Bonus | ⏳ PENDIENTE |
+| Fase 39 | CVolumeTracker | RF-1000, RF-1001 | 🟡 Media | CConfig, CUtils | ⏳ PENDIENTE |
+| Fase 40 | CBonusScanner | RF-1002 a RF-1005 | 🟡 Media | CConfig, CUtils, CVolumeTracker | ⏳ PENDIENTE |
+| Fase 41 | CBonusExecutor | RF-1006 a RF-1009 | 🟡 Media | CConfig, CUtils, CRiskManager, CExecutor | ⏳ PENDIENTE |
+| Fase 42 | CPanelBonusHunter | RF-1010 a RF-1012 | 🟡 Media | CConfig, CUtils, CBonusHunter | ⏳ PENDIENTE |
+| Fase 43 | CBonusHunter | RF-1013, RF-1014 | 🟡 Media | Todos los módulos Bonus | ⏳ PENDIENTE |
 
 ### 5.7 Integración Final
 
 | Fase | Módulo | RFs | Prioridad | Dependencias | Estado |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Fase 44** | Integración | Todos los RFs | 🔴 Alta | Todos los módulos | ⏳ PENDIENTE |
+| Fase 44 | Integración | Todos los RFs | 🔴 Alta | Todos los módulos | ⏳ PENDIENTE |
 
 ---
 
@@ -876,29 +970,28 @@ Razón: [Explicación de por qué este es el siguiente paso lógico]
 
 | Elemento | Método de Validación | Criterio de Aceptación |
 | :--- | :--- | :--- |
-| **Cobertura de RFs** | Revisión manual de la lista de RFs | 100% de los RFs de la fase implementados |
-| **Precisión de RFs** | Revisión del código vs descripción del RF | La implementación coincide con la descripción |
-| **Trazabilidad** | Comentarios de RF en el código | Cada método tiene su RF asociado |
+| Cobertura de RFs | Revisión manual de la lista de RFs | 100% de los RFs de la fase implementados |
+| Precisión de RFs | Revisión del código vs descripción del RF | La implementación coincide con la descripción |
+| Trazabilidad | Comentarios de RF en el código | Cada método tiene su RF asociado |
 
 ### 6.2 Validación contra Arquitectura
 
 | Elemento | Método de Validación | Criterio de Aceptación |
 | :--- | :--- | :--- |
-| **Estructura de Clase** | Revisión de la definición de la clase | Coincide con el diagrama de clases |
-| **Dependencias** | Análisis de includes y referencias | No hay dependencias circulares |
-| **Interfaz Pública** | Revisión de métodos públicos | Coincide con lo definido en la arquitectura |
+| Estructura de Clase | Revisión de la definición de la clase | Coincide con el diagrama de clases |
+| Dependencias | Análisis de includes y referencias | No hay dependencias circulares |
+| Interfaz Pública | Revisión de métodos públicos | Coincide con lo definido en la arquitectura |
 
 ### 6.3 Validación Técnica
 
 | Elemento | Método de Validación | Criterio de Aceptación |
 | :--- | :--- | :--- |
-| **Compilación** | Compilación en MQL5 | Sin errores ni advertencias |
-| **Manejo de Errores** | Revisión de código | Todas las condiciones de error manejadas |
-| **Logging** | Revisión de código | Acciones importantes registradas |
+| Compilación | Compilación en MQL5 | Sin errores ni advertencias |
+| Manejo de Errores | Revisión de código | Todas las condiciones de error manejadas |
+| Logging | Revisión de código | Acciones importantes registradas |
 
 ### 6.4 Formato de Informe de Validación
 
-```
 ## INFORME DE VALIDACIÓN - [Nombre del Módulo]
 
 ### 1. Cobertura de RFs
@@ -926,7 +1019,6 @@ Razón: [Explicación de por qué este es el siguiente paso lógico]
 
 ### 5. Conclusión
 ✅ EL MÓDULO ESTÁ LISTO PARA INTEGRACIÓN
-```
 
 ---
 
@@ -934,98 +1026,90 @@ Razón: [Explicación de por qué este es el siguiente paso lógico]
 
 ### 7.1 Mapa de Dependencias
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                         MAPA DE DEPENDENCIAS - v1.7                              │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  CConstants ───────────────────────────────────────────────────────────────────┐ │
-│       │                                                                        │ │
-│       ▼                                                                        │ │
-│  CUtils ─────────────────────────────────────────────────────────────────────┐ │ │
-│       │                                                                      │ │ │
-│       ▼                                                                      │ │ │
-│  CConfig ──────────────────────────────────────────────────────────────────┐ │ │ │
-│       │                                                                    │ │ │ │
-│       ├───────► CLogger ◄────────────────────────────────────────────────┐ │ │ │ │
-│       │                           │                                      │ │ │ │ │
-│       ├───────► CLicense          │                                      │ │ │ │ │
-│       │                           │                                      │ │ │ │ │
-│       ├───────► CPanel ───────────┼──────────────────────────────────────┘ │ │ │ │
-│       │                           │                                        │ │ │ │
-│       ├───────► CDataRange        │                                        │ │ │ │
-│       │          │                │                                        │ │ │ │
-│       │          ▼                │                                        │ │ │ │
-│       ├───────► CSeasonal         │                                        │ │ │ │
-│       │          │                │                                        │ │ │ │
-│       │          ▼                │                                        │ │ │ │
-│       ├───────► CMacroAnalyzer    │                                        │ │ │ │
-│       │          │                │                                        │ │ │ │
-│       │          ▼                │                                        │ │ │ │
-│       ├───────► CContext ─────────┤                                        │ │ │ │
-│       │          │                │                                        │ │ │ │
-│       │          ▼                │                                        │ │ │ │
-│       ├───────► CDetector ────────┤                                        │ │ │ │
-│       │                           │                                        │ │ │ │
-│       ├───────► CCOTAnalyzer      │                                        │ │ │ │
-│       │          │                │                                        │ │ │ │
-│       │          ▼                │                                        │ │ │ │
-│       ├───────► COIAnalyzer       │                                        │ │ │ │
-│       │                           │                                        │ │ │ │
-│       ├───────► CRelStrength      │                                        │ │ │ │
-│       │                           │                                        │ │ │ │
-│       ├───────► CPremiumCarry     │                                        │ │ │ │
-│       │                           │                                        │ │ │ │
-│       ├───────► CMultiAsset       │                                        │ │ │ │
-│       │          │                │                                        │ │ │ │
-│       │          ▼                │                                        │ │ │ │
-│       ├───────► CRiskManager ─────┼────────────────────────────────────────┘ │ │ │
-│       │          │                │                                          │ │ │
-│       │          ▼                │                                          │ │ │
-│       ├───────► CEntryManager     │                                          │ │ │
-│       │          │                │                                          │ │ │
-│       │          ▼                │                                          │ │ │
-│       ├───────► CExecutor ────────┤                                          │ │ │
-│       │                           │                                          │ │ │
-│       ├───────► CMultiSymbol      │                                          │ │ │
-│       │                           │                                          │ │ │
-│       ├───────► CSwingFilter      │                                          │ │ │
-│       │                           │                                          │ │ │
-│       ├───────► CHallmarkAnalyzer │                                          │ │ │
-│       │                           │                                          │ │ │
-│       ├───────► CSwingManager     │                                          │ │ │
-│       │                           │                                          │ │ │
-│       ├───────► CWeeklyRange      │                                          │ │ │
-│       │          │                │                                          │ │ │
-│       │          ▼                │                                          │ │ │
-│       ├───────► CMMManipulation   │                                          │ │ │
-│       │                           │                                          │ │ │
-│       ├───────► CIntraWeekReversal│                                          │ │ │
-│       │                           │                                          │ │ │
-│       ├───────► COSOKAnalyzer     │                                          │ │ │
-│       │          │                │                                          │ │ │
-│       │          ▼                │                                          │ │ │
-│       ├───────► CShortTerm ───────┤                                          │ │ │
-│       │                           │                                          │ │ │
-│       ├───────► CDayTrading ──────┤                                          │ │ │
-│       │                           │                                          │ │ │
-│       ├───────► CScalping ────────┤                                          │ │ │
-│       │                           │                                          │ │ │
-│       ├───────► CStockTrader      │                                          │ │ │
-│       │                           │                                          │ │ │
-│       ├───────► CMegaTrade ───────┤                                          │ │ │
-│       │                           │                                          │ │ │
-│       ├───────► CNewsEvent ───────┤                                          │ │ │
-│       │                           │                                          │ │ │
-│       ├───────► CTradingPlan ─────┼──────────────────────────────────────────┘ │ │
-│       │                           │                                            │ │
-│       └───────► CBonusHunter ─────┤                                            │ │
-│                                   │                                            │ │
-│                                   ▼                                            │ │
-│                              CHunterIPDA ◄─────────────────────────────────────┘ │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
-```
+CConstants ───────────────────────────────────────────────────────────┐
+     │                                                              │
+     ▼                                                              │
+CUtils ────────────────────────────────────────────────────────────┐ │
+     │                                                            │ │
+     ▼                                                            │ │
+CConfig ────────────────────────────────────────────────────────┐ │ │
+     │                                                          │ │ │
+     ├───────► CLogger ◄────────────────────────────────────┐ │ │ │
+     │                         │                            │ │ │ │
+     ├───────► CLicense        │                            │ │ │ │
+     │                         │                            │ │ │ │
+     ├───────► CPanel ─────────┼────────────────────────────┘ │ │ │
+     │                         │                              │ │ │
+     ├───────► CDataRange      │                              │ │ │
+     │          │              │                              │ │ │
+     │          ▼              │                              │ │ │
+     ├───────► CSeasonal       │                              │ │ │
+     │          │              │                              │ │ │
+     │          ▼              │                              │ │ │
+     ├───────► CMacroAnalyzer  │                              │ │ │
+     │          │              │                              │ │ │
+     │          ▼              │                              │ │ │
+     ├───────► CContext ───────┤                              │ │ │
+     │          │              │                              │ │ │
+     │          ▼              │                              │ │ │
+     ├───────► CDetector ──────┤                              │ │ │
+     │                         │                              │ │ │
+     ├───────► CCOTAnalyzer    │                              │ │ │
+     │          │              │                              │ │ │
+     │          ▼              │                              │ │ │
+     ├───────► COIAnalyzer     │                              │ │ │
+     │                         │                              │ │ │
+     ├───────► CRelStrength    │                              │ │ │
+     │                         │                              │ │ │
+     ├───────► CPremiumCarry   │                              │ │ │
+     │                         │                              │ │ │
+     ├───────► CMultiAsset     │                              │ │ │
+     │          │              │                              │ │ │
+     │          ▼              │                              │ │ │
+     ├───────► CRiskManager ───┼──────────────────────────────┘ │ │
+     │          │              │                                │ │
+     │          ▼              │                                │ │
+     ├───────► CEntryManager   │                                │ │
+     │          │              │                                │ │
+     │          ▼              │                                │ │
+     ├───────► CExecutor ──────┤                                │ │
+     │                         │                                │ │
+     ├───────► CMultiSymbol    │                                │ │
+     │                         │                                │ │
+     ├───────► CSwingFilter    │                                │ │
+     │                         │                                │ │
+     ├───────► CHallmarkAnalyzer│                               │ │
+     │                         │                                │ │
+     ├───────► CSwingManager   │                                │ │
+     │                         │                                │ │
+     ├───────► CWeeklyRange    │                                │ │
+     │          │              │                                │ │
+     │          ▼              │                                │ │
+     ├───────► CMMManipulation │                                │ │
+     │                         │                                │ │
+     ├───────► CIntraWeekReversal│                              │ │
+     │                         │                                │ │
+     ├───────► COSOKAnalyzer   │                                │ │
+     │          │              │                                │ │
+     │          ▼              │                                │ │
+     ├───────► CShortTerm ─────┤                                │ │
+     │                         │                                │ │
+     ├───────► CDayTrading ────┤                                │ │
+     │                         │                                │ │
+     ├───────► CScalping ──────┤                                │ │
+     │                         │                                │ │
+     ├───────► CStockTrader    │                                │ │
+     │                         │                                │ │
+     ├───────► CMegaTrade ─────┤                                │ │
+     │                         │                                │ │
+     ├───────► CNewsEvent ─────┤                                │ │
+     │                         │                                │ │
+     ├───────► CTradingPlan ───┼────────────────────────────────┘ │
+     │                         │                                  │
+     └───────► CBonusHunter ───┤                                  │
+                               │                                  │
+                               ▼                                  │
+                          CHunterIPDA ◄───────────────────────────┘
 
 ### 7.2 Gestión de Dependencias Circulares
 
@@ -1044,22 +1128,18 @@ Razón: [Explicación de por qué este es el siguiente paso lógico]
 
 | Nivel | Descripción | Uso |
 | :--- | :--- | :--- |
-| **ERROR** | Errores que impiden el funcionamiento | Fallos de inicialización, errores de ejecución de órdenes, errores de validación |
-| **WARNING** | Advertencias que no impiden el funcionamiento | Parámetros fuera de rango, condiciones de mercado no ideales |
-| **INFO** | Información importante | Inicialización de módulos, apertura/cierre de operaciones, cambios de estado |
-| **DEBUG** | Información de depuración | Detalle de cálculos, valores de variables, estado interno |
-| **TRACE** | Traza completa | Todas las acciones, incluyendo las más detalladas |
+| ERROR | Errores que impiden el funcionamiento | Fallos de inicialización, errores de ejecución de órdenes, errores de validación |
+| WARNING | Advertencias que no impiden el funcionamiento | Parámetros fuera de rango, condiciones de mercado no ideales |
+| INFO | Información importante | Inicialización de módulos, apertura/cierre de operaciones, cambios de estado |
+| DEBUG | Información de depuración | Detalle de cálculos, valores de variables, estado interno |
+| TRACE | Traza completa | Todas las acciones, incluyendo las más detalladas |
 
 ### 8.2 Estructura de Mensajes de Log
 
-```
 [YYYY-MM-DD HH:MM:SS] [NIVEL] [MÓDULO] Mensaje
-```
 
 **Ejemplo:**
-```
 [2026-07-21 14:30:25] [INFO] [CExecutor] Orden ejecutada: BUY 0.1 EURUSD @ 1.12345, SL: 1.12245, TP: 1.12545
-```
 
 ### 8.3 Códigos de Error Estándar
 
@@ -1091,31 +1171,50 @@ Razón: [Explicación de por qué este es el siguiente paso lógico]
 | :--- | :--- | :--- | :--- | :--- |
 | Fase 1 | CConstants | ✅ | Todas | 21/07/2026 |
 | Fase 2 | CUtils | ✅ | Todas | 21/07/2026 |
-| Fase 3 | CConfig | ⏳ | - | - |
-| ... | ... | ... | ... | ... |
+| Fase 3 | CConfig | ✅ | RF-042 a RF-045 | 21/07/2026 |
+| Fase 4 | CLogger | ✅ | RF-036 a RF-041, RF-323, RF-041.1 | 21/07/2026 |
+| Fase 5 | CLicense | ✅ | RF-046 a RF-050 | 21/07/2026 |
+| Fase 6 | CPanel | ✅ | RF-042 a RF-045 | 21/07/2026 |
+| Fase 7 | CHunterIPDA | ✅ | Coordinación general | 21/07/2026 |
+| Fase 8 | CDataRange | ✅ | RF-222 a RF-248 | 21/07/2026 |
+| Fase 9 | CSeasonal | ✅ | RF-641 a RF-660 | 21/07/2026 |
+| Fase 10 | CMacroAnalyzer | ✅ | RF-254 a RF-289 | 21/07/2026 |
+| Fase 11 | CContext | ✅ | RF-058 a RF-149, RF-370, RF-371 | 21/07/2026 |
+| Fase 12 | CDetector (básico) | ✅ | RF-001 a RF-010 | 21/07/2026 |
+| Fase 13 | CDetector (avanzado) | ✅ | RF-150 a RF-221 | 21/07/2026 |
+| Fase 14 | CCOTAnalyzer | ✅ | RF-601 a RF-620 | 21/07/2026 |
+| Fase 15 | COIAnalyzer | ✅ | RF-681 a RF-700 | 22/07/2026 |
+| Fase 16 | CRelStrength | ✅ | RF-621 a RF-640 | 22/07/2026 |
+| Fase 17 | CPremiumCarry | ✅ | RF-661 a RF-680 | 22/07/2026 |
+| Fase 18 | CCOExtended | ✅ | RF-601 a RF-620 (extendido) | 22/07/2026 |
+| Fase 19 | CMultiAsset | ✅ | RF-850 a RF-875 | 22/07/2026 |
+| Fase 20 | CRiskManager | ✅ | RF-020 a RF-031, RF-052 a RF-057 | 22/07/2026 |
+| Fase 21 | CEntryManager | ✅ | RF-306 a RF-315 | 22/07/2026 |
+| Fase 22 | CExecutor | ✅ | RF-011 a RF-019 | 22/07/2026 |
+| Fase 23 | CMultiSymbol | ✅ | RF-032 a RF-035 | 22/07/2026 |
+| Fase 24 | CNewsEvent | ✅ | RF-509 | 22/07/2026 |
+| Fase 25 | CTradingPlan | ✅ | RF-950 a RF-975 | 22/07/2026 |
 
 ### 9.2 Actualización del Contexto
 
-Después de cada entrega, se debe actualizar el archivo `Contexto de la Conversacion.txt` con:
+Después de cada entrega, se debe actualizar el archivo Contexto de la Conversacion.txt con:
 
-1. **Nuevos módulos implementados** - Lista de clases entregadas.
-2. **RFs completados** - Lista de RFs cubiertos.
-3. **Estado actual** - Porcentaje de avance estimado.
-4. **Próximos pasos** - Siguiente fase recomendada.
-5. **Observaciones** - Cualquier nota relevante.
+1. Nuevos módulos implementados - Lista de clases entregadas.
+2. RFs completados - Lista de RFs cubiertos.
+3. Estado actual - Porcentaje de avance estimado.
+4. Próximos pasos - Siguiente fase recomendada.
+5. Observaciones - Cualquier nota relevante.
 
 ### 9.3 Documentación de RFs Completados
 
 Para cada RF completado, se debe documentar:
 
-```markdown
 ### RF-XXX: [Descripción del RF]
-- **Estado:** ✅ COMPLETO
-- **Módulo:** [Nombre del módulo]
-- **Método(s):** [Nombre(s) del método(s)]
-- **Fecha:** DD/MM/YYYY
-- **Observaciones:** [Notas adicionales]
-```
+- Estado: ✅ COMPLETO
+- Módulo: [Nombre del módulo]
+- Método(s): [Nombre(s) del método(s)]
+- Fecha: DD/MM/YYYY
+- Observaciones: [Notas adicionales]
 
 ---
 
@@ -1123,7 +1222,6 @@ Para cada RF completado, se debe documentar:
 
 ### 10.1 Anexo A: Plantilla de Entrega
 
-```markdown
 ## 📦 ENTREGA - [Nombre del Módulo] ([Versión])
 
 **Fecha:** DD/MM/YYYY
@@ -1145,27 +1243,25 @@ Para cada RF completado, se debe documentar:
 | CUtils | ✅ | - |
 
 ### 4. Instrucciones de Integración
-1. Incluir archivo: `#include "Include/[Dominio]/[Nombre].mqh"`
+1. Incluir archivo: #include "Include/[Dominio]/[Nombre].mqh"
 2. Agregar miembro en CHunterIPDA:
-   `[Clase]* m_[nombre];`
+   [Clase]* m_[nombre];
 3. Inicializar en CHunterIPDA::InitializeModules():
-   `m_[nombre] = new [Clase]();`
-   `if(!m_[nombre].Init(m_config, m_utils)) { ... }`
+   m_[nombre] = new [Clase]();
+   if(!m_[nombre].Init(m_config, m_utils)) { ... }
 4. Desinicializar en CHunterIPDA::DeinitializeModules():
-   `if(m_[nombre] != NULL) { delete m_[nombre]; m_[nombre] = NULL; }`
+   if(m_[nombre] != NULL) { delete m_[nombre]; m_[nombre] = NULL; }
 
 ### 5. Próximos Pasos
-- **Siguiente fase:** [Nombre de la Fase]
-- **Módulos:** [Lista de módulos]
-- **RFs:** [Lista de RFs]
+- Siguiente fase: [Nombre de la Fase]
+- Módulos: [Lista de módulos]
+- RFs: [Lista de RFs]
 
 ### 6. Observaciones
 - [Notas adicionales]
-```
 
 ### 10.2 Anexo B: Plantilla de Informe de Validación
 
-```markdown
 ## 🔍 INFORME DE VALIDACIÓN - [Nombre del Módulo]
 
 **Fecha:** DD/MM/YYYY
@@ -1195,7 +1291,6 @@ Para cada RF completado, se debe documentar:
 
 ### 5. Conclusión
 ✅ EL MÓDULO ESTÁ LISTO PARA INTEGRACIÓN
-```
 
 ### 10.3 Anexo C: Formato Diff para Modificaciones
 
@@ -1203,7 +1298,7 @@ Para cada RF completado, se debe documentar:
 
 **Ejemplo correcto:**
 
-```diff
+```
   //--- Líneas sin cambios (blanco)
 + //--- TODA esta línea es verde (línea añadida)
 + //--- TODA esta línea también es verde
@@ -1229,3 +1324,16 @@ Para cada RF completado, se debe documentar:
 | 9. Estado de Avance y Documentación | ✅ COMPLETO |
 | 10. Anexos | ✅ COMPLETO |
 | **DOCUMENTO COMPLETO** | ✅ **LISTO** |
+```
+
+---
+
+## ✅ CAMBIOS REALIZADOS
+
+| # | Sección | Cambio |
+| :--- | :--- | :--- |
+| 1 | **Versión** | 1.0.3 → 1.0.4 |
+| 2 | **3.3.1 - Estructura de Comentarios** | Añadida nota de OBLIGATORIO |
+| 3 | **3.3.1 - Ejemplos** | Añadido ejemplo de comentario INCORRECTO adicional |
+| 4 | **3.3.1 - Checklist** | Añadido checklist de validación |
+| 5 | **4.1 - Lista de Verificación** | Añadido ítem de documentación de métodos |

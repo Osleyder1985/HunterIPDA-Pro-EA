@@ -1,6 +1,6 @@
 ﻿//+------------------------------------------------------------------+
 //|                                                  CMultiAsset.mqh |
-//|                       HunterIPDA Pro EA - v1.7 - Módulo Analysis |
+//|                       HunterIPDA Pro EA - v1.8 - Módulo Analysis |
 //|                                  Copyright 2026, HunterIPDA Team |
 //+------------------------------------------------------------------+
 //+------------------------------------------------------------------+
@@ -15,9 +15,11 @@
 //| - Leadership Asset Identification                                |
 //| - Asset Class Rotation Detection                                 |
 //| - Multi-Asset como filtro para Mega Trades y Stock Trading       |
+//| - RF-378: Métodos de alineación para Swing Trading               |
 //|                                                                  |
 //| RFs asociados:                                                   |
 //|   RF-850 a RF-875: Multi-Asset Analysis                          |
+//|   RF-378: Major Market Analysis (Swing Trading)                  |
 //|                                                                  |
 //| Dependencias:                                                    |
 //|   - CConstants: Constantes y enumeraciones (estructuras base)    |
@@ -28,8 +30,8 @@
 //|   - CRelStrength: Fortaleza relativa                             |
 //|   - CPremiumCarry: Premium vs Carrying Charge                    |
 //|                                                                  |
-//| Versión: 1.0                                                     |
-//| Fecha: 22/07/2026                                                |
+//| Versión: 1.1                                                     |
+//| Fecha: 23/07/2026                                                |
 //+------------------------------------------------------------------+
 //+------------------------------------------------------------------+
 //| CHANGELOG                                                        |
@@ -37,6 +39,10 @@
 //| Versión | Fecha       | Cambio                                   |
 //|---------|-------------|------------------------------------------|
 //| 1.0     | 22/07/2026  | Versión inicial del módulo               |
+//| 1.1     | 23/07/2026  | Añadidos métodos de alineación para     |
+//|         |             | Swing Trading (RF-378): IsBondsAligned,  |
+//|         |             | IsCommoditiesAligned, IsCurrenciesAligned,|
+//|         |             | IsStocksAligned                          |
 //+------------------------------------------------------------------+
 
 #ifndef __CMULTIASSET_MQH__
@@ -257,6 +263,45 @@ public:
     bool IsEarlyWarningSignal() const;
     string GetEarlyWarningMessage() const;
     double GetEarlyWarningScore() const;
+    
+    //--- RF-378: ALINEACIÓN PARA SWING TRADING (NUEVOS MÉTODOS)
+    //+------------------------------------------------------------------+
+    //| RF-378: Verificar alineación de Bonos                           |
+    //+------------------------------------------------------------------+
+    //| DESCRIPCIÓN:                                                      |
+    //| Verifica si la clase de activo "Bonos" está alineada con la      |
+    //| dirección esperada para Swing Trading. Requiere que los Bonos    |
+    //| estén en tendencia y con el bias correcto.                       |
+    //|                                                                  |
+    //| CONTEXTO ICT:                                                    |
+    //| ICT enseña que el dinero fluye entre las 4 clases de activos.    |
+    //| Los Bonos (30-Year Treasury) son un indicador adelantado para    |
+    //| el mercado de divisas y acciones.                               |
+    //|                                                                  |
+    //| SEÑAL:                                                           |
+    //| - True: Los Bonos confirman la dirección esperada               |
+    //| - False: Los Bonos NO confirman la dirección esperada            |
+    //|                                                                  |
+    //| USO PRÁCTICO:                                                    |
+    //| Usar en CSwingFilter::CheckMajorMarket para verificar que        |
+    //| al menos 2 clases de activos estén alineadas.                    |
+    //+------------------------------------------------------------------+
+    bool IsBondsAligned(ENUM_BIAS expectedBias);
+    
+    //+------------------------------------------------------------------+
+    //| RF-378: Verificar alineación de Materias Primas                  |
+    //+------------------------------------------------------------------+
+    bool IsCommoditiesAligned(ENUM_BIAS expectedBias);
+    
+    //+------------------------------------------------------------------+
+    //| RF-378: Verificar alineación de Divisas                          |
+    //+------------------------------------------------------------------+
+    bool IsCurrenciesAligned(ENUM_BIAS expectedBias);
+    
+    //+------------------------------------------------------------------+
+    //| RF-378: Verificar alineación de Acciones                         |
+    //+------------------------------------------------------------------+
+    bool IsStocksAligned(ENUM_BIAS expectedBias);
     
     //--- Getters
     string GetSummary() const;
@@ -487,8 +532,8 @@ void CMultiAsset::AnalyzeAssetClass(ENUM_ASSET_CLASS assetClass, AssetClassState
         case ASSET_COMMODITIES: ArrayCopy(symbols, m_commoditySymbols); break;
         case ASSET_CURRENCIES: ArrayCopy(symbols, m_currencySymbols); break;
         case ASSET_STOCKS:   ArrayCopy(symbols, m_stockSymbols); break;
-    default: return;
-}
+        default: return;
+    }
     
     double totalStrength = 0;
     double totalMomentum = 0;
@@ -1383,6 +1428,104 @@ bool CMultiAsset::LoadDataFromSource(string source) {
 
 bool CMultiAsset::ValidateDataIntegrity() const {
     return m_isDataLoaded;
+}
+
+//+------------------------------------------------------------------+
+//| RF-378: ALINEACIÓN PARA SWING TRADING - IMPLEMENTACIÓN           |
+//+------------------------------------------------------------------+
+
+//+------------------------------------------------------------------+
+//| RF-378: Verificar alineación de Bonos                           |
+//+------------------------------------------------------------------+
+bool CMultiAsset::IsBondsAligned(ENUM_BIAS expectedBias) {
+    if(!m_isInitialized) {
+        Print("CMultiAsset::IsBondsAligned - Error: Módulo no inicializado");
+        return false;
+    }
+    
+    //--- Actualizar análisis si es necesario
+    Update();
+    
+    AssetClassState bonds = m_bondState;
+    
+    //--- Requiere que esté en tendencia y con el bias correcto
+    bool isAligned = bonds.isTrending && bonds.bias == expectedBias;
+    
+    if(m_utils != NULL) {
+        m_utils.LogDebug("CMultiAsset::IsBondsAligned - " + (isAligned ? "ALINEADO" : "NO ALINEADO") +
+                         " | Bias: " + (bonds.bias == BIAS_BULLISH ? "BULLISH" :
+                                        (bonds.bias == BIAS_BEARISH ? "BEARISH" : "NEUTRAL")) +
+                         " | Expected: " + (expectedBias == BIAS_BULLISH ? "BULLISH" : "BEARISH") +
+                         " | Trending: " + (bonds.isTrending ? "SI" : "NO"));
+    }
+    
+    return isAligned;
+}
+
+//+------------------------------------------------------------------+
+//| RF-378: Verificar alineación de Materias Primas                  |
+//+------------------------------------------------------------------+
+bool CMultiAsset::IsCommoditiesAligned(ENUM_BIAS expectedBias) {
+    if(!m_isInitialized) {
+        Print("CMultiAsset::IsCommoditiesAligned - Error: Módulo no inicializado");
+        return false;
+    }
+    
+    Update();
+    
+    AssetClassState commodities = m_commodityState;
+    
+    bool isAligned = commodities.isTrending && commodities.bias == expectedBias;
+    
+    if(m_utils != NULL) {
+        m_utils.LogDebug("CMultiAsset::IsCommoditiesAligned - " + (isAligned ? "ALINEADO" : "NO ALINEADO"));
+    }
+    
+    return isAligned;
+}
+
+//+------------------------------------------------------------------+
+//| RF-378: Verificar alineación de Divisas                          |
+//+------------------------------------------------------------------+
+bool CMultiAsset::IsCurrenciesAligned(ENUM_BIAS expectedBias) {
+    if(!m_isInitialized) {
+        Print("CMultiAsset::IsCurrenciesAligned - Error: Módulo no inicializado");
+        return false;
+    }
+    
+    Update();
+    
+    AssetClassState currencies = m_currencyState;
+    
+    bool isAligned = currencies.isTrending && currencies.bias == expectedBias;
+    
+    if(m_utils != NULL) {
+        m_utils.LogDebug("CMultiAsset::IsCurrenciesAligned - " + (isAligned ? "ALINEADO" : "NO ALINEADO"));
+    }
+    
+    return isAligned;
+}
+
+//+------------------------------------------------------------------+
+//| RF-378: Verificar alineación de Acciones                         |
+//+------------------------------------------------------------------+
+bool CMultiAsset::IsStocksAligned(ENUM_BIAS expectedBias) {
+    if(!m_isInitialized) {
+        Print("CMultiAsset::IsStocksAligned - Error: Módulo no inicializado");
+        return false;
+    }
+    
+    Update();
+    
+    AssetClassState stocks = m_stockState;
+    
+    bool isAligned = stocks.isTrending && stocks.bias == expectedBias;
+    
+    if(m_utils != NULL) {
+        m_utils.LogDebug("CMultiAsset::IsStocksAligned - " + (isAligned ? "ALINEADO" : "NO ALINEADO"));
+    }
+    
+    return isAligned;
 }
 
 //--- RF-850: Resumen

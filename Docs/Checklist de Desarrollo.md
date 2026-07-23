@@ -13,7 +13,7 @@
 
 ---
 
-## 🏗️ DOMINIO CORE (COMPLETO - FASES 1-3)
+## 🏗️ DOMINIO CORE (COMPLETO - FASES 1-7)
 
 ### FASE 1: CORE BASE - Prioridad: CRÍTICA
 
@@ -208,19 +208,19 @@
 
 ---
 
-## ⚡ DOMINIO EXECUTION (PENDIENTE - FASES 16-19)
+## ⚡ DOMINIO EXECUTION (COMPLETO - FASES 16-19)
 
 ### FASE 16: RISK MANAGER - Prioridad: CRÍTICA
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
-| **RIS-001** | Implementar `CRiskManager.mqh` | Crítica | ⬜ | RF-020 a RF-031, RF-052 a RF-057, RF-069 a RF-076 |
-| **RIS-002** | Implementar cálculo de lotes dinámico | Crítica | ⬜ | RF-024 |
-| **RIS-003** | Implementar Stop Loss y Take Profit | Crítica | ⬜ | RF-020 a RF-023 |
-| **RIS-004** | Implementar Trailing Stop (incl. IPDA 40/20/10 días) | Crítica | ⬜ | RF-018, RF-317 a RF-319 |
-| **RIS-005** | Implementar Breakeven | Alta | ⬜ | RF-017 |
-| **RIS-006** | Implementar Scaling Out (TP1, TP2, TP3) | Alta | ⬜ | RF-054 |
-| **RIS-007** | Implementar Mitigación de Pérdidas (R2/R3) | Alta | ⬜ | RF-069 a RF-076 |
+| **RIS-001** | Implementar `CRiskManager.mqh` | Crítica | ✅ | RF-020 a RF-031, RF-052 a RF-057, RF-069 a RF-076 |
+| **RIS-002** | Implementar cálculo de lotes dinámico | Crítica | ✅ | RF-024 |
+| **RIS-003** | Implementar Stop Loss y Take Profit | Crítica | ✅ | RF-020 a RF-023 |
+| **RIS-004** | Implementar Trailing Stop (incl. IPDA 40/20/10 días) | Crítica | ✅ | RF-018, RF-317 a RF-319 |
+| **RIS-005** | Implementar Breakeven | Alta | ✅ | RF-017 |
+| **RIS-006** | Implementar Scaling Out (TP1, TP2, TP3) | Alta | ✅ | RF-054 |
+| **RIS-007** | Implementar Mitigación de Pérdidas (R2/R3) | Alta | ✅ | RF-069 a RF-076 |
 
 ---
 
@@ -228,10 +228,10 @@
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
-| **ENT-001** | Implementar `CEntryManager.mqh` | Alta | ⬜ | RF-306 a RF-315 |
-| **ENT-002** | Implementar Stop Entries (Buy/Sell Stop) | Alta | ⬜ | RF-306, RF-307 |
-| **ENT-003** | Implementar Limit Entries (Buy/Sell Limit) | Alta | ⬜ | RF-312, RF-313 |
-| **ENT-004** | Implementar Estrategia Híbrida | Media | ⬜ | RF-315 |
+| **ENT-001** | Implementar `CEntryManager.mqh` | Alta | ✅ | RF-306 a RF-315 |
+| **ENT-002** | Implementar Stop Entries (Buy/Sell Stop) | Alta | ✅ | RF-306, RF-307 |
+| **ENT-003** | Implementar Limit Entries (Buy/Sell Limit) | Alta | ✅ | RF-312, RF-313 |
+| **ENT-004** | Implementar Estrategia Híbrida | Media | ✅ | RF-315 |
 
 ---
 
@@ -239,10 +239,10 @@
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
-| **EXE-001** | Implementar `CExecutor.mqh` | Crítica | ⬜ | RF-011 a RF-019 |
-| **EXE-002** | Implementar ejecución de órdenes Market/Limit/Stop | Crítica | ⬜ | RF-011, RF-012 |
-| **EXE-003** | Implementar gestión de posiciones | Crítica | ⬜ | RF-015 a RF-018 |
-| **EXE-004** | Implementar Stealth Mode (SL/TP virtuales) | Alta | ⬜ | RF-1247 a RF-1249 |
+| **EXE-001** | Implementar `CExecutor.mqh` | Crítica | ✅ | RF-011 a RF-019 |
+| **EXE-002** | Implementar ejecución de órdenes Market/Limit/Stop | Crítica | ✅ | RF-011, RF-012 |
+| **EXE-003** | Implementar gestión de posiciones | Crítica | ✅ | RF-015 a RF-018 |
+| **EXE-004** | Implementar Stealth Mode (SL/TP virtuales) | Alta | ✅ | RF-1247 a RF-1249 |
 
 ---
 
@@ -250,14 +250,35 @@
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
-| **MSY-001** | Implementar `CMultiSymbol.mqh` | Alta | ⬜ | RF-032 a RF-035 |
-| **MSY-002** | Implementar selección de pares por diferencial de tasas | Media | ⬜ | RF-266 |
+| **MSY-001** | Implementar `CMultiSymbol.mqh` | Alta | ✅ | RF-032 a RF-035 |
+| **MSY-002** | Implementar selección de pares por diferencial de tasas | Media | ✅ | RF-266 |
 
 ---
 
-## 🧩 DOMINIO MODELS (PENDIENTE - FASES 20-31)
+## 📋 DOMINIO TRADINGPLAN (COMPLETO - FASES 20-21)
 
-### FASE 20: SWING FILTER - Prioridad: ALTA
+### FASE 20: NEWS EVENT - Prioridad: ALTA
+
+| ID | Tarea | Prioridad | Estado | Notas |
+| :--- | :--- | :--- | :--- | :--- |
+| **NEW-001** | Implementar `CNewsEvent.mqh` | Alta | ✅ | RF-509 |
+
+---
+
+### FASE 21: TRADING PLAN - Prioridad: ALTA
+
+| ID | Tarea | Prioridad | Estado | Notas |
+| :--- | :--- | :--- | :--- | :--- |
+| **TP-001** | Implementar `CTradingPlan.mqh` (Fusionado) | Alta | ✅ | RF-950 a RF-975 |
+| **TP-002** | Implementar límites de pérdida diarios/semanales/mensuales | Alta | ✅ | RF-953 a RF-955 |
+| **TP-003** | Implementar cooldown | Alta | ✅ | RF-956 |
+| **TP-004** | Implementar bufferizado de journal (optimización) | Media | ✅ | RF-967 |
+
+---
+
+## 🧩 DOMINIO MODELS (PENDIENTE - FASES 22-33)
+
+### FASE 22: SWING FILTER - Prioridad: ALTA
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
@@ -268,7 +289,7 @@
 
 ---
 
-### FASE 21: HALLMARK ANALYZER - Prioridad: ALTA
+### FASE 23: HALLMARK ANALYZER - Prioridad: ALTA
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
@@ -276,7 +297,7 @@
 
 ---
 
-### FASE 22: SWING MANAGER - Prioridad: ALTA
+### FASE 24: SWING MANAGER - Prioridad: ALTA
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
@@ -286,7 +307,7 @@
 
 ---
 
-### FASE 23: WEEKLY RANGE - Prioridad: ALTA
+### FASE 25: WEEKLY RANGE - Prioridad: ALTA
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
@@ -295,7 +316,7 @@
 
 ---
 
-### FASE 24: MM MANIPULATION - Prioridad: ALTA
+### FASE 26: MM MANIPULATION - Prioridad: ALTA
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
@@ -303,7 +324,7 @@
 
 ---
 
-### FASE 25: INTRA-WEEK REVERSAL - Prioridad: MEDIA
+### FASE 27: INTRA-WEEK REVERSAL - Prioridad: MEDIA
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
@@ -311,7 +332,7 @@
 
 ---
 
-### FASE 26: OSOK ANALYZER - Prioridad: ALTA
+### FASE 28: OSOK ANALYZER - Prioridad: ALTA
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
@@ -323,7 +344,7 @@
 
 ---
 
-### FASE 27: SHORT-TERM - Prioridad: ALTA
+### FASE 29: SHORT-TERM - Prioridad: ALTA
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
@@ -331,7 +352,7 @@
 
 ---
 
-### FASE 28: DAY TRADING - Prioridad: ALTA
+### FASE 30: DAY TRADING - Prioridad: ALTA
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
@@ -344,7 +365,7 @@
 
 ---
 
-### FASE 29: SCALPING - Prioridad: ALTA
+### FASE 31: SCALPING - Prioridad: ALTA
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
@@ -355,7 +376,7 @@
 
 ---
 
-### FASE 30: STOCK TRADER - Prioridad: ALTA
+### FASE 32: STOCK TRADER - Prioridad: ALTA
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
@@ -365,7 +386,7 @@
 
 ---
 
-### FASE 31: MEGA TRADE - Prioridad: ALTA
+### FASE 33: MEGA TRADE - Prioridad: ALTA
 
 | ID | Tarea | Prioridad | Estado | Notas |
 | :--- | :--- | :--- | :--- | :--- |
@@ -375,27 +396,6 @@
 | **MEG-004** | Implementar Decision Tree | Alta | ⬜ | RF-904 |
 | **MEG-005** | Implementar Scenario Planning | Alta | ⬜ | RF-905 |
 | **MEG-006** | Implementar validación R:R ≥ 5:1 | Alta | ⬜ | RF-906 |
-
----
-
-## 📋 DOMINIO TRADINGPLAN (PENDIENTE - FASES 32-33)
-
-### FASE 32: NEWS EVENT - Prioridad: ALTA
-
-| ID | Tarea | Prioridad | Estado | Notas |
-| :--- | :--- | :--- | :--- | :--- |
-| **NEW-001** | Implementar `CNewsEvent.mqh` | Alta | ⬜ | RF-509 |
-
----
-
-### FASE 33: TRADING PLAN - Prioridad: ALTA
-
-| ID | Tarea | Prioridad | Estado | Notas |
-| :--- | :--- | :--- | :--- | :--- |
-| **TP-001** | Implementar `CTradingPlan.mqh` (Fusionado) | Alta | ⬜ | RF-950 a RF-975 |
-| **TP-002** | Implementar límites de pérdida diarios/semanales/mensuales | Alta | ⬜ | RF-953 a RF-955 |
-| **TP-003** | Implementar cooldown | Alta | ⬜ | RF-956 |
-| **TP-004** | Implementar bufferizado de journal (optimización) | Media | ⬜ | RF-967 |
 
 ---
 
@@ -607,24 +607,24 @@
 ## 📊 RESUMEN DEL CHECKLIST
 
 | Dominio | Fases | Tareas | Completadas | Progreso |
-| :--- | :---: | :---: | :---: | :---: |
-| **Core** | 3 | 21 | 21 | ████████████████████ 100% |
-| **Analysis** | 12 | 48 | 48 | ████████████████████ 100% |
-| **Execution** | 4 | 15 | 0 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **Models** | 12 | 37 | 0 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **TradingPlan** | 2 | 6 | 0 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **Bonus Hunter** | 5 | 5 | 0 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **Adaptive Learning** | 1 | 3 | 0 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **Market Regime** | 1 | 3 | 0 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **Validación** | 2 | 2 | 0 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **Integraciones** | 5 | 6 | 0 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **Explicability** | 1 | 4 | 0 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **Video Learning** | 1 | 3 | 0 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **Persistencia** | 1 | 2 | 0 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **IA** | 1 | 3 | 0 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **Grid Trading** | 1 | 4 | 0 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **Pruebas Finales** | 1 | 8 | 0 | ░░░░░░░░░░░░░░░░░░░░ 0% |
-| **TOTAL** | **53** | **~170** | **69** | **████████████████░░ 41%** |
+| :---                  | :---: | :---: | :---: | :---: |
+| **Core**              | 3  | 21 | 21 | ████████████████████ 100% |
+| **Analysis**          | 12 | 48 | 48 | ████████████████████ 100% |
+| **Execution**         | 4  | 15 | 15 | ████████████████████ 100% |
+| **TradingPlan**       | 2  | 6  | 6  | ████████████████████ 100% |
+| **Models**            | 12 | 37 | 0  | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **Bonus Hunter**      | 5  | 5  | 0  | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **Adaptive Learning** | 1  | 3  | 0  | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **Market Regime**     | 1  | 3  | 0  | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **Validación**        | 2  | 2  | 0  | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **Integraciones**     | 5  | 6  | 0  | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **Explicability**     | 1  | 4  | 0  | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **Video Learning**    | 1  | 3  | 0  | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **Persistencia**      | 1  | 2  | 0  | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **IA**                | 1  | 3  | 0  | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **Grid Trading**      | 1  | 4  | 0  | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **Pruebas Finales**   | 1  | 8  | 0  | ░░░░░░░░░░░░░░░░░░░░ 0% |
+| **TOTAL**             | **53**  | **~170** | **90** | **██████████████████ 53%** |
 
 ---
 
@@ -640,6 +640,7 @@
 │  🟨 MEDIAS (65 tareas)     ████████████████████████████████████████████████████████████████████████████████ │
 │                                                                                                             │
 │  Total: ~170 tareas                                                                                         │
+│  Completadas: 90 tareas (53%)                                                                               │
 │  Duración Estimada: 53 semanas (~13 meses)                                                                  │
 │                                                                                                             │
 └─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
@@ -653,9 +654,9 @@
 | :--- | :--- |
 | Dominio Core (Fases 1-3) | ✅ COMPLETO |
 | Dominio Analysis (Fases 4-15) | ✅ COMPLETO |
-| Dominio Execution (Fases 16-19) | ⏳ PENDIENTE |
-| Dominio Models (Fases 20-31) | ⏳ PENDIENTE |
-| Dominio TradingPlan (Fases 32-33) | ⏳ PENDIENTE |
+| Dominio Execution (Fases 16-19) | ✅ COMPLETO |
+| Dominio TradingPlan (Fases 20-21) | ✅ COMPLETO |
+| Dominio Models (Fases 22-33) | ⏳ PENDIENTE |
 | Dominio Bonus Hunter (Fases 34-38) | ⏳ PENDIENTE |
 | Dominios Adicionales (Fases 39-52) | ⏳ PENDIENTE |
 | Pruebas Finales (Fase 53) | ⏳ PENDIENTE |
